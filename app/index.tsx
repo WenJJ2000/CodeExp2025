@@ -23,6 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { Redirect } from "expo-router";
 
 const GITHUB_AVATAR_URI =
   "https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
@@ -36,6 +37,7 @@ export default function Screen() {
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <Text className="text-2xl font-bold text-center mb-4">index.tsx</Text>
+      <Redirect href="./(tabs)" />
     </View>
   );
   return (

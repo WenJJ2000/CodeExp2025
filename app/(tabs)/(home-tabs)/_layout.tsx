@@ -45,17 +45,12 @@ export default function RootLayout() {
   const { isDarkColorScheme } = useColorScheme();
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack screenOptions={{ gestureEnabled: false }}>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false, animation: "slide_from_left" }}
-        />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <Stack screenOptions={{ gestureEnabled: false }}>
+      <Stack.Screen
+        name="index"
+        options={{ headerShown: false, animation: "slide_from_left" }}
+      />
+    </Stack>
   );
 }
 
