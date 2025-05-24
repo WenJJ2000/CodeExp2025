@@ -1,10 +1,12 @@
-/**
- * @format
- * @lint-ignore-every XPLATJSCOPYRIGHT1
- */
+import { registerRootComponent } from 'expo';
+import { ExpoRoot } from 'expo-router';
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
+// https://docs.expo.dev/router/reference/troubleshooting/#expo_router_app_root-not-defined
 
-AppRegistry.registerComponent(appName, () => App);
+// Must be exported or Fast Refresh won't update the context
+export function App() {
+  const ctx = require.context('./app');
+  return <ExpoRoot context={ctx} />;
+}
+
+registerRootComponent(App);
