@@ -35,6 +35,11 @@ export default function Screen() {
   }
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
+      <Text className="text-2xl font-bold text-center mb-4">index.tsx</Text>
+    </View>
+  );
+  return (
+    <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <Card className="w-full max-w-sm p-6 rounded-2xl">
         <CardHeader className="items-center">
           {/* <Avatar alt="Rick Sanchez's Avatar" className='w-24 h-24'>
