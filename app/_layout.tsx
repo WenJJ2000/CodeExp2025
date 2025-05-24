@@ -51,27 +51,35 @@ export default function RootLayout() {
         <Tabs.Screen
           name="forum"
           options={{
-            headerShown: false,
+            title: "Forum",
+            headerTitle: () => (
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg font-semibold"></Text>
+              </View>
+            ),
+            headerTitleAlign: "center",
+            headerLeft: () => null,
+            headerShown: true,
+            href: "/forum",
           }}
         />
         <Tabs.Screen
           name="quiz"
           options={{
-            headerShown: false,
+            title: "Quiz",
+            headerTitle: () => (
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg font-semibold"></Text>
+              </View>
+            ),
+            headerTitleAlign: "center",
+            headerShown: true,
+            href: "/quiz",
           }}
         />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Tabs.Screen
-          name="home"
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Tabs.Screen name="profile" />
+        <Tabs.Screen name="home" />
+        <Tabs.Screen name="report" />
         <Tabs.Screen
           name="+not-found"
           options={{
