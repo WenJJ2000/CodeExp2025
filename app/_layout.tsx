@@ -15,7 +15,11 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { Text } from "~/components/ui/text";
-import { PortalHost } from "@rn-primitives/portal";
+
+// icons
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
   colors: NAV_THEME.light,
@@ -49,6 +53,72 @@ export default function RootLayout() {
         }}
       >
         <Tabs.Screen
+          name="quiz"
+          options={{
+            title: "Quiz",
+            headerTitle: () => (
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg font-semibold"></Text>
+              </View>
+            ),
+            headerTitleAlign: "center",
+            headerShown: true,
+            href: "/quiz",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome6
+                name="book"
+                size={size}
+                color={color}
+                style={{ marginBottom: -3 }}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="report"
+          options={{
+            title: "Report",
+            headerTitle: () => (
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg font-semibold"></Text>
+              </View>
+            ),
+            headerTitleAlign: "center",
+            headerShown: true,
+            href: "/report",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome6
+                name="triangle-exclamation"
+                size={size}
+                color={color}
+                style={{ marginBottom: -3 }}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: "Home",
+            headerTitle: () => (
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg font-semibold"></Text>
+              </View>
+            ),
+            headerTitleAlign: "center",
+            headerShown: true,
+            href: "/home",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome6
+                name="house"
+                size={size}
+                color={color}
+                style={{ marginBottom: -3 }}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="forum"
           options={{
             title: "Forum",
@@ -61,25 +131,29 @@ export default function RootLayout() {
             headerLeft: () => null,
             headerShown: true,
             href: "/forum",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome6
+                name="comments-fill"
+                size={size}
+                color={color}
+                style={{ marginBottom: -3 }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
-          name="quiz"
+          name="profile"
           options={{
-            title: "Quiz",
-            headerTitle: () => (
-              <View className="flex-row items-center gap-2">
-                <Text className="text-lg font-semibold"></Text>
-              </View>
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome6
+                name="user"
+                size={size}
+                color={color}
+                style={{ marginBottom: -3 }}
+              />
             ),
-            headerTitleAlign: "center",
-            headerShown: true,
-            href: "/quiz",
           }}
         />
-        <Tabs.Screen name="profile" />
-        <Tabs.Screen name="home" />
-        <Tabs.Screen name="report" />
         <Tabs.Screen
           name="+not-found"
           options={{
