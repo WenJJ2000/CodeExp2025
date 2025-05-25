@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-tooltip": "^1.2.7",
     "@react-navigation/native": "^7.0.0",
     "@rn-primitives/accordion": "^1.2.0",
     "@rn-primitives/alert-dialog": "^1.2.0",
