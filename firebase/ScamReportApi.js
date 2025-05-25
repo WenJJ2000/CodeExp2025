@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function createReport(description, reporterId, scamType) {
@@ -18,6 +18,15 @@ export async function createReport(description, reporterId, scamType) {
     status: 'pending',
     votes: [0, 0], // [upvotes,downvotes]
   });
+}
+
+export async function getAllScamReports() {
+  const querySnapshot = await getDocs(collection(db, 'scamReports'));
+  const reports = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return reports;
 }
 
 export async function createScamCheck(
