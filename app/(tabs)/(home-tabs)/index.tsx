@@ -7,11 +7,7 @@ export default function Screen() {
   const testemail = 'wenjunjie14@gmail.com';
   const testPass = '123456789';
   const testUser = 'user1';
-  useEffect(() => {
-    const test = register(testemail, testPass, testUser);
 
-    Promise.resolve(test);
-  }, []);
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <Text>
