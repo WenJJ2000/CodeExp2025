@@ -5,7 +5,7 @@ export default function Screen() {
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <Text>
-        This is the forum screen. You can add your forum content here.
+        This is the signup screen. You can add your forum content here.
         {"\n"}You can use this space to display discussion threads, user posts,
         or any other forum-related content. Feel free to customize this screen
         as needed.

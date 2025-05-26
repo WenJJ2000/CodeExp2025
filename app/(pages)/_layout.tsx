@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { ThemeToggle } from "~/components/ThemeToggle";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -22,11 +23,11 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerBackVisible: false,
+        headerTitle: "",
+        headerRight: () => <ThemeToggle />,
       }}
-    >
-      <Stack.Screen name="index" />
-    </Stack>
+    ></Stack>
   );
 }
 

@@ -7,38 +7,22 @@ import { Text } from "~/components/ui/text";
 import { ThemeToggle } from "~/components/ThemeToggle";
 
 export default function TabLayout() {
-  // if (!auth.currentUser) {
-  //   return <Redirect href="/" />;
-  // } else {
-  //   // console.log('====================================');
-  //   // console.log(auth.currentUser.email);
-  //   // console.log('====================================');
-  // }
   return (
     <Tabs
       screenOptions={{
         headerRight: () => <ThemeToggle />,
+        headerTitle: "",
+        headerShown: true,
       }}
+      initialRouteName="(forum-tabs)"
     >
       <Tabs.Screen
         name="(quiz-tabs)"
         options={{
           title: "Quiz",
-          headerTitle: () => (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold"></Text>
-            </View>
-          ),
-          headerTitleAlign: "center",
-          headerShown: true,
           href: "/(tabs)/(quiz-tabs)",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6
-              name="book"
-              size={size}
-              color={color}
-              style={{ marginBottom: -3 }}
-            />
+            <FontAwesome6 name="book" size={size} color={color} />
           ),
         }}
       />
@@ -46,12 +30,7 @@ export default function TabLayout() {
         name="(report-tabs)"
         options={{
           title: "Report",
-          headerTitle: () => (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold"></Text>
-            </View>
-          ),
-          headerTitleAlign: "center",
+          headerTitle: "",
           headerShown: true,
           href: "/(tabs)/(report-tabs)",
           tabBarIcon: ({ color, size }) => (
@@ -68,12 +47,7 @@ export default function TabLayout() {
         name="(home-tabs)"
         options={{
           title: "Home",
-          headerTitle: () => (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold"></Text>
-            </View>
-          ),
-          headerTitleAlign: "center",
+          headerTitle: "",
           headerShown: true,
           href: "/(tabs)/(home-tabs)",
           tabBarIcon: ({ color, size }) => (
@@ -90,13 +64,7 @@ export default function TabLayout() {
         name="(forum-tabs)"
         options={{
           title: "Forum",
-          headerTitle: () => (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold"></Text>
-            </View>
-          ),
-          headerTitleAlign: "center",
-          headerLeft: () => null,
+          headerTitle: "",
           headerShown: true,
           href: "/(tabs)/(forum-tabs)",
           tabBarIcon: ({ color, size }) => (
@@ -113,11 +81,7 @@ export default function TabLayout() {
         name="(profile-tabs)"
         options={{
           title: "Profile",
-          headerTitle: () => (
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold"></Text>
-            </View>
-          ),
+          headerTitle: "",
           headerTitleAlign: "center",
           headerLeft: () => null,
           headerShown: true,
@@ -130,20 +94,6 @@ export default function TabLayout() {
               style={{ marginBottom: -3 }}
             />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="+not-found"
-        options={{
-          headerShown: false,
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          headerShown: false,
-          href: null,
         }}
       />
     </Tabs>

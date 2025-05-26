@@ -9,7 +9,7 @@ import {
 import { Redirect, Stack, Tabs, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Appearance, Platform, View } from "react-native";
+import { Appearance, Platform, SafeAreaView, View } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
@@ -39,53 +39,39 @@ const usePlatformSpecificSetup = Platform.select({
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
-  const navigator = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  if (!isAuthenticated) {
-    return (
-      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Stack
-          screenOptions={{
-            gestureEnabled: false,
-            headerRight: () => <ThemeToggle />,
+
+  return (
+    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+        // initialRouteName="(pages)"
+        // initialRouteName="(auth-tabs)"
+        initialRouteName="(tabs)"
+      >
+        <Stack.Screen
+          name="(auth-tabs)"
+          options={{
+            headerShown: false,
           }}
-        >
-          <Stack.Screen name="(auth-tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-              title: "",
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    );
-  } else {
-    return (
-      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Stack
-          screenOptions={{
-            gestureEnabled: false,
-            headerRight: () => <ThemeToggle />,
+        />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
           }}
-        >
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false, animation: "slide_from_left" }}
-          />
-          <Stack.Screen
-            name="(auth-tabs)"
-            options={{ headerShown: false, animation: "slide_from_left" }}
-          />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </ThemeProvider>
-    );
-  }
+        />
+        <Stack.Screen
+          name="(pages)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </ThemeProvider>
+  );
 }
 
 const useIsomorphicLayoutEffect =

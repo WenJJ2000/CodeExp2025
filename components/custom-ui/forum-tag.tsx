@@ -1,0 +1,28 @@
+import { View } from "react-native";
+import { Text } from "~/components/ui/text";
+export type ForumTagVariant =
+  | "SMS"
+  | "Email"
+  | "Phone"
+  | "Social Media"
+  | "Website"
+  | "Verified";
+
+export function ForumTag({ variant }: { variant: ForumTagVariant }) {
+  const colorMap: Record<ForumTagVariant, string> = {
+    SMS: "#2FC955",
+    Email: "#004BFE",
+    Phone: "#E4A719",
+    "Social Media": "#9747FF",
+    Website: "#0CA8B9",
+    Verified: "#F63C3C",
+  };
+  return (
+    <View
+      className="justify-center items-center p-2 rounded-lg"
+      style={{ backgroundColor: colorMap[variant] }}
+    >
+      <Text className="text-base">{variant}</Text>
+    </View>
+  );
+}

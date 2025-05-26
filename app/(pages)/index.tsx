@@ -26,7 +26,7 @@ export default function Screen() {
           variant="default"
           size="lg"
           onPress={() => {
-            navigator.replace("./(auth-tabs)/singup");
+            navigator.replace("../(auth-tabs)/signup");
           }}
         >
           <Text className="text-lg dark:color-white">Let's get started</Text>
@@ -40,7 +40,7 @@ export default function Screen() {
             className="w-12 h-12 p-1 m-1 "
             size="icon"
             onPress={() => {
-              navigator.replace("./(auth-tabs)/login");
+              navigator.push("../(auth-tabs)/login");
             }}
           >
             <FontAwesome6 name="arrow-right" size={16} color="white" />

@@ -11,18 +11,18 @@ export default function Screen() {
   const handleLogin = () => {
     // Handle login logic here
     console.log("Login button pressed");
-    navigator.replace("../");
+    navigator.replace("../(tabs)");
   };
   const handleCancel = () => {
     // Handle cancel logic here
     console.log("Cancel button pressed");
-    navigator.replace("../");
+    navigator.replace("../(pages)");
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
-    <View className="flex-1 bg-secondary/30">
+    <SafeAreaView className="flex-1 bg-secondary/30">
       <Image
         source={require("~/assets/images/login-background.png")}
         resizeMethod="resize"
@@ -61,7 +61,7 @@ export default function Screen() {
           className="w-full"
           variant="default"
           size="lg"
-          onPress={handleLogin}
+          onPress={() => handleLogin()}
         >
           <Text className="text-lg dark:color-white">Login</Text>
         </Button>
@@ -69,13 +69,13 @@ export default function Screen() {
           variant={"link"}
           className="w-full"
           size="icon"
-          onPress={handleCancel}
+          onPress={() => handleCancel()}
         >
           <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
             Cancel
           </Text>
         </Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
