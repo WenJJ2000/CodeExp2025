@@ -45,11 +45,15 @@ export default function RootLayout() {
   const { isDarkColorScheme } = useColorScheme();
 
   return (
-    <Stack screenOptions={{ gestureEnabled: false }}>
-      <Stack.Screen
-        name="report"
-        options={{ headerShown: false, animation: "slide_from_left" }}
-      />
+    <Stack
+      screenOptions={{
+        gestureEnabled: false,
+        title: "",
+        headerRight: () => <ThemeToggle />,
+      }}
+    >
+      <Stack.Screen name="login" />
+      <Stack.Screen name="signup" />
     </Stack>
   );
 }
