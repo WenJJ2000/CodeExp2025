@@ -37,7 +37,7 @@ export default function reportMainScreen() {
         className={`border rounded-xl py-5 px-4 mb-4 items-center ${
           isDark ? "border-white" : "border-black"
         }`}
-        onPress={() => router.push("/scamReport")}
+        onPress={() => router.push("/scamReportForm")}
       >
         <Text className={`text-lg ${isDark ? "text-white" : "text-black"}`}>
           Submit a scam report

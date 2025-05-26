@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
     ScrollView,
     Text,
@@ -7,6 +9,8 @@ import {
     View,
     useColorScheme,
 } from "react-native";
+import { createReport } from '../../../firebase/ScamReportApi';
+import { auth } from '../../../firebase/firebase';
 
 type ScamCategory =
     | "email"
@@ -65,26 +69,142 @@ export default function ScamReportForm() {
         title: "",
         content: "",
     });
+    const [errors, setErrors] = useState({
+    sender: '',
+    title: '',
+    content: '',
+});
+
 
     const isDark = useColorScheme() === "dark";
     const config = SCAM_CONFIG[scamType];
+    const user = auth.currentUser;
+    const router = useRouter();
+
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerBackTitle: 'Back',       // Changes the text next to the back arrow (iOS only)
+            title: 'Scam Report',          // Changes the current screen's title
+            headerBackTitleVisible: true,  // Optional: make sure it's visible
+        });
+    }, []);
+
+    useEffect(() => {
+        if (step === 5) {
+            const timer = setTimeout(() => {
+                router.push('/(tabs)/(report-tabs)');
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [step]);
+
 
     const updateField = (key: string, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
     const handleNext = () => {
-        if (step < 4) setStep(step + 1);
+        if (validateStep() && step < 4) {
+            setStep(step + 1);
+        }
     };
 
     const handleBack = () => {
         if (step > 1) setStep(step - 1);
     };
 
-    const handleSubmit = () => {
-        console.log("Submit data:", { scamType, ...formData });
-        setStep(5);
+    const handleSubmit = async () => {
+        const isValid = validateStep();
+        if (!isValid) return;
+
+        try {
+            await createReport({
+                scamType,
+                sender: formData.sender,
+                title: formData.title,
+                content: formData.content,
+                reporterId: user?.uid ?? "anonymous",
+            });
+            setStep(5);
+        } catch (error) {
+            console.error("Error submitting report:", error);
+        }
     };
+
+
+    const validateStep = (): boolean => {
+        const newErrors = { sender: "", title: "", content: "" };
+        let isValid = true;
+
+        if (step === 2) {
+            // Validate Sender
+            if (!formData.sender.trim()) {
+                newErrors.sender = "This field is required.";
+                isValid = false;
+            } else {
+                switch (scamType) {
+                    case "email":
+                        if (!/^[\w.-]+@(?:gmail|hotmail|yahoo)\.com$/.test(formData.sender.trim())) {
+                            newErrors.sender = "Must be a valid email.";
+                            isValid = false;
+                        }
+                        break;
+                    case "sms":
+                    case "phone":
+                        if (!/^\d{8}$/.test(formData.sender.trim())) {
+                            newErrors.sender = "Must be 8-digit number.";
+                            isValid = false;
+                        }
+                        break;
+                    case "website":
+                        try {
+                            const url = new URL(formData.sender.trim());
+                            if (!/^https?:\/\//.test(url.href)) {
+                                throw new Error();
+                            }
+                        } catch {
+                            newErrors.sender = "Invalid URL format.";
+                            isValid = false;
+                        }
+                        break;
+                    // Optionally add more:
+                    case "social":
+                    case "app":
+                    case "inPerson":
+                        if (formData.sender.trim().length < 3) {
+                            newErrors.sender = "Too short.";
+                            isValid = false;
+                        }
+                        break;
+                }
+            }
+
+            // Validate Title if present
+            if (config.titleLabel && !formData.title.trim()) {
+                newErrors.title = "This field is required.";
+                isValid = false;
+            }
+        } else if (step === 3) {
+            // Validate Content
+            if (!formData.content.trim()) {
+                newErrors.content = "This field is required.";
+                isValid = false;
+            } else if (formData.content.trim().length < 10) {
+                newErrors.content = "Please provide more details.";
+                isValid = false;
+            }
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+
+
+
 
     return (
         <ScrollView
@@ -131,14 +251,21 @@ export default function ScamReportForm() {
                     </Text>
                     <TextInput
                         value={formData.sender}
-                        onChangeText={(text) => updateField("sender", text)}
-                        className={`border rounded-lg p-3 mb-4 ${isDark
-                                ? "bg-gray-900 text-white border-gray-600"
-                                : "bg-white text-black border-gray-400"
+                        onChangeText={(text) => {
+                            updateField("sender", text);
+                            setErrors((prev) => ({ ...prev, sender: '' }));
+                        }}
+                        className={`border rounded-lg p-3 mb-1 ${errors.sender
+                                ? "border-red-500"
+                                : isDark
+                                    ? "bg-gray-900 text-white border-gray-600"
+                                    : "bg-white text-black border-gray-400"
                             }`}
                         placeholder={config.senderLabel}
                         placeholderTextColor={isDark ? "#999" : "#666"}
                     />
+                    {errors.sender ? <Text className="text-red-500 text-sm mb-3">{errors.sender}</Text> : null}
+
 
                     {config.titleLabel && (
                         <>
@@ -147,14 +274,21 @@ export default function ScamReportForm() {
                             </Text>
                             <TextInput
                                 value={formData.title}
-                                onChangeText={(text) => updateField("title", text)}
-                                className={`border rounded-lg p-3 ${isDark
-                                        ? "bg-gray-900 text-white border-gray-600"
-                                        : "bg-white text-black border-gray-400"
+                                onChangeText={(text) => {
+                                    updateField("title", text);
+                                    setErrors((prev) => ({ ...prev, title: '' }));
+                                }}
+                                className={`border rounded-lg p-3 mb-1 ${errors.title
+                                        ? "border-red-500"
+                                        : isDark
+                                            ? "bg-gray-900 text-white border-gray-600"
+                                            : "bg-white text-black border-gray-400"
                                     }`}
                                 placeholder={config.titleLabel}
                                 placeholderTextColor={isDark ? "#999" : "#666"}
                             />
+                            {errors.title ? <Text className="text-red-500 text-sm mb-3">{errors.title}</Text> : null}
+
                         </>
                     )}
                 </>
@@ -171,14 +305,20 @@ export default function ScamReportForm() {
                         multiline
                         numberOfLines={6}
                         textAlignVertical="top"
-                        onChangeText={(text) => updateField("content", text)}
-                        className={`border rounded-lg p-3 ${isDark
-                                ? "bg-gray-900 text-white border-gray-600"
-                                : "bg-white text-black border-gray-400"
+                        onChangeText={(text) => {
+                            updateField("content", text);
+                            setErrors((prev) => ({ ...prev, content: '' }));
+                        }}
+                        className={`border rounded-lg p-3 mb-1 ${errors.content
+                                ? "border-red-500"
+                                : isDark
+                                    ? "bg-gray-900 text-white border-gray-600"
+                                    : "bg-white text-black border-gray-400"
                             }`}
                         placeholder={config.contentLabel}
                         placeholderTextColor={isDark ? "#999" : "#666"}
                     />
+                    {errors.content ? <Text className="text-red-500 text-sm mb-3">{errors.content}</Text> : null}
                 </>
             )}
 
