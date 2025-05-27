@@ -1,10 +1,10 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Tabs, Redirect } from "expo-router";
-import React from "react";
+import { Tabs } from "expo-router";
 // import { auth } from "@/components/auth/firebaseConfig";
 import { View } from "react-native";
-import { Text } from "~/components/ui/text";
 import { ThemeToggle } from "~/components/ThemeToggle";
+import { SettingsButton } from "~/components/settingsButton";
+import { Text } from "~/components/ui/text";
 
 export default function TabLayout() {
   // if (!auth.currentUser) {
@@ -14,10 +14,20 @@ export default function TabLayout() {
   //   // console.log(auth.currentUser.email);
   //   // console.log('====================================');
   // }
+  function onSettingsPress() {
+    // Handle settings press: navigate or open modal
+    console.log("Settings pressed");
+  }
+  
   return (
     <Tabs
       screenOptions={{
-        headerRight: () => <ThemeToggle />,
+        headerRight: () => (
+          <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 20 }}>
+            <ThemeToggle />
+            <SettingsButton onPress={onSettingsPress} style={{ marginLeft:10 }} />
+          </View>
+        ),
       }}
     >
       <Tabs.Screen
