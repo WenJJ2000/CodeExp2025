@@ -66,6 +66,7 @@ export type ScamReport = Replyable & {
   scamReportType: ScamReportType;
   scamReportStatus: ScamReportStatus;
   votes: Vote[];
+  replies: Reply[];
 };
 
 export type Reply = Replyable & {

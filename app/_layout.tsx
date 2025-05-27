@@ -14,6 +14,7 @@ import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { ThemeToggle } from "~/components/ThemeToggle";
+import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 
 const LIGHT_THEME: Theme = {
@@ -39,6 +40,20 @@ const usePlatformSpecificSetup = Platform.select({
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
+  const [isSignIn, setIsSignIn] = useState(false);
+  useEffect(() => {
+    const checkSignInStatus = async () => {
+      try {
+        const user = await SecureStore.getItemAsync("user");
+        console.log("User data from SecureStore:", !!user);
+        setIsSignIn(!!user);
+      } catch (error) {
+        console.error("Error checking sign-in status:", error);
+        setIsSignIn(false);
+      }
+    };
+    checkSignInStatus();
+  }, []);
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
@@ -48,17 +63,22 @@ export default function RootLayout() {
           headerShown: false,
         }}
         // initialRouteName="(pages)"
-        initialRouteName="(auth-tabs)"
+        initialRouteName={!isSignIn ? "(tabs)" : "(auth-tabs)"}
         // initialRouteName="(tabs)"
       >
         <Stack.Screen
-          name="(auth-tabs)"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
         />
+        {/* {isSignIn ? (
+        ) : (
+          <>
+          </>
+        )} */}
         <Stack.Screen
-          name="(tabs)"
+          name="(auth-tabs)"
           options={{
             headerShown: false,
           }}

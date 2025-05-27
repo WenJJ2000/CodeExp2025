@@ -2,33 +2,88 @@ import { Pressable, View, Image } from "react-native";
 import { Text } from "~/components/ui/text";
 import { ForumTag } from "./forum-tag";
 import { ScamReport } from "~/lib/types";
-export function ForumPost(props: ScamReport) {
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useRouter } from "expo-router";
+export function ForumPost({
+  scamReport,
+  clickable = true,
+  fulltext = false,
+}: {
+  scamReport: ScamReport;
+  clickable?: boolean;
+  fulltext?: boolean;
+}) {
+  const router = useRouter();
   return (
-    <Pressable className="w-full bg-secondary/30 justify-center items-center">
-      <View className="flex-row justify-between items-between w-full p-4">
-        <View className="flex-row items-center gap-3 ">
+    <Pressable
+      className="w-full bg-secondary justify-center items-center mb-2 "
+      onPress={() => {
+        if (!clickable) return;
+        router.push({
+          pathname: "/(tabs)/(forum-tabs)/forumPage",
+          params: { scamReportId: scamReport.id },
+        });
+      }}
+    >
+      <View className="flex-row justify-between items-between w-full px-4 py-2">
+        <View className="flex-row items-center gap-2 ">
           <Image
-            src={props.reporter.profilePicture || "~/assets/images/icon2.png"}
+            src={
+              scamReport.reporter.profilePicture || "~/assets/images/icon2.png"
+            }
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"
           />
-
-          <Text>{props.reporter.name}</Text>
-          <Text className="text-sm text-muted-foreground">
-            Last updated: 2 days ago
+          <Text className="text-xl ">{scamReport.reporter.name}</Text>
+          <Text className="text-xl text-muted-foreground">
+            {new Date(Date.now() - Date.parse(scamReport.createdAt)).getHours()}
+            h
           </Text>
         </View>
         <View className="flex-row items-center gap-2">
           <ForumTag variant={"Email"} />
-          {props.scamReportStatus == "VALID" && <ForumTag variant={"Email"} />}
+          {scamReport.scamReportStatus == "VALID" && (
+            <ForumTag variant={"Email"} />
+          )}
         </View>
       </View>
-      <View className="p-4">
-        <Text className="text-base text-muted-foreground">
-          This is a brief description of the forum section. It contains
-          discussions about various topics related to scams and frauds.
+      <View className="px-4 pb-2 w-full">
+        <Text className="text-xl font-bold text-start">
+          {scamReport.title.length > 100 && !fulltext
+            ? scamReport.title.substring(0, 97) + "..."
+            : scamReport.title}
         </Text>
+        <Text className="text-start text-muted-foreground">
+          {scamReport.content.length > 100 && !fulltext
+            ? scamReport.content.substring(0, 97) + "..."
+            : scamReport.content}
+        </Text>
+      </View>
+      <View className="w-full px-4 pb-2">
+        <View className="flex-row bg-secondary  ">
+          <Pressable className="px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg">
+            <Text className="text-muted-foreground text-lg">
+              <FontAwesome6 name="thumbs-up" size={16} />{" "}
+              {scamReport.votes.filter((vote) => vote.type == "UPVOTE").length}
+            </Text>
+          </Pressable>
+          <Pressable className="px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-r-lg">
+            <Text className="text-muted-foreground text-lg">
+              {
+                scamReport.votes.filter((vote) => vote.type == "DOWNVOTE")
+                  .length
+              }{" "}
+              <FontAwesome6 name="thumbs-down" size={16} />
+            </Text>
+          </Pressable>
+          <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
+            <Text className="text-muted-foreground text-lg">
+              <FontAwesome6 name="comment" size={16} />{" "}
+              {scamReport.replies.length}
+            </Text>
+          </View>
+        </View>
       </View>
     </Pressable>
   );

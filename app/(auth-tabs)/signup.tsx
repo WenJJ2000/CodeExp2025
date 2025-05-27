@@ -1,4 +1,3 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
@@ -11,18 +10,16 @@ import { register } from "~/firebase/AuthApi";
 
 export default function Screen() {
   const navigator = useRouter();
+
   const handleLogin = async () => {
     if (!email || !password || !username || !phone) {
       console.error("All fields are required");
-      // Handle missing fields (e.g., show an alert)
       return;
     }
     try {
       // Call the login function from AuthApi
-      const user = await register(email, password, username);
-      console.log("User logged in:", user);
-      console.log("Login successful");
-      navigator.replace("../(tabs)");
+      await register(email, password, username);
+      navigator.replace("./login");
     } catch (error) {
       console.error("Login error:", error);
       // Handle login error (e.g., show an alert)

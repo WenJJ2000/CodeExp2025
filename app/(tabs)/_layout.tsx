@@ -12,7 +12,7 @@ export default function TabLayout() {
       screenOptions={{
         headerRight: () => <ThemeToggle />,
         headerTitle: "",
-        headerShown: true,
+        headerShown: false,
       }}
       initialRouteName="(forum-tabs)"
     >
@@ -64,8 +64,6 @@ export default function TabLayout() {
         name="(forum-tabs)"
         options={{
           title: "Forum",
-          headerTitle: "",
-          headerShown: true,
           href: "/(tabs)/(forum-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6

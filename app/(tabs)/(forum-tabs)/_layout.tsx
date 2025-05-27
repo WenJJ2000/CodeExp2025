@@ -1,6 +1,6 @@
 import "~/global.css";
 
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
@@ -18,13 +18,13 @@ const usePlatformSpecificSetup = Platform.select({
 
 export default function RootLayout() {
   usePlatformSpecificSetup();
-
   return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
     >
+      <Stack.Screen name="forumPage" />
       <Stack.Screen name="index" />
     </Stack>
   );

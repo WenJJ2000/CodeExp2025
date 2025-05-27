@@ -22,7 +22,7 @@ export function ForumTag({ variant }: { variant: ForumTagVariant }) {
       className="justify-center items-center p-2 rounded-lg"
       style={{ backgroundColor: colorMap[variant] }}
     >
-      <Text className="text-base">{variant}</Text>
+      <Text className="text-secondary">{variant}</Text>
     </View>
   );
 }

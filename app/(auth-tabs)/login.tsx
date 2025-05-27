@@ -1,4 +1,3 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
@@ -6,6 +5,7 @@ import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import * as SecureStore from "expo-secure-store";
 
 import { login } from "~/firebase/AuthApi";
 
@@ -14,18 +14,18 @@ export default function Screen() {
   const handleLogin = async () => {
     if (!email || !password) {
       console.error("Email and password are required");
-      // Handle missing email or password (e.g., show an alert)
       return;
     }
     try {
-      // Call the login function from AuthApi
       const user = await login(email, password);
-      console.log("User logged in:", user);
-      console.log("Login successful");
+      if (!user) {
+        console.error("Login failed");
+        return;
+      }
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
       navigator.replace("../(tabs)");
     } catch (error) {
       console.error("Login error:", error);
-      // Handle login error (e.g., show an alert)
       return;
     }
   };
