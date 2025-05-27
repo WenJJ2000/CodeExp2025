@@ -6,5 +6,6 @@ module.exports = function (api) {
       'nativewind/babel',
     ],
     plugins: [['module:react-native-dotenv']],
+    plugins: ['react-native-reanimated/plugin'],
   };
 };
