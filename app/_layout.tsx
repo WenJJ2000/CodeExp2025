@@ -48,8 +48,8 @@ export default function RootLayout() {
           headerShown: false,
         }}
         // initialRouteName="(pages)"
-        // initialRouteName="(auth-tabs)"
-        initialRouteName="(tabs)"
+        initialRouteName="(auth-tabs)"
+        // initialRouteName="(tabs)"
       >
         <Stack.Screen
           name="(auth-tabs)"

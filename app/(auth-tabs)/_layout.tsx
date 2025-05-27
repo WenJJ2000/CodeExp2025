@@ -27,6 +27,7 @@ export default function RootLayout() {
         headerBackVisible: false,
         headerRight: () => <ThemeToggle />,
       }}
+      initialRouteName="signup"
     >
       <Stack.Screen name="login" />
       <Stack.Screen name="signup" />

@@ -25,6 +25,7 @@ export default function RootLayout() {
       screenOptions={{
         headerBackVisible: false,
         headerTitle: "",
+        headerShown: false,
         headerRight: () => <ThemeToggle />,
       }}
     ></Stack>
