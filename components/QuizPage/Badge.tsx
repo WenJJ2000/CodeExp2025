@@ -61,7 +61,7 @@ const TextSVG = ({ level, title }: { level: number; title: string }) => {
     <View
       style={{
         position: 'absolute',
-        top: 48,
+        top: 37,
         left: 0,
         right: 0,
         alignItems: 'center',
