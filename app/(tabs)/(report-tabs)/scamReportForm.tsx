@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import {
+    Image,
     ScrollView,
     Text,
     TextInput,
@@ -90,16 +91,6 @@ export default function ScamReportForm() {
             headerBackTitleVisible: true,  // Optional: make sure it's visible
         });
     }, []);
-
-    useEffect(() => {
-        if (step === 5) {
-            const timer = setTimeout(() => {
-                router.push('/(tabs)/(report-tabs)');
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [step]);
 
 
     const updateField = (key: string, value: string) => {
@@ -358,15 +349,37 @@ export default function ScamReportForm() {
 
             {/* Step 5: Confirmation */}
             {step === 5 && (
-                <View className="items-center justify-center py-16">
-                    <Text className={`text-2xl font-bold text-center mb-4 ${isDark ? "text-white" : "text-black"}`}>
-                        Your report has been submitted!
-                    </Text>
-                    <Text className={`text-center ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                        We are in the midst of reviewing your submission.
-                    </Text>
+                <View className="flex-1 justify-between p-6 bg-white dark:bg-black rounded-3xl shadow-lg mx-4 my-3">
+                    {/* Icon at top */}
+                    <View className="items-center mb-8">
+                        <Image
+                            source={require('../../../assets/images/ScamBustersLogo.png')}
+                            style={{ width: 200, height: 200 }}
+                            resizeMode="contain"
+                        />
+                    </View>
+
+                    {/* Text content */}
+                    <View className="items-center mb-12">
+                        <Text className="text-2xl font-bold text-center text-black dark:text-white mb-2">
+                            Your report has been submitted!
+                        </Text>
+                        <Text className="text-center text-gray-600 dark:text-gray-400">
+                            We are in the midst of reviewing your submission.
+                        </Text>
+                    </View>
+
+                    {/* Got it button */}
+                    <TouchableOpacity
+                        onPress={() => router.push('/(tabs)/(report-tabs)')}
+                        className="bg-blue-600 py-4 rounded-lg"
+                        style={{ width: '100%' }}
+                    >
+                        <Text className="text-white text-center text-lg">Got it</Text>
+                    </TouchableOpacity>
                 </View>
             )}
+
 
             {/* Navigation */}
             {step < 5 && (

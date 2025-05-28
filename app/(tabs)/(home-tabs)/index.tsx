@@ -1,22 +1,9 @@
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { initializeApp } from 'firebase/app';
-import { collection, getDocs, getFirestore, orderBy, query } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, Image, Pressable, Text, View, useColorScheme } from 'react-native';
 
-// Firebase config and init (replace with your config)
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_MSG_SENDER_ID',
-  appId: 'YOUR_APP_ID',
-};
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 type NotificationType = {
   id: string;
@@ -42,53 +29,7 @@ export default function Home() {
   const [notificationCount, setNotificationCount] = useState(5);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
-  useEffect(() => {
-    async function fetchNotifications() {
-      try {
-        const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
-        const data: NotificationType[] = [];
-        querySnapshot.forEach((doc) => {
-          const docData = doc.data();
-          data.push({
-            id: doc.id,
-            title: docData.title,
-            subtitle: docData.subtitle,
-            linkText: docData.linkText,
-            time: docData.time,
-          });
-        });
-        setNotifications(data);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-        setNotifications([
-          {
-            id: '1',
-            title: 'Post update',
-            subtitle: 'user1912093 commented on your post!',
-            linkText: 'Auto-generated, 10 minutes ago',
-            time: '10 minutes ago',
-          },
-          {
-            id: '2',
-            title: 'Post update',
-            subtitle: "Your post titled ‘security@dbssg-alert.com’ got verified!",
-            linkText: 'Auto-generated, 15 minutes ago',
-            time: '15 minutes ago',
-          },
-          {
-            id: '3',
-            title: 'New Post',
-            subtitle: 'Security@dbssg-alert.com',
-            linkText: 'ABC News, 31 minutes ago',
-            time: '31 minutes ago',
-          },
-        ]);
-      }
-    }
-    fetchNotifications();
-  }, []);
-
+  
   // Helper to toggle icon colors based on theme
   const iconColor = colorScheme === 'dark' ? '#ccc' : '#000';
 
