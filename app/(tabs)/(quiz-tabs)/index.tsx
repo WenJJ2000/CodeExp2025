@@ -10,6 +10,8 @@ import { useState } from 'react';
 export default function Screen() {
   const maxLevel = 10;
   const [currLevel, setCurrLevel] = useState<number>(1);
+
+
   return (
     <View className="flex-1 bg-secondary/30 px-6 pt-4">
       {/* Top-left User Header */}
