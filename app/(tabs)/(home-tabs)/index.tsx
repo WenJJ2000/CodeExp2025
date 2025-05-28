@@ -1,6 +1,6 @@
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FlatList, Image, Pressable, Text, View, useColorScheme } from 'react-native';
 
 
@@ -14,10 +14,10 @@ type NotificationType = {
 };
 
 const shortcuts = [
-  { key: 'text', icon: <MaterialIcons name="email" size={20} color="black" />, label: 'Text' },
-  { key: 'image', icon: <FontAwesome5 name="camera" size={20} color="black" />, label: 'Image' },
-  { key: 'number', icon: <FontAwesome5 name="phone" size={20} color="black" />, label: 'Number' },
-  { key: 'app', icon: <Ionicons name="phone-portrait-outline" size={20} color="black" />, label: 'App' },
+  { key: 'text', iconType: MaterialIcons, iconName: 'email', label: 'Text' },
+  { key: 'image', iconType: FontAwesome5, iconName: 'camera', label: 'Image' },
+  { key: 'number', iconType: FontAwesome5, iconName: 'phone', label: 'Number' },
+  { key: 'app', iconType: Ionicons, iconName: 'phone-portrait-outline', label: 'App' },
 ];
 
 export default function Home() {
@@ -46,54 +46,37 @@ export default function Home() {
 
       {/* Counters */}
       <View className="flex-row justify-between mb-6">
-        <CounterCircle count={postCount} label="Post" darkMode={colorScheme === 'dark'} />
-        <CounterCircle count={verifiedCount} label="Verified" darkMode={colorScheme === 'dark'} />
-        <CounterCircle count={notificationCount} label="Notification" darkMode={colorScheme === 'dark'} />
+        <CounterCircleButton count={postCount} label="Post" onPress={() => router.push('/(tabs)/(report-tabs)')} />
+        <CounterCircleButton count={verifiedCount} label="Verified" onPress={() => router.push('/(tabs)/(report-tabs)')} />
+        <CounterCircleButton count={notificationCount} label="Notification" onPress={() => router.push('/(tabs)/(report-tabs)')} />
       </View>
+
 
       {/* Shortcuts */}
       <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Shortcuts</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
-          const [pressed, setPressed] = useState(false);
+          const IconComponent = sc.iconType;
           return (
             <Pressable
               key={sc.key}
-              onPressIn={() => setPressed(true)}
-              onPressOut={() => setPressed(false)}
-              style={{
-                borderWidth: 1,
-                borderColor: pressed
-                  ? (colorScheme === 'dark' ? '#aaa' : '#333')
-                  : (colorScheme === 'dark' ? '#666' : '#ccc'),
-                borderRadius: 10,
-                paddingVertical: 16,
-                paddingHorizontal: 16,
-                alignItems: 'center',
-                width: 80,
-                backgroundColor: pressed
-                  ? (colorScheme === 'dark' ? '#333' : '#eee')
-                  : 'transparent',
-                transform: [{ scale: pressed ? 0.95 : 1 }],
-              }}
+              className="shortcut-btn"
               android_ripple={{ color: '#ccc' }}
             >
-              {React.cloneElement(sc.icon, {
-                color: colorScheme === 'dark' ? '#ccc' : 'black',
-              })}
-              <Text
-                style={{
-                  marginTop: 8,
-                  fontSize: 12,
-                  color: colorScheme === 'dark' ? '#fff' : '#000',
-                }}
-              >
+              <IconComponent
+                name={sc.iconName}
+                size={20}
+                color={colorScheme === 'dark' ? '#ccc' : '#000'}
+              />
+              <Text className="shortcut-label">
                 {sc.label}
               </Text>
             </Pressable>
           );
         })}
       </View>
+
+
 
       {/* Notifications */}
       <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Notifications</Text>
@@ -113,25 +96,30 @@ export default function Home() {
   );
 }
 
-function CounterCircle({
+export function CounterCircleButton({
   count,
   label,
-  darkMode,
+  onPress,
 }: {
   count: number;
   label: string;
-  darkMode?: boolean;
+  onPress: () => void;
 }) {
   return (
-    <View className="items-center flex-1">
-      <View
-        className={`w-14 h-14 rounded-full justify-center items-center shadow-lg ${
-          darkMode ? 'bg-blue-500' : 'bg-blue-500'
-        }`}
-      >
-        <Text className={`text-lg font-medium ${darkMode ? 'text-gray-300' : 'text-white'}`}>{count}</Text>
+    <Pressable onPress={onPress} className="flex-1 items-center">
+      {/* Outer Circle */}
+      <View className="w-24 h-24 rounded-full bg-border justify-center items-center shadow-lg">
+
+        {/* Inner Circle with Text */}
+        <View className="w-16 h-16 rounded-full bg-primary justify-center items-center">
+          <Text className="text-lg font-medium text-white dark:text-black">
+            {count}
+          </Text>
+        </View>
+
       </View>
-      <Text className={`mt-2 text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-black'}`}>{label}</Text>
-    </View>
+      <Text className="mt-2 text-sm font-semibold text-black dark:text-gray-300">{label}</Text>
+    </Pressable>
   );
 }
+

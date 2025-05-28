@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useLayoutEffect, useState } from "react";
@@ -193,10 +194,6 @@ export default function ScamReportForm() {
         return isValid;
     };
 
-
-
-
-
     return (
         <ScrollView
             className={`flex-1 px-5 pt-10 ${isDark ? "bg-black" : "bg-white"}`}
@@ -237,6 +234,19 @@ export default function ScamReportForm() {
             {/* Step 2: Sender + Title */}
             {step === 2 && (
                 <>
+                    <TouchableOpacity
+                        className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
+                    >
+                        <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
+                        <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                            Upload a screenshot
+                        </Text>
+                    </TouchableOpacity>
+
+                    <Text className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"}`}>
+                        OR
+                    </Text>
+
                     <Text className={`text-base mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         {config.senderLabel}
                     </Text>
@@ -288,6 +298,19 @@ export default function ScamReportForm() {
             {/* Step 3: Content */}
             {step === 3 && (
                 <>
+                <TouchableOpacity
+                        className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
+                    >
+                        <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
+                        <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                            Upload a screenshot
+                        </Text>
+                    </TouchableOpacity>
+
+                    <Text className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"}`}>
+                        OR
+                    </Text>
+                    
                     <Text className={`text-base mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         {config.contentLabel}
                     </Text>
