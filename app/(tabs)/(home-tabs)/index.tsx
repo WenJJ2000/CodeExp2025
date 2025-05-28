@@ -61,6 +61,7 @@ export default function Home() {
             <Pressable
               key={sc.key}
               className="shortcut-btn"
+              onPress={() => router.push(`/(home-tabs)/checkScam?type=${sc.key}` as any)}
               android_ripple={{ color: '#ccc' }}
             >
               <IconComponent
