@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Animated, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
 
 
@@ -15,14 +15,22 @@ export default function CheckTypePage() {
     const [textInput, setTextInput] = useState('');
     const [numberInput, setNumberInput] = useState('');
     const [appInput, setAppInput] = useState('');
-
-
+    const navigation = useNavigation();
+    
     useEffect(() => {
         const tabType = (type as string)?.toLowerCase();
         if (['text', 'image', 'number', 'app'].includes(tabType)) {
             setActiveTab(tabType as any);
         }
     }, [type]);
+
+    useLayoutEffect(() => {
+            navigation.setOptions({
+                headerBackTitle: 'Back',       // Changes the text next to the back arrow (iOS only)
+                title: '',          // Changes the current screen's title
+                headerBackTitleVisible: true,  // Optional: make sure it's visible
+            });
+        }, []);
 
     const handleTextInputPress = () => {
         // Placeholder for future logic
@@ -188,7 +196,7 @@ export default function CheckTypePage() {
                         {/* Animated Input Section */}
                         <Animated.View style={{ opacity: fadeAnim }}>
                             {renderInputSection()}
-                        </Animated.View>=
+                        </Animated.View>
 
                         {/* Check Button */}
                         <Pressable onPress={handleCheckPress} className="bg-blue-600 p-4 rounded-xl mt-6">
