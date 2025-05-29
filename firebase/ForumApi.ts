@@ -60,7 +60,53 @@ export async function getScamReports() {
   }
   return reports;
 }
-
+export async function getAScamReport(id: string) {
+  const querySnapshot = await getDocs(collection(db, "scamReports", id));
+  const reports = querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    const date = new Date(Date.parse(data.createdAt.toDate()));
+    const formattedDate = new Date(date.setHours(date.getHours() + 8));
+    return {
+      id: doc.id,
+      createdAt: formattedDate,
+      scamReportType: data.scamReportType || "UNKNOWN",
+      scamReportStatus: data.scamReportStatus || "PENDING",
+      votes: data.votes || [],
+      replies: data.replies || [],
+      content: data.content || "",
+      title: data.title || "",
+      image: data.image || "",
+      reporter: data.reporter || "",
+    };
+  });
+  for (const report of reports) {
+    const reporterDoc = await getDoc(doc(db, "users", report.reporter));
+    if (reporterDoc.exists()) {
+      report.reporter = {
+        id: reporterDoc.id,
+        ...reporterDoc.data(),
+      };
+    } else {
+      report.reporter = {
+        id: report.reporter,
+        email: "",
+        username: "Unknown",
+        profilePicture: "",
+        quizLevelCleared: 0,
+        notificationSettings: {
+          id: "",
+          scamTest: false,
+          email: false,
+          sms: false,
+          phone: false,
+        },
+        badgesObtained: [],
+        replies: [],
+      };
+    }
+  }
+  return reports[0] || null;
+}
 export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
   const q = query(collection(db, "scamReports"));
   const observer = onSnapshot(q, async (querySnapshot) => {
