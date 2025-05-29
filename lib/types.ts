@@ -3,13 +3,22 @@ export type ScamReportStatus = "VALID" | "INVALID";
 export type ScamReportType =
   | "PHONE"
   | "SMS"
-  | "Email"
-  | "social_media"
+  | "EMAIL"
+  | "SOCIAL_MEDIA"
   | "WEBSITE"
   | "MISINFORMATION"
   | "IN_PERSON"
   | "APP";
-
+export type ForumTagVariant =
+  | "PHONE"
+  | "SMS"
+  | "EMAIL"
+  | "SOCIAL_MEDIA"
+  | "WEBSITE"
+  | "MISINFORMATION"
+  | "IN_PERSON"
+  | "APP"
+  | "VERIFIED";
 export type VoteType = "UPVOTE" | "DOWNVOTE";
 export type NotificationSetting = {
   id: string;
@@ -39,37 +48,38 @@ export type QuizQuestion = {
 export type User = {
   id: string;
   email: string;
-  name: string;
+  username: string;
   profilePicture?: string;
   quizLevelCleared: number;
   notificationSettings: NotificationSetting;
   badgesObtained: Badge[];
-  replies: Reply[];
 };
 
-export type Replyable = {
-  id: string;
-  content: string;
-  createdAt: string;
-  image?: string;
-};
 export type Vote = {
   id: string;
   voter: User;
   type: VoteType;
 };
 
-export type ScamReport = Replyable & {
+export type ScamReport = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  image?: string;
   title: string;
   reporter: User;
-  createdAt: string;
   scamReportType: ScamReportType;
   scamReportStatus: ScamReportStatus;
   votes: Vote[];
   replies: Reply[];
 };
 
-export type Reply = Replyable & {
-  replyTo: Replyable;
+export type Reply = {
+  id: string;
+  content: string;
+  createdAt: string;
+
+  image?: string;
+  replies?: Reply[];
   user: User;
 };

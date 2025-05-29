@@ -45,7 +45,7 @@ export default function RootLayout() {
     const checkSignInStatus = async () => {
       try {
         const user = await SecureStore.getItemAsync("user");
-        console.log("User data from SecureStore:", !!user);
+        // console.log("User data from SecureStore:", !!user);
         setIsSignIn(!!user);
       } catch (error) {
         console.error("Error checking sign-in status:", error);

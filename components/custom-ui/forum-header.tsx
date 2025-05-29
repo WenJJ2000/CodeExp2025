@@ -44,7 +44,10 @@ export type Filters =
   | "Email"
   | "Phone"
   | "Social Media"
-  | "Website";
+  | "Website"
+  | "In Person"
+  | "Misinformation"
+  | "Verified";
 export type FilterProps = {
   filter: Filters;
   setFilter: (filter: Filters) => void;
@@ -71,13 +74,6 @@ export function Filter({ filter, setFilter }: FilterProps) {
       onPress={() => {
         setIsClicked(!isClicked);
       }}
-      onPressOut={() => {
-        console.log("Filter menu pressed out");
-      }}
-      onMagicTap={() => {
-        console.log("Filter menu magic tap");
-        setIsClicked(!isClicked);
-      }}
     >
       <FontAwesome6
         name="filter"
@@ -85,7 +81,7 @@ export function Filter({ filter, setFilter }: FilterProps) {
         color={isDarkColorScheme ? "white" : "black"}
       />
       {isClicked && (
-        <View className="absolute w-[150px] top-12 right-0 bg-background rounded-md shadow-lg p-2 mt-2">
+        <View className="absolute w-[150px] top-12 right-0 bg-background rounded-md shadow-lg p-2 mt-2 z-10">
           {filterOptions.map((option) => (
             <Pressable
               key={option}
