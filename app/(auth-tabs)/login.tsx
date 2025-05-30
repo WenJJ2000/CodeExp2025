@@ -8,9 +8,11 @@ import { useState } from "react";
 import * as SecureStore from "expo-secure-store";
 
 import { login } from "~/firebase/AuthApi";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 
 export default function Screen() {
   const navigator = useRouter();
+  const { setUser, setUid } = useAuth();
   const handleLogin = async () => {
     if (!email || !password) {
       console.error("Email and password are required");
@@ -23,7 +25,10 @@ export default function Screen() {
         return;
       }
       await SecureStore.setItemAsync("user", JSON.stringify(user));
-      navigator.replace("../(tabs)");
+      setUser(JSON.stringify(user));
+      await SecureStore.setItemAsync("uid", user.uid);
+      setUid(user.uid);
+      navigator.navigate("../");
     } catch (error) {
       console.error("Login error:", error);
       return;

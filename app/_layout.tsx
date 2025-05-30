@@ -16,6 +16,7 @@ import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
+import { AuthProvider, useAuth } from "~/lib/useContext/useAuthContext";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -40,57 +41,64 @@ const usePlatformSpecificSetup = Platform.select({
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
-  const [isSignIn, setIsSignIn] = useState(false);
+  const { user, uid } = useAuth();
   useEffect(() => {
-    const checkSignInStatus = async () => {
-      try {
-        const user = await SecureStore.getItemAsync("user");
-        // console.log("User data from SecureStore:", !!user);
-        setIsSignIn(!!user);
-      } catch (error) {
-        console.error("Error checking sign-in status:", error);
-        setIsSignIn(false);
-      }
-    };
-    checkSignInStatus();
-  }, []);
-
+    console.log("User in RootLayout:", user);
+    console.log("UID in RootLayout:", uid);
+  }, [user, uid]);
+  // const [isSignIn, setIsSignIn] = useState(false);
+  // useEffect(() => {
+  //   const checkSignInStatus = async () => {
+  //     try {
+  //       const user = await SecureStore.getItemAsync("user");
+  //       const uid = await SecureStore.getItemAsync("uid");
+  //       console.log("User data from SecureStore:", user);
+  //       console.log("User data from SecureStore:", user);
+  //       setIsSignIn(!!user);
+  //     } catch (error) {
+  //       console.error("Error checking sign-in status:", error);
+  //       setIsSignIn(false);
+  //     }
+  //   };
+  //   checkSignInStatus();
+  // }, []);
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-        // initialRouteName="(pages)"
-        initialRouteName={!isSignIn ? "(tabs)" : "(auth-tabs)"}
-        // initialRouteName="(tabs)"
-      >
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
-        {/* {isSignIn ? (
-        ) : (
-          <>
-          </>
-        )} */}
-        <Stack.Screen
-          name="(auth-tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
+      <AuthProvider>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+        <RootNavigator />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
+function RootNavigator() {
+  const { uid, user } = useAuth();
+
+  return (
+    <Stack>
+      <Stack.Protected guard={!user || !uid}>
         <Stack.Screen
           name="(pages)"
           options={{
             headerShown: false,
           }}
         />
-      </Stack>
-    </ThemeProvider>
+        <Stack.Screen
+          name="(auth-tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Protected>
+      <Stack.Protected guard={!!user && !!uid}>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Protected>
+    </Stack>
   );
 }
 

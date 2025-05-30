@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, View, Image } from "react-native";
+import { Pressable, ScrollView, View, Image, SafeAreaView } from "react-native";
 import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
 import { ForumPost } from "~/components/custom-ui/forum-post";
 import { ForumTag } from "~/components/custom-ui/forum-tag";
@@ -78,7 +78,7 @@ export default function Screen() {
     );
   }
   return (
-    <View className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
+    <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
       <ForumHeader
         searchQuery={searchQuery}
         filter={filter}
@@ -96,6 +96,6 @@ export default function Screen() {
           />
         ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
