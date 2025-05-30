@@ -49,6 +49,14 @@ export default function Screen() {
   }
   async function fetchScamReports(reports: ScamReport[] = []) {
     setScamReports(reports);
+    if (selectedReport) {
+      const report = reports.find((r) => r.id === selectedReport.id);
+      if (report) {
+        setSelectedReport(report);
+      } else {
+        setSelectedReport(null);
+      }
+    }
     filterScamReports();
     setLoading(false);
   }

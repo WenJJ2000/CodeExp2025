@@ -10,14 +10,15 @@ import {
   onSnapshot,
   DocumentSnapshot,
   DocumentData,
+  deleteDoc,
+  addDoc,
 } from "firebase/firestore";
 import { Vote, VoteType } from "../lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useId } from "react";
 
-export async function vote(voteType: VoteType, postId: string) {
-  const { uid: userId } = useAuth();
+export async function vote(userId: string, voteType: VoteType, postId: string) {
   if (!userId) {
     throw new Error("User is not authenticated");
   }
@@ -26,35 +27,73 @@ export async function vote(voteType: VoteType, postId: string) {
   }
   // Check if the user has already voted on this post
   const voteQuery = query(
-    collection(db, "vote"),
-    where("userId", "==", userId),
-    where("postId", "==", postId)
+    collection(db, "votes"),
+    where("voter", "==", userId),
+    where("scamReportId", "==", postId)
   );
+  const scamReportRef = doc(db, "scamReports", postId);
   const voteSnapshot = await getDocs(voteQuery);
+  const scamReport = await getDoc(scamReportRef);
+  if (!scamReport) {
+    throw new Error("Scam report not found");
+  }
   if (!voteSnapshot.empty) {
     // User has already voted on this post, update the existing vote
     const existingVoteDoc = voteSnapshot.docs[0];
     const existingVoteData = existingVoteDoc.data() as Vote;
     if (existingVoteData.type === voteType) {
       // If the vote type is the same, remove the vote
-      await setDoc(doc(db, "vote", existingVoteDoc.id), {}, { merge: true });
+      await deleteDoc(doc(db, "votes", existingVoteDoc.id));
+      await setDoc(
+        scamReportRef,
+        {
+          votes: scamReport
+            .data()
+            ?.votes.filter((vote: string) => vote !== existingVoteDoc.id),
+        },
+        { merge: true }
+      );
       return; // Vote removed
     } else {
       // If the vote type is different, update it
       await setDoc(
-        doc(db, "vote", existingVoteDoc.id),
-        { voteType },
+        doc(db, "votes", existingVoteDoc.id),
+        { type: voteType },
+        { merge: true }
+      );
+      await setDoc(
+        scamReportRef,
+        {
+          votes: scamReport
+            .data()
+            ?.votes.filter((vote: string) => vote !== existingVoteDoc.id),
+        },
+        { merge: true }
+      );
+      await setDoc(
+        scamReportRef,
+        {
+          votes: [...(scamReport.data()?.votes || [])],
+        },
         { merge: true }
       );
       return; // Vote updated
     }
   } else {
-    const uuid = uuidv4();
+    // const uuid = uuidv4();
+
     const d = {
-      userId,
-      voteType,
-      postId,
+      voter: userId,
+      type: voteType,
+      scamReportId: postId,
     };
-    await setDoc(doc(db, "vote", uuid), d);
+    const vote = await addDoc(collection(db, "votes"), d);
+    await setDoc(
+      scamReportRef,
+      {
+        votes: [...(scamReport.data()?.votes || []), vote.id],
+      },
+      { merge: true }
+    );
   }
 }

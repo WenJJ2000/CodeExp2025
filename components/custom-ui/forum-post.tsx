@@ -4,6 +4,7 @@ import { ForumTag } from "./forum-tag";
 import { ForumTagVariant, ScamReport } from "~/lib/types";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
+import { ForumVoteButton } from "./forum-vote-button";
 export function ForumPost({
   scamReport,
   fulltext = false,
@@ -68,21 +69,7 @@ export function ForumPost({
       </View>
       <View className="w-full px-4 pb-2">
         <View className="flex-row bg-secondary  ">
-          <Pressable className="px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg">
-            <Text className="text-muted-foreground text-lg">
-              <FontAwesome6 name="thumbs-up" size={16} />{" "}
-              {scamReport?.votes.filter((vote) => vote.type == "UPVOTE").length}
-            </Text>
-          </Pressable>
-          <Pressable className="px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-r-lg">
-            <Text className="text-muted-foreground text-lg">
-              {
-                scamReport?.votes.filter((vote) => vote.type == "DOWNVOTE")
-                  .length
-              }{" "}
-              <FontAwesome6 name="thumbs-down" size={16} />
-            </Text>
-          </Pressable>
+          <ForumVoteButton scamReport={scamReport} />
           <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
             <Text className="text-muted-foreground text-lg">
               <FontAwesome6 name="comment" size={16} />{" "}

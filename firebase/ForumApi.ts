@@ -131,9 +131,20 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
     });
     for (const report of tempResult) {
       const reporterDoc = await getDoc(doc(db, "users", report.reporter));
+      const votes: any[] = [];
+      for (const voteId of report.votes) {
+        const voterDoc = await getDoc(doc(db, "votes", voteId));
+        if (voterDoc.exists()) {
+          votes.push({
+            id: voterDoc.id,
+            ...voterDoc.data(),
+          });
+        }
+      }
       if (reporterDoc.exists()) {
         result.push({
           ...report,
+          votes: votes,
           reporter: {
             id: reporterDoc.id,
             ...reporterDoc.data(),
@@ -141,6 +152,7 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
         });
       }
     }
+    console.log("Live update result:", result);
     callback(result);
   });
 
