@@ -1,9 +1,5 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Tabs, Redirect } from "expo-router";
-import React from "react";
-// import { auth } from "@/components/auth/firebaseConfig";
-import { View } from "react-native";
-import { Text } from "~/components/ui/text";
+import { Tabs } from "expo-router";
 import { ThemeToggle } from "~/components/ThemeToggle";
 
 export default function TabLayout() {

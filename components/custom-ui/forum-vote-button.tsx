@@ -8,28 +8,17 @@ import { useAuth } from "~/lib/useContext/useAuthContext";
 export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
   const { uid: userId, user } = useAuth();
 
-  const hasUpVoted = scamReport?.votes.some(
-    (vote) => vote.type === "UPVOTE" && vote.voter.id === userId
-  );
-  const hasDownVoted = scamReport?.votes.some(
-    (vote) => vote.type === "DOWNVOTE" && vote.voter.id === userId
-  );
+  const hasUpVoted = scamReport?.votes.some((vote) => {
+    return vote.type === "UPVOTE" && vote.voterId === userId;
+  });
+  const hasDownVoted = scamReport?.votes.some((vote) => {
+    return vote.type === "DOWNVOTE" && vote.voterId === userId;
+  });
 
   const onClickUpVote = () => {
     if (!userId) {
       console.error("User is not authenticated");
       return;
-    }
-    if (hasUpVoted) {
-      scamReport.votes.filter(
-        (vote) => vote.type === "UPVOTE" && vote.voter.id === userId
-      );
-    } else {
-      scamReport.votes.push({
-        type: "UPVOTE",
-        voter: JSON.parse(user || "{}"), // Assuming you have a way to get the username
-        id: `vote-${Date.now()}-${Math.random()}`, // Generate a unique ID for the vote
-      });
     }
     vote(userId, "UPVOTE", scamReport.id).catch((error) => {
       console.error("Error upvoting:", error);
@@ -40,17 +29,6 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
       console.error("User is not authenticated");
       return;
     }
-    if (hasDownVoted) {
-      scamReport.votes.filter(
-        (vote) => vote.type === "DOWNVOTE" && vote.voter.id === userId
-      );
-    } else {
-      scamReport.votes.push({
-        type: "DOWNVOTE",
-        voter: JSON.parse(user || "{}"), // Assuming you have a way to get the username
-        id: `vote-${Date.now()}-${Math.random()}`, // Generate a unique ID for the vote
-      });
-    }
     vote(userId, "DOWNVOTE", scamReport.id).catch((error) => {
       console.error("Error downvoting:", error);
     });
@@ -58,7 +36,9 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
   return (
     <>
       <Pressable
-        className="px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg"
+        className={`px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg ${
+          hasUpVoted ? "bg-green-200" : ""
+        }`}
         onPress={onClickUpVote}
       >
         <Text className="text-muted-foreground text-lg">

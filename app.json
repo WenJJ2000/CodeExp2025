@@ -25,14 +25,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon2.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/icon2.png"
     },
-    "plugins": ["expo-router", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them."
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }

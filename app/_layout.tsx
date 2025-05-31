@@ -17,6 +17,7 @@ import { ThemeToggle } from "~/components/ThemeToggle";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "~/lib/useContext/useAuthContext";
+import { ShowTabProvider } from "~/lib/useContext/useShowTabContext";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -65,8 +66,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <AuthProvider>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <RootNavigator />
+        <ShowTabProvider>
+          <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          <RootNavigator />
+        </ShowTabProvider>
       </AuthProvider>
     </ThemeProvider>
   );

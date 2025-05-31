@@ -55,12 +55,6 @@ export type User = {
   badgesObtained: Badge[];
 };
 
-export type Vote = {
-  id: string;
-  voter: User;
-  type: VoteType;
-};
-
 export type ScamReport = {
   id: string;
   content: string;
@@ -70,14 +64,14 @@ export type ScamReport = {
   reporter: User;
   scamReportType: ScamReportType;
   scamReportStatus: ScamReportStatus;
-  votes: Vote[];
+  votes: { type: VoteType; voterId: string }[];
   replies: Reply[];
 };
 
 export type Reply = {
   id: string;
   content: string;
-  createdAt: string;
+  createdAt: Date;
 
   image?: string;
   replies?: Reply[];

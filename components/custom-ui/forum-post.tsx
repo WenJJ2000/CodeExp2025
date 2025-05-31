@@ -5,16 +5,25 @@ import { ForumTagVariant, ScamReport } from "~/lib/types";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
 import { ForumVoteButton } from "./forum-vote-button";
+import { useColorScheme } from "~/lib/useColorScheme";
 export function ForumPost({
   scamReport,
   fulltext = false,
   onClick = () => {},
+  showReplyButton = false,
+  onClickReply = () => {},
 }: {
-  scamReport: ScamReport;
+  scamReport?: ScamReport;
   fulltext?: boolean;
   onClick?: () => void;
+  showReplyButton?: boolean;
+  onClickReply?: () => void;
 }) {
+  if (!scamReport) {
+    return null; // Handle the case where scamReport is undefined
+  }
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
   const lastUpdated = new Date(Date.now() - scamReport.createdAt.getTime());
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
@@ -68,14 +77,28 @@ export function ForumPost({
         </Text>
       </View>
       <View className="w-full px-4 pb-2">
-        <View className="flex-row bg-secondary  ">
-          <ForumVoteButton scamReport={scamReport} />
-          <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
-            <Text className="text-muted-foreground text-lg">
-              <FontAwesome6 name="comment" size={16} />{" "}
-              {scamReport?.replies.length}
-            </Text>
+        <View className="flex-row  bg-secondary justify-between items-center gap-2">
+          <View className="flex-row items-center ">
+            <ForumVoteButton scamReport={scamReport} />
+            <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
+              <Text className="text-muted-foreground text-lg">
+                <FontAwesome6 name="comment" size={16} />{" "}
+                {scamReport?.replies.length}
+              </Text>
+            </View>
           </View>
+          {showReplyButton && (
+            <Pressable
+              onPress={onClickReply}
+              className="flex-row items-center gap-2"
+            >
+              <FontAwesome6
+                name="reply"
+                color={colorScheme == "light" ? "black" : "white"}
+              />
+              <Text className="text-base">Reply</Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </Pressable>

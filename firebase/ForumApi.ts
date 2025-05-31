@@ -131,20 +131,10 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
     });
     for (const report of tempResult) {
       const reporterDoc = await getDoc(doc(db, "users", report.reporter));
-      const votes: any[] = [];
-      for (const voteId of report.votes) {
-        const voterDoc = await getDoc(doc(db, "votes", voteId));
-        if (voterDoc.exists()) {
-          votes.push({
-            id: voterDoc.id,
-            ...voterDoc.data(),
-          });
-        }
-      }
+
       if (reporterDoc.exists()) {
         result.push({
           ...report,
-          votes: votes,
           reporter: {
             id: reporterDoc.id,
             ...reporterDoc.data(),
@@ -152,38 +142,79 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
         });
       }
     }
-    console.log("Live update result:", result);
+    // console.log("Live update result:", result);
     callback(result);
   });
 
   return observer;
 };
 
-// export async function createForumPost(authorId, title, content) {
-//   const uuid = uuidv4();
-//   const d = {
-//     authorId,
-//     title,
-//     content,
-//     votes: {},
-//     voteCount: 0,
-//     timestamp: Date.now(),
-//     comments: [],
-//   };
+export const liveUpdateOnASingleScamReport = (
+  scamReportId: string,
+  callback: (doc: ScamReport) => void
+) => {
+  const q = doc(db, "scamReports", scamReportId);
+  const observer = onSnapshot(
+    q,
+    async (querySnapshot) => {
+      try {
+        const data = querySnapshot.data();
+        if (!data) {
+          console.error("No data found for scam report:", scamReportId);
+          return;
+        }
+        const date = new Date(Date.parse(data.createdAt.toDate()));
+        const formattedDate = new Date(date.setHours(date.getHours() + 8));
+        for (const key in data.replies) {
+          const replyDoc = await getDoc(doc(db, "replies", data.replies[key]));
+          if (replyDoc.exists()) {
+            const data2 = replyDoc.data();
+            const date2 = new Date(Date.parse(data2.createdAt.toDate()));
+            const formattedDate2 = new Date(
+              date2.setHours(date2.getHours() + 8)
+            );
+            const userDoc = await getDoc(doc(db, "users", data2.user));
 
-//   await setDoc(doc(db, "forum", uuid), d);
-// }
+            data.replies[key] = {
+              id: replyDoc.id,
+              ...data2,
+              createdAt: formattedDate2,
+              user: {
+                id: userDoc.id,
+                ...userDoc.data(),
+              },
+            };
+          } else {
+            console.warn("Reply not found for ID:", data.replies[key]);
+          }
+        }
+        const result: any = {
+          id: querySnapshot.id,
+          createdAt: formattedDate,
+          scamReportType: data.scamReportType,
+          scamReportStatus: data.scamReportStatus,
+          votes: data.votes || [],
+          replies: data.replies || [],
+          content: data.content,
+          title: data.title,
+          image: data.image,
+          reporter: data.reporter,
+        };
+        const reporterDoc = await getDoc(doc(db, "users", result.reporter));
+        if (reporterDoc.exists()) {
+          result.reporter = {
+            ...reporterDoc.data(),
+          };
+        }
 
-// export async function createComments(authorId, content) {
-//   const uuid = uuidv4();
-//   const d = {
-//     postId: "forumPost123", // links to forums/{postId}
-//     authorId,
-//     content,
-//     timestamp: Date.now(),
-//     votes: {},
-//     voteCount: 0,
-//     parentId: null, // for top-level comments
-//   };
-//   await setDoc(doc(db, "comments", uuid), d);
-// }
+        console.log("Live update single scam report result:", result);
+        callback(result);
+      } catch (error) {
+        console.error("Error processing live update for scam report:", error);
+      }
+    },
+    async (err) => console.error("Error in live update:", err)
+  );
+
+  return observer;
+};

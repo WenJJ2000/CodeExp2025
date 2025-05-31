@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, View, Image, SafeAreaView } from "react-native";
+import { ScrollView, SafeAreaView } from "react-native";
 import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
 import { ForumPost } from "~/components/custom-ui/forum-post";
-import { ForumTag } from "~/components/custom-ui/forum-tag";
-import { ScamReport, ScamReportStatus, ScamReportType } from "~/lib/types";
-import { Text } from "~/components/ui/text";
+import { ScamReport } from "~/lib/types";
 
-import { getScamReports, liveUpdate } from "~/firebase/ForumApi";
-import ForumPage from "./forumPage";
+import { liveUpdate } from "~/firebase/ForumApi";
+import { useRouter } from "expo-router";
 export default function Screen() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<Filters>("All");
   const [scamReports, setScamReports] = useState<ScamReport[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedReport, setSelectedReport] = useState<ScamReport | null>(null);
   const [filteredReports, setFilteredReports] = useState<ScamReport[]>([]);
 
   function filterScamReports() {
@@ -49,16 +46,7 @@ export default function Screen() {
   }
   async function fetchScamReports(reports: ScamReport[] = []) {
     setScamReports(reports);
-    if (selectedReport) {
-      const report = reports.find((r) => r.id === selectedReport.id);
-      if (report) {
-        setSelectedReport(report);
-      } else {
-        setSelectedReport(null);
-      }
-    }
     filterScamReports();
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -70,21 +58,6 @@ export default function Screen() {
     filterScamReports();
   }, [filter, searchQuery, scamReports]);
 
-  if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-secondary/30">
-        <Text className="text-lg text-muted-foreground">Loading...</Text>
-      </View>
-    );
-  }
-  if (selectedReport) {
-    return (
-      <ForumPage
-        scamReport={selectedReport}
-        onClose={() => setSelectedReport(null)}
-      />
-    );
-  }
   return (
     <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
       <ForumHeader
@@ -99,7 +72,11 @@ export default function Screen() {
             scamReport={post}
             key={post.id}
             onClick={() => {
-              setSelectedReport(post);
+              // setSelectedReport(post);
+              router.push({
+                pathname: "/forumPage",
+                params: { scamReportId: post.id },
+              });
             }}
           />
         ))}
