@@ -24,7 +24,6 @@ export default function ForumPage() {
   const [showReplyPopup, setShowReplyPopup] = useState(false);
   useEffect(() => {
     liveUpdateOnASingleScamReport(scamReportId, (data: any) => {
-      console.log("Scam report data received", data);
       setScamReport(data as ScamReport);
     });
   }, [scamReportId]);
@@ -38,17 +37,21 @@ export default function ForumPage() {
     );
   }
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
-    >
+    <>
       <SafeAreaView
-        className={`flex-1 justify-start items-start gap-5  bg-secondary/30 ${
-          Platform.OS == "ios" ? "" : "pt - 10"
+        className={`flex-1 justify-start items-start  bg-secondary/30 ${
+          Platform.OS == "ios" ? "" : "pt-10"
         }`}
       >
         <View className="w-full flex-row justify-end items-center px-4  border-b-2 border-b-secondary">
-          <Pressable className="p-2 " onPress={() => router.back()}>
+          <Pressable
+            className="p-2 "
+            onPress={() =>
+              router.canGoBack()
+                ? router.back()
+                : router.push("/(tabs)/(forum-tabs)")
+            }
+          >
             <FontAwesome6
               name="x"
               size={24}
@@ -56,25 +59,32 @@ export default function ForumPage() {
             />
           </Pressable>
         </View>
-        <ScrollView className="flex-1 w-full gap-y-2">
+        <ScrollView className="flex-1 w-full h-full mt-2 gap-2">
           <ForumPost
             scamReport={scamReport}
             fulltext={true}
             showReplyButton
-            onClickReply={() => setShowReplyPopup(!showReplyPopup)}
+            onClickReply={() => setShowReplyPopup(true)}
           />
           {scamReport.replies.map((reply, index) => (
             <ForumReply reply={reply} key={index} />
           ))}
+          {scamReport.replies.map((reply, index) => (
+            <ForumReply reply={reply} key={index} />
+          ))}
         </ScrollView>
+        {showReplyPopup && (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <ForumReplyPopup
+              scamReportOrReply={scamReport}
+              isScamReport={true}
+              onBlur={() => setShowReplyPopup(false)}
+            />
+          </KeyboardAvoidingView>
+        )}
       </SafeAreaView>
-      {showReplyPopup && (
-        <ForumReplyPopup
-          scamReportOrReply={scamReport}
-          isScamReport={true}
-          onBlur={() => setShowReplyPopup(false)}
-        />
-      )}
-    </KeyboardAvoidingView>
+    </>
   );
 }

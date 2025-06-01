@@ -1,13 +1,12 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
+import { Pressable, TouchableOpacity } from "react-native";
 import { ThemeToggle } from "~/components/ThemeToggle";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerRight: () => <ThemeToggle />,
-        headerTitle: "",
         headerShown: false,
       }}
       initialRouteName="(forum-tabs)"
@@ -16,9 +15,25 @@ export default function TabLayout() {
         name="(quiz-tabs)"
         options={{
           title: "Quiz",
-          href: "/(tabs)/(quiz-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6 name="book" size={size} color={color} />
+          ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(quiz-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
           ),
         }}
       />
@@ -26,9 +41,6 @@ export default function TabLayout() {
         name="(report-tabs)"
         options={{
           title: "Report",
-          headerTitle: "",
-          headerShown: true,
-          href: "/(tabs)/(report-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6
               name="triangle-exclamation"
@@ -37,15 +49,29 @@ export default function TabLayout() {
               style={{ marginBottom: -3 }}
             />
           ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(report-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
+          ),
         }}
       />
       <Tabs.Screen
         name="(home-tabs)"
         options={{
           title: "Home",
-          headerTitle: "",
-          headerShown: true,
-          href: "/(tabs)/(home-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6
               name="house"
@@ -54,13 +80,29 @@ export default function TabLayout() {
               style={{ marginBottom: -3 }}
             />
           ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(home-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
+          ),
         }}
       />
       <Tabs.Screen
         name="(forum-tabs)"
         options={{
           title: "Forum",
-          href: "/(tabs)/(forum-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6
               name="comment"
@@ -69,17 +111,29 @@ export default function TabLayout() {
               style={{ marginBottom: -3 }}
             />
           ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(forum-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
+          ),
         }}
       />
       <Tabs.Screen
         name="(profile-tabs)"
         options={{
           title: "Profile",
-          headerTitle: "",
-          headerTitleAlign: "center",
-          headerLeft: () => null,
-          headerShown: true,
-          href: "/(tabs)/(profile-tabs)",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6
               name="user"
@@ -87,6 +141,23 @@ export default function TabLayout() {
               color={color}
               style={{ marginBottom: -3 }}
             />
+          ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(profile-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
           ),
         }}
       />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView, SafeAreaView } from "react-native";
+import { ScrollView, SafeAreaView, View, FlatList } from "react-native";
 import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
 import { ForumPost } from "~/components/custom-ui/forum-post";
 import { ScamReport } from "~/lib/types";
@@ -66,21 +66,23 @@ export default function Screen() {
         setFilter={setFilter}
         setSearchQuery={setSearchQuery}
       />
-      <ScrollView className="flex-1 w-full gap-y-2 -z-30">
-        {filteredReports.map((post) => (
-          <ForumPost
-            scamReport={post}
-            key={post.id}
-            onClick={() => {
-              // setSelectedReport(post);
-              router.push({
-                pathname: "/forumPage",
-                params: { scamReportId: post.id },
-              });
-            }}
-          />
-        ))}
-      </ScrollView>
+      <FlatList
+        className="-z-10"
+        data={filteredReports}
+        renderItem={({ item }) => {
+          return (
+            <ForumPost
+              scamReport={item}
+              onClick={() => {
+                router.push({
+                  pathname: "/forumPage",
+                  params: { scamReportId: item.id },
+                });
+              }}
+            />
+          );
+        }}
+      />
     </SafeAreaView>
   );
 }

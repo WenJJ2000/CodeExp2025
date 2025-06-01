@@ -1,18 +1,16 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useRef, useState, RefObject } from "react";
-import { Pressable, View, Image, Keyboard, TextInput } from "react-native";
+import { useRef, useState, RefObject, useEffect } from "react";
+import { Pressable, View, Image, TextInput } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { Reply, ScamReport } from "~/lib/types";
 import { useColorScheme } from "~/lib/useColorScheme";
-import TabLayout from "~/app/(tabs)/_layout";
-import { TabActions, TabRouter } from "@react-navigation/native";
-import { useShowTab } from "~/lib/useContext/useShowTabContext";
 import { reply } from "~/firebase/ReplyApi";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import * as FileSystem from "expo-file-system";
+import { ForumReplyImage } from "./forum-reply-image";
 export function ForumReplyPopup({
   scamReportOrReply,
   isScamReport = true,
@@ -30,7 +28,7 @@ export function ForumReplyPopup({
   const { colorScheme } = useColorScheme();
   const inputRef = useRef<TextInput>(null) as RefObject<TextInput>;
   const tempRef = useRef<TextInput>(null) as RefObject<TextInput>;
-  const [blurred, setBlurred] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
   const user = isScamReport
     ? (scamReportOrReply as ScamReport).reporter
     : (scamReportOrReply as Reply).user;
@@ -91,46 +89,33 @@ export function ForumReplyPopup({
   };
   return (
     <>
-      {zoom && image && (
-        <Pressable
-          className="absolute w-full h-full bg-black/20 justify-center items-center z-10"
-          onPress={() => {
-            setZoom(false);
-            inputRef.current?.focus();
-            tempRef.current?.blur();
-          }}
-        >
-          <Image
-            source={{ uri: `data:image/jpeg;base64,${image}` }}
-            className=" w-80 h-80 rounded-lg border-2 border-gray-300"
-            resizeMode="cover"
-          />
-        </Pressable>
-      )}
-      <View className=" w-full h-fit flex-col justify-start items-start px-4 py-2  rounded-t-3xl  bg-secondary/50 border-2 border-b-0 border-secondary">
+      <View className=" w-full h-fit flex-col justify-start items-start px-4 py-2  rounded-t-3xl  bg-secondary/50 border-2 border-b-0 border-secondary shadow-sm shadow-slate-300">
         <Text className="text-base mb-2">
           Commenting on <Text className="font-bold">{user.username}</Text>
         </Text>
 
         <Textarea
           placeholder="Join the conversation..."
-          className="w-full border-0 p-0 mb-2 shadow-0 bg-inherit overflow-visible min-h-[20px]"
+          className="min-w-full max-w-full border-0 p-0 mb-2 shadow-0 bg-inherit overflow-visible min-h-[20px]"
           multiline
           numberOfLines={6}
           autoCapitalize="none"
           autoFocus
           onChangeText={(text) => setReplyContent(text)}
+          onBlur={() => {
+            console.log(
+              "Temp input blurred",
+              !inputRef.current?.isFocused(),
+              !tempRef.current?.isFocused(),
+              !isFocused
+            );
+            !inputRef.current?.isFocused() &&
+              !tempRef.current?.isFocused() &&
+              !isFocused &&
+              onBlur();
+          }}
           value={replyContent}
           ref={inputRef}
-          onBlur={() => {
-            blurred && onBlur();
-            setBlurred(true);
-          }}
-          onPressOut={() => {
-            if (keyboardType === "image") {
-              setKeyboardType("keyboard");
-            }
-          }}
           keyboardType="default"
           returnKeyType="default"
         />
@@ -140,24 +125,21 @@ export function ForumReplyPopup({
           ref={tempRef}
           keyboardType="default"
           returnKeyType="default"
+          onBlur={() => {
+            console.log(
+              "Temp input blurred",
+              !inputRef.current?.isFocused(),
+              !tempRef.current?.isFocused(),
+              !isFocused
+            );
+            !inputRef.current?.isFocused() &&
+              !tempRef.current?.isFocused() &&
+              !isFocused &&
+              onBlur();
+          }}
         />
         <View className="w-full flex-row justify-between items-center mb-2">
-          {image && (
-            <Pressable
-              onPress={() => {
-                setZoom(!zoom);
-                setBlurred(false);
-                tempRef.current?.focus();
-                inputRef.current?.blur();
-              }}
-            >
-              <Image
-                source={{ uri: `data:image/jpeg;base64,${image}` }}
-                className="w-20 h-20 rounded-lg border-2 border-gray-300"
-                resizeMode="cover"
-              />
-            </Pressable>
-          )}
+          {image && <ForumReplyImage image={image} />}
         </View>
         <View className="flex-row justify-between items-center w-full">
           <View className="flex-row items-center gap-2 w-fit">
@@ -178,14 +160,11 @@ export function ForumReplyPopup({
                 keyboardType === "image" ? "bg-secondary" : ""
               } p-2 rounded-lg shadow-sm`}
               onPress={() => {
+                setIsFocused(true);
                 pickImage();
+                tempRef.current?.focus();
+                inputRef.current?.blur();
                 setKeyboardType("image");
-                setBlurred(false);
-              }}
-              onBlur={() => {
-                setKeyboardType("keyboard");
-                blurred && onBlur();
-                setBlurred(true);
               }}
             >
               <FontAwesome6

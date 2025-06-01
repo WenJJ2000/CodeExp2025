@@ -81,7 +81,10 @@ export function Filter({ filter, setFilter }: FilterProps) {
         color={isDarkColorScheme ? "white" : "black"}
       />
       {isClicked && (
-        <View className="absolute w-[150px] top-12 right-0 bg-background rounded-md shadow-lg p-2 mt-2 z-10">
+        <View
+          className="absolute w-[150px] top-12 right-0 bg-background rounded-md shadow-lg p-2 mt-2 z-50"
+          style={{ zIndex: 100000000, elevation: 5 }}
+        >
           {filterOptions.map((option) => (
             <Pressable
               key={option}

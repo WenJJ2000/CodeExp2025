@@ -6,6 +6,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
 import { ForumVoteButton } from "./forum-vote-button";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { ForumReplyButton } from "./forum/forum-reply-button";
 export function ForumPost({
   scamReport,
   fulltext = false,
@@ -87,18 +88,7 @@ export function ForumPost({
               </Text>
             </View>
           </View>
-          {showReplyButton && (
-            <Pressable
-              onPress={onClickReply}
-              className="flex-row items-center gap-2"
-            >
-              <FontAwesome6
-                name="reply"
-                color={colorScheme == "light" ? "black" : "white"}
-              />
-              <Text className="text-base">Reply</Text>
-            </Pressable>
-          )}
+          {showReplyButton && <ForumReplyButton onPress={onClickReply} />}
         </View>
       </View>
     </Pressable>
