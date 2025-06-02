@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Animated, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
-
+import { Alert, Animated, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
+import { checkScamMessage } from './checkScamWithGemini'; // adjust path as needed
 
 const tabs = ['Text', 'Image', 'Number', 'App'];
 
@@ -16,7 +16,7 @@ export default function CheckTypePage() {
     const [numberInput, setNumberInput] = useState('');
     const [appInput, setAppInput] = useState('');
     const navigation = useNavigation();
-    
+
     useEffect(() => {
         const tabType = (type as string)?.toLowerCase();
         if (['text', 'image', 'number', 'app'].includes(tabType)) {
@@ -25,12 +25,12 @@ export default function CheckTypePage() {
     }, [type]);
 
     useLayoutEffect(() => {
-            navigation.setOptions({
-                headerBackTitle: 'Back',       // Changes the text next to the back arrow (iOS only)
-                title: '',          // Changes the current screen's title
-                headerBackTitleVisible: true,  // Optional: make sure it's visible
-            });
-        }, []);
+        navigation.setOptions({
+            headerBackTitle: 'Back',       // Changes the text next to the back arrow (iOS only)
+            title: '',          // Changes the current screen's title
+            headerBackTitleVisible: true,  // Optional: make sure it's visible
+        });
+    }, []);
 
     const handleTextInputPress = () => {
         // Placeholder for future logic
@@ -42,24 +42,39 @@ export default function CheckTypePage() {
         console.log('Input section pressed');
     };
 
-    const handleCheckPress = () => {
-    switch (activeTab) {
-        case 'text':
-            console.log('Checking text input:', textInput);
-            break;
-        case 'number':
-            console.log('Checking number input:', numberInput);
-            break;
-        case 'app':
-            console.log('Checking app input:', appInput);
-            break;
-        case 'image':
-            console.log('Image input triggered – open file picker or camera logic here.');
-            break;
-        default:
-            console.log('Unknown tab selected.');
-    }
-};
+    const handleCheckPress = async () => {
+        switch (activeTab) {
+            case 'text':
+                if (!textInput.trim()) {
+                    Alert.alert('Empty Input', 'Please enter a suspicious message.');
+                    return;
+                }
+
+                try {
+                    const result = await checkScamMessage(textInput);
+                    Alert.alert('Scam Check Result', result);
+                } catch (error: any) {
+                    console.error('Gemini Error:', error);
+                    Alert.alert('Error', error.message || 'Failed to check message.');
+                }
+                break;
+
+            case 'number':
+                console.log('Checking number input:', numberInput);
+                break;
+
+            case 'app':
+                console.log('Checking app input:', appInput);
+                break;
+
+            case 'image':
+                console.log('Image input triggered – open file picker or camera logic here.');
+                break;
+
+            default:
+                console.log('Unknown tab selected.');
+        }
+    };
 
 
     const handleTabChange = (tab: 'text' | 'image' | 'number' | 'app') => {
@@ -86,10 +101,10 @@ export default function CheckTypePage() {
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
                         <Pressable onPress={handleTextInputPress}>
-                        <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
-                            <Text className="text-3xl mb-2">⬆️</Text>
-                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image</Text>
-                        </View>
+                            <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
+                                <Text className="text-3xl mb-2">⬆️</Text>
+                                <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image</Text>
+                            </View>
                         </Pressable>
                         <Text className={`text-center my-2 ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>OR</Text>
                         <TextInput
@@ -110,10 +125,10 @@ export default function CheckTypePage() {
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
                         <Pressable onPress={handleImageInputPress}>
-                        <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
-                            <Text className="text-3xl mb-2">⬆️</Text>
-                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image or video file</Text>
-                        </View>
+                            <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
+                                <Text className="text-3xl mb-2">⬆️</Text>
+                                <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image or video file</Text>
+                            </View>
                         </Pressable>
                         <Text className={`text-center my-2 ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>OR</Text>
                         <View className={`justify-center items-center h-36 rounded-xl ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>

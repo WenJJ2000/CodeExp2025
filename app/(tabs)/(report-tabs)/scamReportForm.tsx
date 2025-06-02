@@ -13,6 +13,8 @@ import {
     View,
     useColorScheme,
 } from "react-native";
+
+import { GOOGLE_VISION_API_KEY } from '@env';
 import { createReport } from '../../../firebase/ScamReportApi';
 import { auth } from '../../../firebase/firebase';
 
@@ -117,7 +119,7 @@ export default function ScamReportForm() {
     const extractTextFromImage = async (base64Image: string) => {
     try {
         const response = await fetch(
-            'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBEfMDMEoTRBEo4mUhtDrL79iql-GlkTCw',
+            `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_VISION_API_KEY}`,
             {
                 method: 'POST',
                 headers: {
@@ -292,7 +294,7 @@ export default function ScamReportForm() {
             {/* Step 2: Sender + Title */}
             {step === 2 && (
                 <>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={pickImage}
                         className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
                     >
@@ -315,7 +317,7 @@ export default function ScamReportForm() {
 
                     <Text className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         OR
-                    </Text>
+                    </Text> */}
 
                     <Text className={`text-base mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         {config.senderLabel}
@@ -323,20 +325,24 @@ export default function ScamReportForm() {
                     <TextInput
                         value={formData.sender}
                         onChangeText={(text) => {
-                            updateField("sender", text);
+                            let filtered = text;
+                            // For phone/sms types, restrict to 8 digits
+                            if (scamType === "sms" || scamType === "phone") {
+                                filtered = text.replace(/[^0-9]/g, "").slice(0, 8);
+                            }
+                            updateField("sender", filtered);
                             setErrors((prev) => ({ ...prev, sender: '' }));
                         }}
-                        className={`border rounded-lg p-3 mb-1 ${errors.sender
-                                ? "border-red-500"
-                                : isDark
-                                    ? "bg-gray-900 text-white border-gray-600"
-                                    : "bg-white text-black border-gray-400"
-                            }`}
+                        keyboardType={scamType === "sms" || scamType === "phone" ? "numeric" : "default"}
+                        maxLength={scamType === "sms" || scamType === "phone" ? 8 : undefined}
+                        className={`border rounded-lg p-3 mb-1
+                            ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+                            ${isDark ? "text-white bg-gray-900" : "text-black bg-white"}
+                        `}
                         placeholder={config.senderLabel}
                         placeholderTextColor={isDark ? "#999" : "#666"}
                     />
                     {errors.sender ? <Text className="text-red-500 text-sm mb-3">{errors.sender}</Text> : null}
-
 
                     {config.titleLabel && (
                         <>
