@@ -1,4 +1,4 @@
-package com.scambusters
+package com.anonymous.ScamBusters
 
 import android.app.Application
 import android.content.res.Configuration

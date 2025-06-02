@@ -1,4 +1,4 @@
-package com.scambusters
+package com.anonymous.ScamBusters
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

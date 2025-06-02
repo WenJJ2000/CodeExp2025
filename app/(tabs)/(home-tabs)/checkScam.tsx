@@ -86,9 +86,9 @@ export default function CheckTypePage() {
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
                         <Pressable onPress={handleTextInputPress}>
-                        <View className={`justify-center items-center h-40 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
-                            <Text className="text-3xl">⬆️</Text>
-                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload</Text>
+                        <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
+                            <Text className="text-3xl mb-2">⬆️</Text>
+                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image</Text>
                         </View>
                         </Pressable>
                         <Text className={`text-center my-2 ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>OR</Text>
@@ -110,14 +110,14 @@ export default function CheckTypePage() {
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
                         <Pressable onPress={handleImageInputPress}>
-                        <View className={`justify-center items-center h-40 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
-                            <Text className="text-3xl">⬆️</Text>
-                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Drag and drop an image or video file</Text>
+                        <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
+                            <Text className="text-3xl mb-2">⬆️</Text>
+                            <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image or video file</Text>
                         </View>
                         </Pressable>
                         <Text className={`text-center my-2 ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>OR</Text>
-                        <View className={`justify-center items-center h-20 rounded-xl ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
-                            <Text className="text-2xl">📷</Text>
+                        <View className={`justify-center items-center h-36 rounded-xl ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
+                            <Text className="text-2xl mb-2">📷</Text>
                             <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Take an image or video</Text>
                         </View>
                     </View>

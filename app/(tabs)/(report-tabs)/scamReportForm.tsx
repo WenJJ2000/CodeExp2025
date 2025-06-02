@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useLayoutEffect, useState } from "react";
 import {
+    Alert,
     Image,
     ScrollView,
     Text,
@@ -92,6 +94,62 @@ export default function ScamReportForm() {
             headerBackTitleVisible: true,  // Optional: make sure it's visible
         });
     }, []);
+
+    const [image, setImage] = useState<string | null>(null);
+    const [extractedText, setExtractedText] = useState('');
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            base64: true, // needed for Vision API
+        });
+
+        if (!result.canceled && result.assets.length > 0) {
+            const base64Img = result.assets[0].base64;
+            setImage(result.assets[0].uri); // for preview
+            if (base64Img) {
+                extractTextFromImage(base64Img);
+            }
+        }
+    };
+
+    const extractTextFromImage = async (base64Image: string) => {
+    try {
+        const response = await fetch(
+            'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBEfMDMEoTRBEo4mUhtDrL79iql-GlkTCw',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    requests: [
+                        {
+                            image: {
+                                content: base64Image,
+                            },
+                            features: [
+                                {
+                                    type: 'TEXT_DETECTION',
+                                },
+                            ],
+                        },
+                    ],
+                }),
+            }
+        );
+
+        const result = await response.json();
+        const text = result.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
+        setExtractedText(text);
+        setFormData(prev => ({ ...prev, content: text })); // <-- autofill content field
+    } catch (err) {
+        console.error('Failed to extract text:', err);
+        Alert.alert('Error', 'Failed to extract text from image.');
+    }
+};
+
 
 
     const updateField = (key: string, value: string) => {
@@ -235,13 +293,25 @@ export default function ScamReportForm() {
             {step === 2 && (
                 <>
                     <TouchableOpacity
+                        onPress={pickImage}
                         className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
                     >
                         <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
                         <Text className={`${isDark ? "text-white" : "text-black"}`}>
-                            Upload a screenshot
+                            Upload Image to Extract Text
                         </Text>
                     </TouchableOpacity>
+
+                    {extractedText ? (
+                        <View className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
+                            <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                                Extracted Text:
+                            </Text>
+                            <Text className="mt-1 italic text-sm text-gray-700 dark:text-gray-300">
+                                {extractedText}
+                            </Text>
+                        </View>
+                    ) : null}
 
                     <Text className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         OR
@@ -298,14 +368,26 @@ export default function ScamReportForm() {
             {/* Step 3: Content */}
             {step === 3 && (
                 <>
-                <TouchableOpacity
+                    <TouchableOpacity
+                        onPress={pickImage}
                         className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
                     >
                         <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
                         <Text className={`${isDark ? "text-white" : "text-black"}`}>
-                            Upload a screenshot
+                            Upload Image to Extract Text
                         </Text>
                     </TouchableOpacity>
+
+                    {extractedText ? (
+                        <View className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
+                            <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                                Extracted Text:
+                            </Text>
+                            <Text className="mt-1 italic text-sm text-gray-700 dark:text-gray-300">
+                                {extractedText}
+                            </Text>
+                        </View>
+                    ) : null}
 
                     <Text className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"}`}>
                         OR
