@@ -69,7 +69,7 @@ export default function Home() {
                 size={20}
                 color={colorScheme === 'dark' ? '#ccc' : '#000'}
               />
-              <Text className="shortcut-label">
+              <Text className="shortcut-label " >
                 {sc.label}
               </Text>
             </Pressable>

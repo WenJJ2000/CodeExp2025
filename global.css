@@ -50,7 +50,7 @@
 
   @layer components {
   .shortcut-btn {
-    @apply rounded-xl px-4 py-4 w-20 items-center bg-transparent
+    @apply rounded-xl px-4 py-4 w-24 items-center bg-transparent
           border border-gray-300 dark:border-gray-500;
   }
 
