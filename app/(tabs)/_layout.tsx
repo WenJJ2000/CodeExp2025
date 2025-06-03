@@ -8,6 +8,10 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          paddingBottom: -16,
+          paddingTop: 8,
+        },
       }}
       initialRouteName="(forum-tabs)"
     >

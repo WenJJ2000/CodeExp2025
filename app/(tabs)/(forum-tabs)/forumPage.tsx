@@ -14,13 +14,17 @@ import { ForumReply } from "~/components/custom-ui/forum/forum-reply";
 import { ForumReplyPopup } from "~/components/custom-ui/forum/forum-reply-popup";
 import { Text } from "~/components/ui/text";
 import { liveUpdateOnASingleScamReport } from "~/firebase/ForumApi";
-import { ScamReport } from "~/lib/types";
+import { Reply, ScamReport } from "~/lib/types";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 export default function ForumPage() {
   const { colorScheme } = useColorScheme();
   const { scamReportId } = useLocalSearchParams<{ scamReportId: string }>();
   const [scamReport, setScamReport] = useState<ScamReport>();
+  const [scamReportOrReply, setScamReportOrReply] = useState<
+    ScamReport | Reply
+  >();
+  const [isScamReport, setIsScamReport] = useState(true);
   const [showReplyPopup, setShowReplyPopup] = useState(false);
   useEffect(() => {
     liveUpdateOnASingleScamReport(scamReportId, (data: any) => {
@@ -64,13 +68,22 @@ export default function ForumPage() {
             scamReport={scamReport}
             fulltext={true}
             showReplyButton
-            onClickReply={() => setShowReplyPopup(true)}
+            onClickReply={() => {
+              setIsScamReport(true);
+              setScamReportOrReply(scamReport);
+              setShowReplyPopup(true);
+            }}
           />
           {scamReport.replies.map((reply, index) => (
-            <ForumReply reply={reply} key={index} />
-          ))}
-          {scamReport.replies.map((reply, index) => (
-            <ForumReply reply={reply} key={index} />
+            <ForumReply
+              reply={reply}
+              key={index}
+              onClickReply={() => {
+                setIsScamReport(false);
+                setScamReportOrReply(reply);
+                setShowReplyPopup(true);
+              }}
+            />
           ))}
         </ScrollView>
         {showReplyPopup && (
@@ -78,8 +91,8 @@ export default function ForumPage() {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
             <ForumReplyPopup
-              scamReportOrReply={scamReport}
-              isScamReport={true}
+              scamReportOrReply={scamReportOrReply}
+              isScamReport={isScamReport}
               onBlur={() => setShowReplyPopup(false)}
             />
           </KeyboardAvoidingView>

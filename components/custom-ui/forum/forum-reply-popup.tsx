@@ -18,7 +18,7 @@ export function ForumReplyPopup({
     console.log("Input blurred");
   },
 }: {
-  scamReportOrReply: ScamReport | Reply;
+  scamReportOrReply: ScamReport | Reply | undefined;
   isScamReport?: boolean;
   onBlur?: () => void;
 }) {

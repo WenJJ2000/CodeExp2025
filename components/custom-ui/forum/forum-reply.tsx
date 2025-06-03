@@ -5,20 +5,22 @@ import { Reply } from "~/lib/types";
 import { ForumReplyImage } from "./forum-reply-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { ForumReplyButton } from "./forum-reply-button";
+import { ForumReplyPopup } from "./forum-reply-popup";
 
-export function ForumReply({ reply }: { reply: Reply }) {
+export function ForumReply({
+  reply,
+  onClickReply,
+}: {
+  reply: Reply;
+  onClickReply?: () => void;
+}) {
   if (!reply) {
     return null; // Handle the case where reply is undefined
   }
-  const [zoom, setZoom] = useState(false);
-  const [image, setImage] = useState<string>();
   const lastUpdated = new Date(Date.now() - reply.createdAt.getTime());
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
   const formattedTimeAgo = hoursAgo > 0 ? `${hoursAgo}h` : `${minutesAgo}m`;
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
-  console.log("Reply content:", screenHeight);
   return (
     <>
       <View className="px-2 py-2 bg-secondary">
