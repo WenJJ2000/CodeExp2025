@@ -80,32 +80,30 @@ function RootNavigator() {
   const { uid, user } = useAuth();
 
   return (
-    <SafeAreaView className="flex-1">
-      <Stack>
-        <Stack.Protected guard={!user || !uid}>
-          <Stack.Screen
-            name="(pages)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(auth-tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Protected>
-        <Stack.Protected guard={!!user && !!uid}>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Protected>
-      </Stack>
-    </SafeAreaView>
+    <Stack>
+      <Stack.Protected guard={!user || !uid}>
+        <Stack.Screen
+          name="(pages)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="(auth-tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Protected>
+      <Stack.Protected guard={!!user && !!uid}>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Protected>
+    </Stack>
   );
 }
 

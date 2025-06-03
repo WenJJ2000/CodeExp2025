@@ -19,8 +19,7 @@ export default function ForumHeader({
   return (
     <View className="w-full flex-row justify-between items-center gap-2 p-2 border-b-2 border-b-secondary">
       <View className="flex-row justify-between items-center gap-2">
-        <Text className="text-2xl">Forum</Text>
-        <FontAwesome6 name="square-caret-down" color="black" />
+        <Text className="text-2xl font-bold">Forum</Text>
       </View>
       <View className="flex-row items-center justify-end gap-2 w-[200px]">
         <Input

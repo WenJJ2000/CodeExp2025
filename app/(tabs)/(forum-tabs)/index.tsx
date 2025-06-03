@@ -5,7 +5,7 @@ import { ForumPost } from "~/components/custom-ui/forum-post";
 import { ScamReport } from "~/lib/types";
 
 import { liveUpdate } from "~/firebase/ForumApi";
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 export default function Screen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,6 +13,15 @@ export default function Screen() {
   const [scamReports, setScamReports] = useState<ScamReport[]>([]);
   const [filteredReports, setFilteredReports] = useState<ScamReport[]>([]);
 
+  const { _queries, _filters } = useGlobalSearchParams();
+  useEffect(() => {
+    if (_queries) {
+      setSearchQuery(_queries as string);
+    }
+    if (_filters) {
+      setFilter(_filters as Filters);
+    }
+  }, [_queries, _filters]);
   function filterScamReports() {
     if (searchQuery.length > 0 || filter !== "All") {
       const filteredReports = scamReports
@@ -32,8 +41,8 @@ export default function Screen() {
             return report.scamReportType === "SOCIAL_MEDIA";
           } else if (filter === "In Person") {
             return report.scamReportType === "IN_PERSON";
-          } else if (filter === "Misinformation") {
-            return report.scamReportType === "MISINFORMATION";
+            // } else if (filter === "Misinformation") {
+            // return report.scamReportType === "MISINFORMATION";
           } else if (filter === "Verified") {
             return report.scamReportStatus === "VALID";
           }
@@ -60,12 +69,12 @@ export default function Screen() {
 
   return (
     <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
-      <ForumHeader
+      {/* <ForumHeader
         searchQuery={searchQuery}
         filter={filter}
         setFilter={setFilter}
         setSearchQuery={setSearchQuery}
-      />
+      /> */}
       <FlatList
         className="-z-10"
         data={filteredReports}
