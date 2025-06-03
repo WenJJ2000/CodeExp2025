@@ -1,26 +1,34 @@
+import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import uuid from 'react-native-uuid';
 import { db } from './firebase';
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
 
-export async function createReport(description, reporterId, scamType) {
-  const uuid = uuidv4();
-  // Store extra user info in Firestore
-  await setDoc(doc(db, 'scamReports', uuid), {
-    comments: [],
-    description,
+
+
+export async function createReport({ scamType, sender, title, content, reporterId }) {
+  const uuidValue = uuid.v4();
+  
+  const reportData = {
     reporterId,
     scamType,
-    evidence: {
-      type: 'image/text',
-      url: '',
-    },
-    timestamp: Date.now(),
+    sender,
+    title: title || null, // optional
+    content,
+    // evidence: {
+    //   type: 'text',
+    //   url: '',
+    // },
+    timestamp: new Date().toLocaleDateString(),
     status: 'pending',
-    votes: [0, 0], // [upvotes,downvotes]
-  });
+    votes: [0, 0],
+    comments: [],
+  };
+
+  await setDoc(doc(db, 'scamReports', uuidValue), reportData);
 }
 
 export async function getAllScamReports() {
+  const uuidValue = uuid.v4();
+  
   const querySnapshot = await getDocs(collection(db, 'scamReports'));
   const reports = querySnapshot.docs.map((doc) => ({
     id: doc.id,
@@ -35,7 +43,6 @@ export async function createScamCheck(
   inputData,
   postedToForum
 ) {
-  const uuid = uuidv4();
   const d = {
     userId,
     inputType,
@@ -46,5 +53,5 @@ export async function createScamCheck(
     forumPostId: '', // optional — only if user posts it
     postedToForum,
   };
-  await setDoc(doc(db, 'scamChecks', uuid), d);
+  await setDoc(doc(db, 'scamChecks', uuidValue), d);
 }

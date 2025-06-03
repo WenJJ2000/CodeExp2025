@@ -19,6 +19,8 @@ import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "~/lib/useContext/useAuthContext";
 import { ShowTabProvider } from "~/lib/useContext/useShowTabContext";
 
+// icons
+
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
   colors: NAV_THEME.light,
@@ -30,7 +32,7 @@ const DARK_THEME: Theme = {
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({

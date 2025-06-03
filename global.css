@@ -49,3 +49,35 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+  @layer components {
+  .shortcut-btn {
+    @apply rounded-xl px-4 py-4 w-24 items-center bg-transparent
+          border border-gray-300 dark:border-gray-500;
+  }
+
+  .shortcut-icon {
+    @apply text-black dark:text-gray-200;
+  }
+
+  .shortcut-label {
+    @apply mt-2 text-xs font-medium text-black dark:text-white;
+  }
+
+  .counter-btn {
+    @apply flex-1 items-center;
+  }
+
+  .counter-circle {
+    @apply w-14 h-14 rounded-full flex justify-center items-center bg-blue-500 shadow-lg;
+  }
+
+  .counter-count {
+    @apply text-lg font-medium text-white dark:text-black;
+  }
+
+  .counter-label {
+    @apply mt-2 text-sm font-semibold text-black dark:text-black;
+  }
+}
+
