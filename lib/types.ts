@@ -6,7 +6,7 @@ export type ScamReportType =
   | "EMAIL"
   | "SOCIAL_MEDIA"
   | "WEBSITE"
-  | "MISINFORMATION"
+  // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP";
 export type ForumTagVariant =

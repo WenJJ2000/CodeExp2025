@@ -5,19 +5,27 @@ import { ThemeToggle } from "~/components/ThemeToggle";
 import { SettingsButton } from "~/components/settingsButton";
 
 export default function TabLayout() {
- 
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
     console.log("Settings pressed");
   }
-  
+
   return (
     <Tabs
       screenOptions={{
         headerRight: () => (
-          <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 20 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingRight: 20,
+            }}
+          >
             <ThemeToggle />
-            <SettingsButton onPress={onSettingsPress} style={{ marginLeft:10 }} />
+            <SettingsButton
+              onPress={onSettingsPress}
+              style={{ marginLeft: 10 }}
+            />
           </View>
         ),
         tabBarStyle: {

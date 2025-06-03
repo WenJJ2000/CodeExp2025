@@ -32,7 +32,7 @@ const DARK_THEME: Theme = {
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary
+  ErrorBoundary,
 } from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({
@@ -80,7 +80,7 @@ function RootNavigator() {
   const { uid, user } = useAuth();
 
   return (
-    <SafeAreaView className="flex-1 ">
+    <SafeAreaView className="flex-1">
       <Stack>
         <Stack.Protected guard={!user || !uid}>
           <Stack.Screen
