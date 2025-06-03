@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { View, Image, Pressable, Platform, Dimensions } from "react-native";
+import {
+  View,
+  Image,
+  Pressable,
+  Platform,
+  Dimensions,
+  FlatList,
+} from "react-native";
 import { Text } from "~/components/ui/text";
 import { Reply } from "~/lib/types";
 import { ForumReplyImage } from "./forum-reply-image";
@@ -9,14 +16,17 @@ import { ForumReplyPopup } from "./forum-reply-popup";
 
 export function ForumReply({
   reply,
-  onClickReply,
+  onClickReply = (reply: Reply) => {
+    console.log("Reply clicked");
+  },
 }: {
   reply: Reply;
-  onClickReply?: () => void;
+  onClickReply?: (reply: Reply) => void;
 }) {
   if (!reply) {
     return null; // Handle the case where reply is undefined
   }
+  console.log("Rendering reply:", reply);
   const lastUpdated = new Date(Date.now() - reply.createdAt.getTime());
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
@@ -44,8 +54,14 @@ export function ForumReply({
           {reply.image && <ForumReplyImage image={reply.image} />}
         </View>
         <View className="px-2   ml-2 border-l-2 border-l-primary items-end gap-2">
-          <ForumReplyButton onPress={() => {}} />
+          <ForumReplyButton onPress={() => onClickReply(reply)} />
         </View>
+        <FlatList
+          data={reply.replies}
+          renderItem={({ item }) => (
+            <ForumReply reply={item} onClickReply={onClickReply} />
+          )}
+        />
       </View>
     </>
   );

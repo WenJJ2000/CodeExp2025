@@ -12,6 +12,7 @@ import {
   DocumentData,
 } from "firebase/firestore";
 import { ScamReport } from "../lib/types";
+import { getReply } from "./ReplyApi";
 
 export async function getScamReports() {
   try {
@@ -170,26 +171,11 @@ export const liveUpdateOnASingleScamReport = (
         const date = new Date(Date.parse(data.createdAt.toDate()));
         const formattedDate = new Date(date.setHours(date.getHours() + 8));
         for (const key in data.replies) {
-          const replyDoc = await getDoc(doc(db, "replies", data.replies[key]));
-          if (replyDoc.exists()) {
-            const data2 = replyDoc.data();
-            const date2 = new Date(Date.parse(data2.createdAt.toDate()));
-            const formattedDate2 = new Date(
-              date2.setHours(date2.getHours() + 8)
-            );
-            const userDoc = await getDoc(doc(db, "users", data2.user));
-
-            data.replies[key] = {
-              id: replyDoc.id,
-              ...data2,
-              createdAt: formattedDate2,
-              user: {
-                id: userDoc.id,
-                ...userDoc.data(),
-              },
-            };
+          const reply = await getReply(data.replies[key]);
+          if (reply) {
+            data.replies[key] = reply;
           } else {
-            console.warn("Reply not found for ID:", data.replies[key]);
+            console.error("Reply not found for ID:", data.replies[key]);
           }
         }
         const result: any = {
@@ -211,7 +197,10 @@ export const liveUpdateOnASingleScamReport = (
           };
         }
 
-        // console.log("Live update single scam report result:", result);
+        console.log(
+          "Live update single scam report result:",
+          JSON.stringify(result)
+        );
         callback(result);
       } catch (error) {
         console.error("Error processing live update for scam report:", error);

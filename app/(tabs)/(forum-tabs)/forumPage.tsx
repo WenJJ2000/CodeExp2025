@@ -36,13 +36,17 @@ export default function ForumPage() {
 
   useEffect(() => {}, []);
   if (scamReport === undefined) {
-    console.log("Scam report is undefined", scamReportId);
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-secondary/30">
         <Text className="text-lg">Loading...</Text>
       </SafeAreaView>
     );
   }
+  const onClickReplyButton = (item: Reply) => {
+    setIsScamReport(false);
+    setScamReportOrReply(item);
+    setShowReplyPopup(true);
+  };
   return (
     <>
       <View className="flex-1 bg-secondary/30">
@@ -59,14 +63,7 @@ export default function ForumPage() {
         <FlatList
           data={scamReport.replies}
           renderItem={({ item }) => (
-            <ForumReply
-              reply={item}
-              onClickReply={() => {
-                setIsScamReport(false);
-                setScamReportOrReply(item);
-                setShowReplyPopup(true);
-              }}
-            />
+            <ForumReply reply={item} onClickReply={onClickReplyButton} />
           )}
         />
       </View>
@@ -79,7 +76,6 @@ export default function ForumPage() {
             isScamReport={isScamReport}
             onBlur={(a, b) => {
               setShowReplyPopup(false);
-              console.log("asd onBlur called", a, b);
             }}
           />
         </KeyboardAvoidingView>

@@ -1,5 +1,12 @@
 import { db } from "./firebase";
-import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  addDoc,
+  getDocs,
+} from "firebase/firestore";
 export async function reply(
   userId: string,
   postId: string,
@@ -7,7 +14,6 @@ export async function reply(
   image: string = "",
   isReply: boolean = false
 ) {
-  console.log({ userId, postId, content, image, isReply });
   if (!userId) {
     throw new Error("User is not authenticated");
   }
@@ -40,4 +46,45 @@ export async function reply(
     },
     { merge: true }
   );
+}
+export async function getReply(id: string) {
+  if (!id) {
+    throw new Error("Reply ID is required");
+  }
+  console.log("Fetching reply with ID:", id);
+  const replyRef = doc(db, "replies", id);
+  const replyDoc = await getDoc(replyRef);
+  if (!replyDoc.exists()) {
+    throw new Error("Reply not found");
+  }
+  const userDoc = await getDoc(doc(db, "users", replyDoc.data().user));
+  if (!userDoc.exists()) {
+    throw new Error("User not found for the reply");
+  }
+  const userData = userDoc.data();
+  if (!userData) {
+    throw new Error("User data is empty");
+  }
+  if (replyDoc.data().replies && replyDoc.data().replies.length > 0) {
+    const replies = await Promise.all(
+      replyDoc
+        .data()
+        .replies.map(async (replyId: string) => await getReply(replyId))
+    )
+      .then((replies) => {
+        // Filter out any undefined replies
+        return replies.filter((reply) => reply !== undefined);
+      })
+      .then((replies) => {
+        console.log("Replies fetched:", replies);
+        return replies;
+      });
+    replyDoc.data().replies = replies;
+  }
+
+  return {
+    id: replyDoc.id,
+    ...replyDoc.data(),
+    user: { id: userDoc.id, ...userData },
+  };
 }
