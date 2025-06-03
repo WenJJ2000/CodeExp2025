@@ -10,15 +10,7 @@ export default function TabLayout() {
     // Handle settings press: navigate or open modal
     console.log("Settings pressed");
   }
-  const { _queries, _filters } = useGlobalSearchParams();
-  const searchQuery = _queries ? (_queries as string) : "";
-  const filter = _filters ? (_filters as Filters) : "All";
-  const setSearchQuery = (query: string) => {
-    router.setParams({ _queries: query, _filters: filter });
-  };
-  const setFilter = (newFilter: Filters) => {
-    router.setParams({ _queries: searchQuery, _filters: newFilter });
-  };
+
   return (
     <Tabs
       screenOptions={{
@@ -157,18 +149,7 @@ export default function TabLayout() {
               </TouchableOpacity>
             </>
           ),
-          header: () => {
-            return (
-              <SafeAreaView>
-                <ForumHeader
-                  searchQuery={searchQuery}
-                  filter={filter}
-                  setFilter={setFilter}
-                  setSearchQuery={setSearchQuery}
-                />
-              </SafeAreaView>
-            );
-          },
+          headerShown: false,
         }}
       />
       <Tabs.Screen

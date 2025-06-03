@@ -211,7 +211,7 @@ export const liveUpdateOnASingleScamReport = (
           };
         }
 
-        console.log("Live update single scam report result:", result);
+        // console.log("Live update single scam report result:", result);
         callback(result);
       } catch (error) {
         console.error("Error processing live update for scam report:", error);

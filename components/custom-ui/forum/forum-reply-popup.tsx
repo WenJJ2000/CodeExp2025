@@ -14,13 +14,13 @@ import { ForumReplyImage } from "./forum-reply-image";
 export function ForumReplyPopup({
   scamReportOrReply,
   isScamReport = true,
-  onBlur = () => {
+  onBlur = (a, b) => {
     console.log("Input blurred");
   },
 }: {
   scamReportOrReply: ScamReport | Reply | undefined;
   isScamReport?: boolean;
-  onBlur?: () => void;
+  onBlur?: (a: boolean, b: boolean) => void;
 }) {
   if (!scamReportOrReply) {
     return null; // Handle the case where scamReportOrReply is undefined
@@ -53,6 +53,7 @@ export function ForumReplyPopup({
       setImage(await convertImageToBase64(result.assets[0].uri));
     }
     setKeyboardType("keyboard");
+    inputRef.current?.focus();
   };
   const convertImageToBase64 = async (fileUri: string) => {
     try {
@@ -85,8 +86,16 @@ export function ForumReplyPopup({
     );
     setReplyContent("");
     setImage(null);
-    onBlur();
+    onBlur(true, true);
   };
+  useEffect(() => {
+    if (isFocused) {
+      return;
+    }
+    !inputRef.current?.isFocused() &&
+      !tempRef.current?.isFocused() &&
+      onBlur(inputRef.current?.isFocused(), tempRef.current?.isFocused());
+  }, [inputRef.current?.isFocused(), tempRef.current?.isFocused(), isFocused]);
   return (
     <>
       <View className=" w-full h-fit flex-col justify-start items-start px-4 py-2  rounded-t-3xl  bg-secondary/50 border-2 border-b-0 border-secondary shadow-sm shadow-slate-300">
@@ -103,16 +112,7 @@ export function ForumReplyPopup({
           autoFocus
           onChangeText={(text) => setReplyContent(text)}
           onBlur={() => {
-            console.log(
-              "Temp input blurred",
-              !inputRef.current?.isFocused(),
-              !tempRef.current?.isFocused(),
-              !isFocused
-            );
-            !inputRef.current?.isFocused() &&
-              !tempRef.current?.isFocused() &&
-              !isFocused &&
-              onBlur();
+            keyboardType === "keyboard" && setIsFocused(false);
           }}
           value={replyContent}
           ref={inputRef}
@@ -126,16 +126,7 @@ export function ForumReplyPopup({
           keyboardType="default"
           returnKeyType="default"
           onBlur={() => {
-            console.log(
-              "Temp input blurred",
-              !inputRef.current?.isFocused(),
-              !tempRef.current?.isFocused(),
-              !isFocused
-            );
-            !inputRef.current?.isFocused() &&
-              !tempRef.current?.isFocused() &&
-              !isFocused &&
-              onBlur();
+            keyboardType === "keyboard" && setIsFocused(false);
           }}
         />
         <View className="w-full flex-row justify-between items-center mb-2">
@@ -162,8 +153,6 @@ export function ForumReplyPopup({
               onPress={() => {
                 setIsFocused(true);
                 pickImage();
-                tempRef.current?.focus();
-                inputRef.current?.blur();
                 setKeyboardType("image");
               }}
             >
