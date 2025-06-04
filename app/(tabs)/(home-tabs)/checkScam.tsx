@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Alert, Animated, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
-import { checkScamMessage } from './checkScamWithGemini'; // adjust path as needed
+import { checkScamWithGradio } from './checkScamWithGradio';
 
 const tabs = ['Text', 'Image', 'Number', 'App'];
 
@@ -43,18 +43,28 @@ export default function CheckTypePage() {
     };
 
     const handleCheckPress = async () => {
+        console.log("handleCheckPress triggered")
         switch (activeTab) {
             case 'text':
                 if (!textInput.trim()) {
                     Alert.alert('Empty Input', 'Please enter a suspicious message.');
                     return;
                 }
-
                 try {
-                    const result = await checkScamMessage(textInput);
-                    Alert.alert('Scam Check Result', result);
+                    // Pass the user input into the function
+                    const verdict = await checkScamWithGradio(textInput);
+                    // verdict: { label: "Legitimate" | "SMiShing" | "Other Scam", explanation: string, confidence: number }
+                    // Navigate to result page and pass verdict data as params
+                    router.push({
+                        pathname: '/resultScreen', // adjust the path as needed
+                        params: {
+                            verdict: verdict.label,
+                            explanation: verdict.explanation,
+                            confidence: verdict.confidence,
+                        },
+                    });
                 } catch (error: any) {
-                    console.error('Gemini Error:', error);
+                    console.error('Gradio API Error:', error);
                     Alert.alert('Error', error.message || 'Failed to check message.');
                 }
                 break;
