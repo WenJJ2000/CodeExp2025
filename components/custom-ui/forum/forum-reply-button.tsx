@@ -1,6 +1,7 @@
-import { Pressable, Text } from "react-native";
+import { Pressable } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { Text } from "~/components/ui/text";
 export function ForumReplyButton({ onPress }: { onPress: () => void }) {
   const { colorScheme } = useColorScheme();
   return (

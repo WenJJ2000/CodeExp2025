@@ -30,7 +30,7 @@ export function ForumTag({ variant }: { variant: ForumTagVariant }) {
       className="justify-center items-center p-2 rounded-lg"
       style={{ backgroundColor: colorMap[variant] }}
     >
-      <Text className="text-secondary dark:text-white">
+      <Text className="text-secondary dark:text-white text-center">
         {textMap[variant]}{" "}
       </Text>
     </View>

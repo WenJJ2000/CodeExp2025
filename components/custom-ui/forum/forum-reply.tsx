@@ -55,12 +55,14 @@ export function ForumReply({
         <View className="px-2   ml-2 border-l-2 border-l-primary items-end gap-2">
           <ForumReplyButton onPress={() => onClickReply(reply)} />
         </View>
-        <FlatList
-          data={reply.replies}
-          renderItem={({ item }) => (
-            <ForumReply reply={item} onClickReply={onClickReply} />
-          )}
-        />
+        <View className="ml-4 bg-secondary/30">
+          <FlatList
+            data={reply.replies}
+            renderItem={({ item }) => (
+              <ForumReply reply={item} onClickReply={onClickReply} />
+            )}
+          />
+        </View>
       </View>
     </>
   );

@@ -23,12 +23,17 @@ export function ForumPost({
   if (!scamReport) {
     return null; // Handle the case where scamReport is undefined
   }
-  const router = useRouter();
-  const { colorScheme } = useColorScheme();
   const lastUpdated = new Date(Date.now() - scamReport.createdAt.getTime());
+  const daysAgo = lastUpdated.getDay();
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
-  const formattedTimeAgo = hoursAgo > 0 ? `${hoursAgo}h` : `${minutesAgo}m`;
+  console.log(daysAgo, hoursAgo, minutesAgo);
+  const formattedTimeAgo =
+    daysAgo > 0
+      ? `${daysAgo}d`
+      : hoursAgo > 0
+      ? ` ${hoursAgo}h`
+      : `${minutesAgo}m`;
   return (
     <Pressable
       className="w-full bg-secondary justify-center items-center mb-2 "

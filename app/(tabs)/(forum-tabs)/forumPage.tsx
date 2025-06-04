@@ -27,7 +27,7 @@ export default function ForumPage() {
   >();
   const [isScamReport, setIsScamReport] = useState(true);
   const [showReplyPopup, setShowReplyPopup] = useState(false);
-  
+
   useEffect(() => {
     liveUpdateOnASingleScamReport(scamReportId, (data: any) => {
       setScamReport(data as ScamReport);
@@ -66,6 +66,7 @@ export default function ForumPage() {
           renderItem={({ item }) => (
             <ForumReply reply={item} onClickReply={onClickReplyButton} />
           )}
+          contentContainerClassName="gap-2"
         />
       </View>
       {showReplyPopup && (
