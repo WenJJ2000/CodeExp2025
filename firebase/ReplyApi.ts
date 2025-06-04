@@ -6,10 +6,14 @@ import {
   collection,
   addDoc,
   getDocs,
+  onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 export async function reply(
   userId: string,
   postId: string,
+  scamReportId:string,
   content: string,
   image: string = "",
   isReply: boolean = false
@@ -20,13 +24,14 @@ export async function reply(
   if (!postId) {
     throw new Error("Post ID are required");
   }
-  // Check if the user has already voted on this post
-  let scamReportRef = doc(db, "scamReports", postId);
-  if (isReply) {
-    scamReportRef = doc(db, "replies", postId);
+  const whereToAddReplieRef = doc(db, isReply ? "replies" :"scamReports", postId);
+  const scamReportRef = doc(db, "scamReports",  scamReportId );
+  const whereToAdd = await getDoc(whereToAddReplieRef);
+  const scamReport = await getDoc(scamReportRef);
+  if (!whereToAdd.exists()) {
+    throw new Error("Scam report or replies not found");
   }
-  const report = await getDoc(scamReportRef);
-  if (!report.exists()) {
+  if (!scamReport.exists()) {
     throw new Error("Scam report not found");
   }
 
@@ -40,24 +45,31 @@ export async function reply(
   const replyRef = await addDoc(collection(db, "replies"), reply);
   const replyid = replyRef.id;
   await setDoc(
-    scamReportRef,
+    whereToAddReplieRef,
     {
-      replies: [...(report.data()?.replies || []), replyid],
+      replies: [...(whereToAdd.data()?.replies || []), replyid],
     },
     { merge: true }
   );
+  await setDoc(
+    scamReportRef,
+    {
+      numOfReplies: scamReport.data()?.numOfReplies + 1 || 0
+    },{merge:true}
+  )
 }
 export async function getReply(id: string) {
   if (!id) {
     throw new Error("Reply ID is required");
   }
-  console.log("Fetching reply with ID:", id);
   const replyRef = doc(db, "replies", id);
   const replyDoc = await getDoc(replyRef);
   if (!replyDoc.exists()) {
     throw new Error("Reply not found");
   }
-  const userDoc = await getDoc(doc(db, "users", replyDoc.data().user));
+  const returnReply = replyDoc.data();
+  // populate user
+  const userDoc = await getDoc(doc(db, "users", returnReply.user));
   if (!userDoc.exists()) {
     throw new Error("User not found for the reply");
   }
@@ -65,26 +77,27 @@ export async function getReply(id: string) {
   if (!userData) {
     throw new Error("User data is empty");
   }
+  // populate replies
+  let repliess = []
   if (replyDoc.data().replies && replyDoc.data().replies.length > 0) {
-    const replies = await Promise.all(
-      replyDoc
-        .data()
-        .replies.map(async (replyId: string) => await getReply(replyId))
-    )
-      .then((replies) => {
-        // Filter out any undefined replies
-        return replies.filter((reply) => reply !== undefined);
-      })
-      .then((replies) => {
-        console.log("Replies fetched:", replies);
-        return replies;
+
+    for (const replyId of replyDoc.data().replies) {
+      const reply:any = await getReply(replyId)
+      repliess.push({
+        ...reply
       });
-    replyDoc.data().replies = replies;
+    }
   }
+
+  const date = new Date(Date.parse(returnReply.createdAt.toDate()));
+  const formattedDate = new Date(date.setHours(date.getHours() + 8));
 
   return {
     id: replyDoc.id,
-    ...replyDoc.data(),
+    createdAt: formattedDate || new Date(),
+    content:returnReply.content || "",
+    image:returnReply.image || "",
+    replies: repliess || [],
     user: { id: userDoc.id, ...userData },
   };
 }

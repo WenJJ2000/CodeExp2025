@@ -27,6 +27,7 @@ export async function getScamReports() {
         scamReportType: data.scamReportType || "UNKNOWN",
         scamReportStatus: data.scamReportStatus || "PENDING",
         votes: data.votes || [],
+        numOfReplies:data.numOfReplies ||0,
         replies: data.replies || [],
         content: data.content || "",
         title: data.title || "",
@@ -113,6 +114,7 @@ export async function getAScamReport(id: string) {
   return reports[0] || null;
 }
 export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
+  console.log("running LiveUpdate")
   const q = query(collection(db, "scamReports"));
   const observer = onSnapshot(q, async (querySnapshot) => {
     const tempResult: any[] = [];
@@ -128,6 +130,7 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
         scamReportStatus: data.scamReportStatus,
         votes: data.votes || [],
         replies: data.replies || [],
+        numOfReplies:data.numOfReplies || 0,
         content: data.content || "",
         title: data.title || "",
         image: data.image || "",
@@ -158,6 +161,7 @@ export const liveUpdateOnASingleScamReport = (
   scamReportId: string,
   callback: (doc: ScamReport) => void
 ) => {
+
   const q = doc(db, "scamReports", scamReportId);
   const observer = onSnapshot(
     q,
@@ -197,10 +201,10 @@ export const liveUpdateOnASingleScamReport = (
           };
         }
 
-        console.log(
-          "Live update single scam report result:",
-          JSON.stringify(result)
-        );
+        // console.log(
+        //   "Live update single scam report result:",
+        //   JSON.stringify(result)
+        // );
         callback(result);
       } catch (error) {
         console.error("Error processing live update for scam report:", error);

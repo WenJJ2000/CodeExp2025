@@ -26,7 +26,6 @@ export function ForumReply({
   if (!reply) {
     return null; // Handle the case where reply is undefined
   }
-  console.log("Rendering reply:", reply);
   const lastUpdated = new Date(Date.now() - reply.createdAt.getTime());
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();

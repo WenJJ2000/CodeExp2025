@@ -27,6 +27,7 @@ export default function ForumPage() {
   >();
   const [isScamReport, setIsScamReport] = useState(true);
   const [showReplyPopup, setShowReplyPopup] = useState(false);
+  
   useEffect(() => {
     liveUpdateOnASingleScamReport(scamReportId, (data: any) => {
       setScamReport(data as ScamReport);
@@ -72,6 +73,7 @@ export default function ForumPage() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <ForumReplyPopup
+            scamReportId={scamReportId}
             scamReportOrReply={scamReportOrReply}
             isScamReport={isScamReport}
             onBlur={(a, b) => {

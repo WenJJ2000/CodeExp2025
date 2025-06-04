@@ -21,6 +21,7 @@ export async function createReport({
     //   type: 'text',
     //   url: '',
     // },
+    numOfReplies:0,
     createdAt: new Date(),
     scamReportStatus: "INVALID",
     votes: [],

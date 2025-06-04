@@ -84,7 +84,7 @@ export function ForumPost({
             <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
               <Text className="text-muted-foreground text-lg">
                 <FontAwesome6 name="comment" size={16} />{" "}
-                {scamReport?.replies.length}
+                {scamReport?.numOfReplies || 0}
               </Text>
             </View>
           </View>

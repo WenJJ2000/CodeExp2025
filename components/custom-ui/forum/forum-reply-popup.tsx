@@ -12,12 +12,14 @@ import { useAuth } from "~/lib/useContext/useAuthContext";
 import * as FileSystem from "expo-file-system";
 import { ForumReplyImage } from "./forum-reply-image";
 export function ForumReplyPopup({
+  scamReportId,
   scamReportOrReply,
   isScamReport = true,
   onBlur = (a, b) => {
     console.log("Input blurred");
   },
 }: {
+  scamReportId:string;
   scamReportOrReply: ScamReport | Reply | undefined;
   isScamReport?: boolean;
   onBlur?: (a: boolean, b: boolean) => void;
@@ -80,6 +82,7 @@ export function ForumReplyPopup({
     await reply(
       uid,
       scamReportOrReply.id,
+      scamReportId,
       replyContent,
       image ? image : "",
       !isScamReport

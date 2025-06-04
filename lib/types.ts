@@ -62,6 +62,7 @@ export type ScamReport = {
   image?: string;
   title: string;
   reporter: User;
+  numOfReplies:number;
   scamReportType: ScamReportType;
   scamReportStatus: ScamReportStatus;
   votes: { type: VoteType; voterId: string }[];
