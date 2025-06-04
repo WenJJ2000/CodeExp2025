@@ -1,6 +1,8 @@
+import { GOOGLE_VISION_API_KEY } from "@env";
+import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Alert, Animated, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
+import { Alert, Animated, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
 import { checkScamWithGradio } from './checkScamWithGradio';
 
 const tabs = ['Text', 'Image', 'Number', 'App'];
@@ -16,6 +18,62 @@ export default function CheckTypePage() {
     const [numberInput, setNumberInput] = useState('');
     const [appInput, setAppInput] = useState('');
     const navigation = useNavigation();
+    const [image, setImage] = useState<string | null>(null);
+    const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+    const [extractedText, setExtractedText] = useState("");
+
+    const pickImageForText = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            base64: true,
+        });
+        if (!result.canceled && result.assets.length > 0) {
+            const base64Img = result.assets[0].base64;
+            setImage(result.assets[0].uri);
+            if (base64Img) {
+                extractTextFromImage(base64Img);
+            }
+        }
+    };
+
+    const pickImageForImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+        });
+
+        if (!result.canceled && result.assets.length > 0) {
+            setSelectedImageUri(result.assets[0].uri);  // Just set the uri
+        }
+    };
+
+    const extractTextFromImage = async (base64Image: string) => {
+        try {
+            const response = await fetch(
+                `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_VISION_API_KEY}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        requests: [
+                            {
+                                image: { content: base64Image },
+                                features: [{ type: "TEXT_DETECTION" }],
+                            },
+                        ],
+                    }),
+                }
+            );
+            const result = await response.json();
+            const text = result.responses?.[0]?.fullTextAnnotation?.text || "No text found";
+            setExtractedText(text);
+            setTextInput(text);
+        } catch (err) {
+            console.error("Failed to extract text:", err);
+            Alert.alert("Error", "Failed to extract text from image.");
+        }
+    };
 
     useEffect(() => {
         const tabType = (type as string)?.toLowerCase();
@@ -31,11 +89,6 @@ export default function CheckTypePage() {
             headerBackTitleVisible: true,  // Optional: make sure it's visible
         });
     }, []);
-
-    const handleTextInputPress = () => {
-        // Placeholder for future logic
-        console.log('Input section pressed');
-    };
 
     const handleImageInputPress = () => {
         // Placeholder for future logic
@@ -110,7 +163,7 @@ export default function CheckTypePage() {
             case 'text':
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
-                        <Pressable onPress={handleTextInputPress}>
+                        <Pressable onPress={pickImageForText}>
                             <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
                                 <Text className="text-3xl mb-2">⬆️</Text>
                                 <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image</Text>
@@ -134,17 +187,33 @@ export default function CheckTypePage() {
             case 'image':
                 return (
                     <View className={`border rounded-2xl p-4 mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`}>
-                        <Pressable onPress={handleImageInputPress}>
+                        <Pressable onPress={pickImageForImage}>
                             <View className={`justify-center items-center h-36 rounded-xl mb-2 ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
                                 <Text className="text-3xl mb-2">⬆️</Text>
-                                <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image or video file</Text>
+                                <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Upload an image</Text>
                             </View>
                         </Pressable>
+                        
                         <Text className={`text-center my-2 ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>OR</Text>
                         <View className={`justify-center items-center h-36 rounded-xl ${colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'} border`}>
                             <Text className="text-2xl mb-2">📷</Text>
                             <Text className={`text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Take an image or video</Text>
                         </View>
+
+                        {/* Image preview shown below the buttons */}
+                        {selectedImageUri && (
+                            <View style={{ marginTop: 24, alignItems: 'center' }}>
+                                <Text className={`mb-2 text-center ${colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Preview</Text>
+                                <Image
+                                    source={{ uri: selectedImageUri }}
+                                    style={{ width: 330, height: 220, borderRadius: 12, borderWidth: 1, borderColor: colorScheme === 'dark' ? '#444' : '#ccc' }}
+                                    resizeMode="contain"
+                                />
+                                <Pressable onPress={() => setSelectedImageUri(null)} style={{ marginTop: 8 }}>
+                                    <Text style={{ color: 'red' }}>Remove image</Text>
+                                </Pressable>
+                            </View>
+                        )}
                     </View>
                 );
             case 'number':
