@@ -2,8 +2,9 @@ import { GOOGLE_VISION_API_KEY } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Alert, Animated, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
+import { ActivityIndicator, Alert, Animated, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
 import { checkScamWithGradio } from './checkScamWithGradio';
+
 
 const tabs = ['Text', 'Image', 'Number', 'App'];
 
@@ -21,6 +22,8 @@ export default function CheckTypePage() {
     const [image, setImage] = useState<string | null>(null);
     const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
     const [extractedText, setExtractedText] = useState("");
+    const [isChecking, setIsChecking] = useState(false);
+
 
     const pickImageForText = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -90,52 +93,56 @@ export default function CheckTypePage() {
         });
     }, []);
 
-    const handleImageInputPress = () => {
-        // Placeholder for future logic
-        console.log('Input section pressed');
-    };
-
     const handleCheckPress = async () => {
         console.log("handleCheckPress triggered")
-        switch (activeTab) {
-            case 'text':
-                if (!textInput.trim()) {
-                    Alert.alert('Empty Input', 'Please enter a suspicious message.');
-                    return;
-                }
-                try {
-                    // Pass the user input into the function
-                    const verdict = await checkScamWithGradio(textInput);
-                    // verdict: { label: "Legitimate" | "SMiShing" | "Other Scam", explanation: string, confidence: number }
-                    // Navigate to result page and pass verdict data as params
-                    router.push({
-                        pathname: '/resultScreen', // adjust the path as needed
-                        params: {
-                            verdict: verdict.label,
-                            explanation: verdict.explanation,
-                            confidence: verdict.confidence,
-                        },
-                    });
-                } catch (error: any) {
-                    console.error('Gradio API Error:', error);
-                    Alert.alert('Error', error.message || 'Failed to check message.');
-                }
-                break;
+        if (isChecking) return; // prevent duplicate checks
+        setIsChecking(true);    // start spinner
+        try {
+            switch (activeTab) {
+                case 'text':
+                    if (!textInput.trim()) {
+                        Alert.alert('Empty Input', 'Please enter a suspicious message.');
+                        return;
+                    }
+                    try {
+                        // Pass the user input into the function
+                        const verdict = await checkScamWithGradio(textInput);
+                        // verdict: { label: "Legitimate" | "SMiShing" | "Other Scam", explanation: string, confidence: number }
+                        // Navigate to result page and pass verdict data as params
+                        router.push({
+                            pathname: '/resultScreen', // adjust the path as needed
+                            params: {
+                                verdict: verdict.label,
+                                explanation: verdict.explanation,
+                                confidence: verdict.confidence,
+                            },
+                        });
+                    } catch (error: any) {
+                        console.error('Gradio API Error:', error);
+                        Alert.alert('Error', error.message || 'Failed to check message.');
+                    }
+                    break;
 
-            case 'number':
-                console.log('Checking number input:', numberInput);
-                break;
+                case 'number':
+                    console.log('Checking number input:', numberInput);
+                    break;
 
-            case 'app':
-                console.log('Checking app input:', appInput);
-                break;
+                case 'app':
+                    console.log('Checking app input:', appInput);
+                    break;
 
-            case 'image':
-                console.log('Image input triggered – open file picker or camera logic here.');
-                break;
+                case 'image':
+                    console.log('Image input triggered – open file picker or camera logic here.');
+                    break;
 
-            default:
-                console.log('Unknown tab selected.');
+                default:
+                    console.log('Unknown tab selected.');
+            }
+        } catch (error: any) {
+            console.error('Gradio API Error:', error);
+            Alert.alert('Error', error.message || 'Failed to check message.');
+        } finally {
+            setIsChecking(false);  // always stop spinner at the end
         }
     };
 
@@ -296,6 +303,44 @@ export default function CheckTypePage() {
                         <Pressable onPress={handleCheckPress} className="bg-blue-600 p-4 rounded-xl mt-6">
                             <Text className="text-center text-white text-lg font-semibold">Check</Text>
                         </Pressable>
+
+                        {/* Loading Indicator */}
+                        {isChecking && (
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    left: 0, top: 0, right: 0, bottom: 0,
+                                    backgroundColor: 'rgba(0,0,0,0.35)',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    zIndex: 9999,
+                                }}
+                                pointerEvents="auto"
+                            >
+                                <View
+                                    style={{
+                                        backgroundColor: colorScheme === 'dark' ? '#18181b' : 'white', // tailwind slate-900
+                                        borderRadius: 12,
+                                        padding: 30,
+                                        alignItems: 'center',
+                                        opacity: 0.97,
+                                    }}
+                                >
+                                    <ActivityIndicator size="large" color="#2563eb" />
+                                    <Text
+                                        style={{
+                                            marginTop: 20,
+                                            fontSize: 18,
+                                            color: colorScheme === 'dark' ? '#93c5fd' : '#2563eb', // tailwind blue-300 vs blue-600
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Checking, please wait…
+                                    </Text>
+                                </View>
+                            </View>
+                        )}
+
                     </View>
                 </ScrollView>
             </TouchableWithoutFeedback>
