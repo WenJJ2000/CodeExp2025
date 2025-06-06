@@ -1,17 +1,11 @@
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, Text, View, useColorScheme } from 'react-native';
-
-
-
-type NotificationType = {
-  id: string;
-  title: string;
-  subtitle: string;
-  linkText: string;
-  time: string;
-};
+import { NotificationType, getNotifications } from '~/firebase/NotiApi'; // update path as needed
+dayjs.extend(relativeTime);
 
 const shortcuts = [
   { key: 'text', iconType: MaterialIcons, iconName: 'email', label: 'Text' },
@@ -19,7 +13,6 @@ const shortcuts = [
   { key: 'number', iconType: FontAwesome5, iconName: 'phone', label: 'Number' },
   { key: 'app', iconType: Ionicons, iconName: 'phone-portrait-outline', label: 'App' },
 ];
-
 export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
@@ -28,10 +21,15 @@ export default function Home() {
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
-
   
   // Helper to toggle icon colors based on theme
   const iconColor = colorScheme === 'dark' ? '#ccc' : '#000';
+
+  useEffect(() => {
+    // Subscribes to realtime updates
+    const unsubscribe = getNotifications(setNotifications);
+    return () => unsubscribe();
+  }, []);
 
   return (
     <View className={`flex-1 pt-14 px-6 bg-white dark:bg-black`}>
@@ -89,7 +87,19 @@ export default function Home() {
           <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3">
             <Text className="font-bold text-base mb-1 text-black dark:text-white">{item.title}</Text>
             <Text className="text-gray-600 dark:text-gray-300 font-semibold mb-1">{item.subtitle}</Text>
-            <Text className="font-semibold text-blue-700 dark:text-blue-400">{item.linkText}</Text>
+            {/*  // full date & time
+            <Text className="font-semibold text-blue-700 dark:text-blue-400">
+              {item.timestamp
+                ? item.timestamp.toDate().toLocaleString()
+                : 'No time'}
+            </Text> */}
+
+            {/* Relative time */}
+            <Text className="font-semibold text-blue-700 dark:text-blue-400">
+              {item.timestamp
+                ? dayjs(item.timestamp.toDate()).fromNow()
+                : "No time"}
+            </Text>
           </View>
         )}
       />
