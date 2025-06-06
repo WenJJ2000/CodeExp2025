@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ScrollView, SafeAreaView, View, FlatList } from "react-native";
-import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
-import { ForumPost } from "~/components/custom-ui/forum-post";
+import ForumHeader, {
+  Filters,
+} from "~/components/custom-ui/forum/forum-header";
+import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { ScamReport } from "~/lib/types";
 
 import { liveUpdate } from "~/firebase/ForumApi";
@@ -15,15 +17,13 @@ export default function Screen() {
 
   const { _queries, _filters } = useGlobalSearchParams();
   useEffect(() => {
-    if (_queries) {
-      setSearchQuery(_queries as string);
-    }
+    setSearchQuery(_queries as string);
     if (_filters) {
       setFilter(_filters as Filters);
     }
   }, [_queries, _filters]);
   function filterScamReports() {
-    if (searchQuery.length > 0 || filter !== "All") {
+    if ((searchQuery && searchQuery.length > 0) || filter !== "All") {
       const filteredReports = scamReports
         .filter((report) =>
           report.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -69,12 +69,6 @@ export default function Screen() {
 
   return (
     <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
-      {/* <ForumHeader
-        searchQuery={searchQuery}
-        filter={filter}
-        setFilter={setFilter}
-        setSearchQuery={setSearchQuery}
-      /> */}
       <FlatList
         className="-z-10"
         data={filteredReports}
