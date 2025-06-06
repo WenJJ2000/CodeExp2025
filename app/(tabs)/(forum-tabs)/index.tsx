@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { ScrollView, SafeAreaView, View, FlatList } from "react-native";
+import {
+  ScrollView,
+  SafeAreaView,
+  View,
+  FlatList,
+  Pressable,
+} from "react-native";
 import ForumHeader, {
   Filters,
 } from "~/components/custom-ui/forum/forum-header";
@@ -8,8 +14,12 @@ import { ScamReport } from "~/lib/types";
 
 import { liveUpdate } from "~/firebase/ForumApi";
 import { useGlobalSearchParams, useRouter } from "expo-router";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useColorScheme } from "~/lib/useColorScheme";
+
 export default function Screen() {
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<Filters>("All");
   const [scamReports, setScamReports] = useState<ScamReport[]>([]);
@@ -86,6 +96,13 @@ export default function Screen() {
           );
         }}
       />
+      <Pressable className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-secondary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary">
+        <FontAwesome6
+          name="plus"
+          size={24}
+          color={colorScheme === "light" ? "black" : "white"}
+        />
+      </Pressable>
     </SafeAreaView>
   );
 }
