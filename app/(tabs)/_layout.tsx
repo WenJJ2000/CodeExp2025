@@ -15,6 +15,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName="(home-tabs)"
       screenOptions={{
         headerRight: () => (
           <View
