@@ -1,0 +1,20 @@
+import { View } from "react-native";
+
+export default function AppHeader({
+  leftChildren,
+  rightChildren,
+}: {
+  leftChildren?: React.ReactNode;
+  rightChildren?: React.ReactNode;
+}) {
+  return (
+    <View className="w-full flex-row justify-between items-center gap-2 p-2 border-b-2 border-b-secondary">
+      <View className="flex-row justify-between items-center gap-2">
+        {leftChildren}
+      </View>
+      <View className="flex-row items-center justify-end gap-2 w-[200px]">
+        {rightChildren}
+      </View>
+    </View>
+  );
+}

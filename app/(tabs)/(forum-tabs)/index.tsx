@@ -15,9 +15,7 @@ export default function Screen() {
 
   const { _queries, _filters } = useGlobalSearchParams();
   useEffect(() => {
-    if (_queries) {
-      setSearchQuery(_queries as string);
-    }
+    setSearchQuery(_queries as string);
     if (_filters) {
       setFilter(_filters as Filters);
     }
@@ -69,12 +67,6 @@ export default function Screen() {
 
   return (
     <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
-      {/* <ForumHeader
-        searchQuery={searchQuery}
-        filter={filter}
-        setFilter={setFilter}
-        setSearchQuery={setSearchQuery}
-      /> */}
       <FlatList
         className="-z-10"
         data={filteredReports}

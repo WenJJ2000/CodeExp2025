@@ -4,6 +4,7 @@ import { Text } from "~/components/ui/text";
 import { Pressable, View } from "react-native";
 import { useState } from "react";
 import { useColorScheme } from "~/lib/useColorScheme";
+import AppHeader from "./app-header";
 
 export default function ForumHeader({
   searchQuery,
@@ -17,24 +18,24 @@ export default function ForumHeader({
   setFilter: (filter: Filters) => void;
 }) {
   return (
-    <View className="w-full flex-row justify-between items-center gap-2 p-2 border-b-2 border-b-secondary">
-      <View className="flex-row justify-between items-center gap-2">
-        <Text className="text-2xl font-bold">Forum</Text>
-      </View>
-      <View className="flex-row items-center justify-end gap-2 w-[200px]">
-        <Input
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
-          className="w-full h-10 bg-background border border-input rounded-md p-2 text-base"
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="default"
-          returnKeyType="search"
-        />
-        <Filter setFilter={setFilter} filter={filter} />
-      </View>
-    </View>
+    <AppHeader
+      leftChildren={<Text className="text-2xl font-bold">Forum</Text>}
+      rightChildren={
+        <>
+          <Input
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
+            className="w-full h-10 bg-background border border-input rounded-md p-2 text-base"
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="default"
+            returnKeyType="search"
+          />
+          <Filter setFilter={setFilter} filter={filter} />
+        </>
+      }
+    />
   );
 }
 export type Filters =
