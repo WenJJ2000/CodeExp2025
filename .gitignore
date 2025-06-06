@@ -40,12 +40,12 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
-node_modules
 
+# idea
+.idea
+
+# ios
+ios
 # android
 android
 android/
-
-ios
-
-.expo

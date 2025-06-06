@@ -17,9 +17,6 @@
 //   );
 // }
 
-
-
-
 // import { ScrollView, View, Image, Pressable } from "react-native";
 // import { Text } from "~/components/ui/text";
 // import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -109,21 +106,19 @@
 //   );
 // }
 
-
-import { ScrollView, View, Image, Pressable } from "react-native";
-import { Text } from "~/components/ui/text";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { ScrollView, View, Image, Pressable } from 'react-native';
+import { Text } from '~/components/ui/text';
+import { useAuth } from '~/lib/useContext/useAuthContext';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 // import { BadgeCard } from "./components/Badge";
-import { Badge } from "~/components/ui/badge";
-import { ReportCard } from "./components/Report";
-import { badges } from "../../../components/ui/badges"; // adjust path as needed
+import { Badge } from '~/components/ui/badge';
+import { ReportCard } from './components/Report';
+import { badges } from '../../../components/ui/badges'; // adjust path as needed
 
 // const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
 // const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
 // const badgeReddit = require("../../../assets/images/twitter_thumb_201604_EHA-Shield.png");
-
-
 
 const router = useRouter();
 
@@ -137,26 +132,27 @@ const router = useRouter();
 // ];
 
 const reportsVerified = [
-  { title: "Verified scam 1", date: "15 Mar 2025" },
-  { title: "Verified scam 2", date: "16 Feb 2025" },
-  { title: "Verified scam 3", date: "4 Dec 2024" },
+  { title: 'Verified scam 1', date: '15 Mar 2025' },
+  { title: 'Verified scam 2', date: '16 Feb 2025' },
+  { title: 'Verified scam 3', date: '4 Dec 2024' },
 ];
 
 const reportsPending = [
-  { title: "Pending scam 1", date: "30 Nov 2024" },
-  { title: "Pending scam 2", date: "15 Nov 2024" },
-  { title: "Pending scam 3", date: "14 Nov 2024" },
-  { title: "Pending scam 4", date: "5 Sep 2024" },
+  { title: 'Pending scam 1', date: '30 Nov 2024' },
+  { title: 'Pending scam 2', date: '15 Nov 2024' },
+  { title: 'Pending scam 3', date: '14 Nov 2024' },
+  { title: 'Pending scam 4', date: '5 Sep 2024' },
 ];
 
 export default function ProfileScreen() {
+  const { setUser, setUid } = useAuth();
   return (
     <ScrollView className="flex-1 bg-secondary/30 p-4 space-y-6">
       {/* Header */}
       <View className="flex-row justify-between items-center">
         {/* Avatar */}
         <Image
-          source={{ uri: "https://i.pravatar.cc/100" }}
+          source={{ uri: 'https://i.pravatar.cc/100' }}
           className="w-14 h-14 rounded-full"
         />
 
@@ -176,7 +172,7 @@ export default function ProfileScreen() {
         <Text className="text-xl font-semibold">Hello, Hacker123!</Text>
         <Image
           source={{
-            uri: "https://styles.redditmedia.com/t5_2qh1i/styles/profileIcon_snoo-nft.png",
+            uri: 'https://styles.redditmedia.com/t5_2qh1i/styles/profileIcon_snoo-nft.png',
           }}
           className="w-10 h-10"
         />
@@ -186,10 +182,11 @@ export default function ProfileScreen() {
       <View>
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-semibold">Badges</Text>
-          <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)/allBadgePage")}>
+          <Pressable
+            onPress={() => router.push('/(tabs)/(profile-tabs)/allBadgePage')}
+          >
             <Text className="text-sm text-blue-500">View all</Text>
           </Pressable>
-          
         </View>
 
         <ScrollView
@@ -205,7 +202,6 @@ export default function ProfileScreen() {
             >
               <Text className="text-2xl">{badge.emoji}</Text>
             </Badge>
-
           ))}
         </ScrollView>
       </View>
@@ -214,17 +210,23 @@ export default function ProfileScreen() {
       <View>
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-semibold">Reports history</Text>
-          <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)/allReportsPage")}>
+          <Pressable
+            onPress={() => router.push('/(tabs)/(profile-tabs)/allReportsPage')}
+          >
             <Text className="text-sm text-blue-500">View all</Text>
           </Pressable>
-          
         </View>
 
         {/* Verified */}
         <View className="mb-4">
           <Text className="text-base font-medium mb-2">✅ Verified scams</Text>
           {reportsVerified.map((item, index) => (
-            <ReportCard key={index} title={item.title} date={item.date} variant="verified"/>
+            <ReportCard
+              key={index}
+              title={item.title}
+              date={item.date}
+              variant="verified"
+            />
           ))}
         </View>
 
@@ -232,7 +234,12 @@ export default function ProfileScreen() {
         <View>
           <Text className="text-base font-medium mb-2">🕓 Pending scams</Text>
           {reportsPending.map((item, index) => (
-            <ReportCard key={index} title={item.title} date={item.date} variant="pending"/>
+            <ReportCard
+              key={index}
+              title={item.title}
+              date={item.date}
+              variant="pending"
+            />
           ))}
         </View>
       </View>

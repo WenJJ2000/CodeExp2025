@@ -14,7 +14,8 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "firebase/firebase.js"
   ],
   "extends": "expo/tsconfig.base"
 }
