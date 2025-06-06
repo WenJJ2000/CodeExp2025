@@ -6,7 +6,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
 import { ForumVoteButton } from "./forum-vote-button";
 import { useColorScheme } from "~/lib/useColorScheme";
-import { ForumReplyButton } from "./forum/forum-reply-button";
+import { ForumReplyButton } from "./forum-reply-button";
 export function ForumPost({
   scamReport,
   fulltext = false,
@@ -27,7 +27,7 @@ export function ForumPost({
   const daysAgo = lastUpdated.getDay();
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
-  console.log(daysAgo, hoursAgo, minutesAgo);
+  // console.log(daysAgo, hoursAgo, minutesAgo);
   const formattedTimeAgo =
     daysAgo > 0
       ? `${daysAgo}d`

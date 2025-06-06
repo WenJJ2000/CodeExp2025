@@ -4,7 +4,7 @@ import { Text } from "~/components/ui/text";
 import { Pressable, View } from "react-native";
 import { useState } from "react";
 import { useColorScheme } from "~/lib/useColorScheme";
-import AppHeader from "./app-header";
+import AppHeader from "../app-header";
 
 export default function ForumHeader({
   searchQuery,

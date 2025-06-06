@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ScrollView, SafeAreaView, View, FlatList } from "react-native";
-import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
-import { ForumPost } from "~/components/custom-ui/forum-post";
+import ForumHeader, {
+  Filters,
+} from "~/components/custom-ui/forum/forum-header";
+import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { ScamReport } from "~/lib/types";
 
 import { liveUpdate } from "~/firebase/ForumApi";
@@ -21,7 +23,7 @@ export default function Screen() {
     }
   }, [_queries, _filters]);
   function filterScamReports() {
-    if (searchQuery.length > 0 || filter !== "All") {
+    if ((searchQuery && searchQuery.length > 0) || filter !== "All") {
       const filteredReports = scamReports
         .filter((report) =>
           report.title.toLowerCase().includes(searchQuery.toLowerCase())

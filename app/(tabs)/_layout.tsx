@@ -2,7 +2,9 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router, Tabs, useGlobalSearchParams } from "expo-router";
 import { Pressable, SafeAreaView, TouchableOpacity, View } from "react-native";
 import { ThemeToggle } from "~/components/ThemeToggle";
-import ForumHeader, { Filters } from "~/components/custom-ui/forum-header";
+import ForumHeader, {
+  Filters,
+} from "~/components/custom-ui/forum/forum-header";
 import { SettingsButton } from "~/components/settingsButton";
 
 export default function TabLayout() {

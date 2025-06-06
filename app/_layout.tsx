@@ -46,8 +46,8 @@ export default function RootLayout() {
   const { isDarkColorScheme } = useColorScheme();
   const { user, uid } = useAuth();
   useEffect(() => {
-    console.log("User in RootLayout:", user);
-    console.log("UID in RootLayout:", uid);
+    // console.log("User in RootLayout:", user);
+    // console.log("UID in RootLayout:", uid);
   }, [user, uid]);
   // const [isSignIn, setIsSignIn] = useState(false);
   // useEffect(() => {
