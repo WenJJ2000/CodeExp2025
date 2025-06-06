@@ -2,6 +2,9 @@
   "name": "ScamBusters-App",
   "main": "index.js",
   "version": "1.0.0",
+  "workspaces": [
+    "./apps/*"
+  ],
   "scripts": {
     "dev": "expo start -c",
     "dev:web": "expo start -c --web",
@@ -83,8 +86,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "3.3.5",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^11.1.0",
-    "undefined": "\\"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
