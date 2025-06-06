@@ -50,3 +50,10 @@ function Badge({ className, variant, asChild, ...props }: BadgeProps) {
 
 export { Badge, badgeTextVariants, badgeVariants };
 export type { BadgeProps };
+export const badges = [
+  { label: "Achievement" },
+  { label: "Top Score" },
+  { label: "Streak" },
+  { emoji: "🎯", label: "Target" },
+  { emoji: "🚀", label: "Rocket" },
+];
