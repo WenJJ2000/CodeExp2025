@@ -60,6 +60,19 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="addPostPage"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaView>
+                <ForumPageHeader />
+              </SafeAreaView>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
         name="index"
         options={{
           headerShown: true,
