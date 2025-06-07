@@ -19,8 +19,8 @@ export function ForumReplyPopup({
     console.log("Input blurred");
   },
 }: {
-  scamReportId:string;
-  scamReportOrReply: ScamReport | Reply | undefined;
+  scamReportId: string;
+  scamReportOrReply: ScamReport | Reply;
   isScamReport?: boolean;
   onBlur?: (a: boolean, b: boolean) => void;
 }) {
@@ -32,8 +32,8 @@ export function ForumReplyPopup({
   const tempRef = useRef<TextInput>(null) as RefObject<TextInput>;
   const [isFocused, setIsFocused] = useState(true);
   const user = isScamReport
-    ? (scamReportOrReply as ScamReport).reporter
-    : (scamReportOrReply as Reply).user;
+    ? (scamReportOrReply as ScamReport).createdBy
+    : (scamReportOrReply as Reply).createdBy;
   const { uid } = useAuth();
   const [replyContent, setReplyContent] = useState("");
   const [keyboardType, setKeyboardType] = useState<"keyboard" | "image">(
@@ -77,6 +77,10 @@ export function ForumReplyPopup({
     }
     if (replyContent.trim() === "") {
       console.log("Replys content cannot be empty");
+      return;
+    }
+    if (scamReportOrReply.id === undefined) {
+      console.log("Scam report or reply ID is undefined");
       return;
     }
     await reply(

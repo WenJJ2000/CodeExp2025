@@ -9,16 +9,26 @@ export type ScamReportType =
   // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP";
+export const scamReportTypes: { value: ScamReportType; label: string }[] = [
+  { value: "SMS", label: "SMS" },
+  { value: "EMAIL", label: "Email" },
+  { value: "PHONE", label: "Phone" },
+  { value: "SOCIAL_MEDIA", label: "Social Media" },
+  { value: "WEBSITE", label: "Website" },
+  { value: "IN_PERSON", label: "In Person" },
+  { value: "APP", label: "App" },
+];
 export type ForumTagVariant =
   | "PHONE"
   | "SMS"
   | "EMAIL"
   | "SOCIAL_MEDIA"
   | "WEBSITE"
-  | "MISINFORMATION"
+  // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP"
-  | "VERIFIED";
+  | "VERIFIED"
+  | "EDUCATION";
 export type VoteType = "UPVOTE" | "DOWNVOTE";
 export type NotificationSetting = {
   id: string;
@@ -59,11 +69,14 @@ export type ScamReport = {
   id: string;
   content: string;
   createdAt: Date;
+  updatedAt: Date;
   image?: string;
   title: string;
-  reporter: User;
-  numOfReplies:number;
+  createdBy: User;
+  numOfReplies: number;
   scamReportType: ScamReportType;
+  isEducation: boolean;
+  isDeleted: boolean;
   scamReportStatus: ScamReportStatus;
   votes: { type: VoteType; voterId: string }[];
   replies: Reply[];
@@ -73,8 +86,9 @@ export type Reply = {
   id: string;
   content: string;
   createdAt: Date;
-
+  updatedAt: Date;
+  isDeleted: boolean;
   image?: string;
   replies?: Reply[];
-  user: User;
+  createdBy: User;
 };

@@ -26,23 +26,29 @@ export function ForumReply({
   if (!reply) {
     return null; // Handle the case where reply is undefined
   }
-  const lastUpdated = new Date(Date.now() - reply.createdAt.getTime());
+  const latestDate =
+    reply.createdAt.toUTCString() == reply.updatedAt.toUTCString()
+      ? reply.createdAt
+      : reply.updatedAt;
+  const isUpdated =
+    reply.createdAt.toUTCString() != reply.updatedAt.toUTCString();
+  const lastUpdated = new Date(Date.now() - latestDate.getTime());
   const hoursAgo = lastUpdated.getHours();
   const minutesAgo = lastUpdated.getMinutes();
   const formattedTimeAgo = hoursAgo > 0 ? `${hoursAgo}h` : `${minutesAgo}m`;
   return (
     <>
-      <View className="px-2 py-2 bg-secondary">
+      <View className="">
         <View className="flex-row items-center gap-2 ">
           <Image
-            src={reply.user.profilePicture || "~/assets/images/icon2.png"}
+            src={reply.createdBy.profilePicture || "~/assets/images/icon2.png"}
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"
           />
-          <Text className="text-xl ">{reply.user.username}</Text>
+          <Text className="text-xl ">{reply.createdBy.username}</Text>
           <Text className="text-xl text-muted-foreground">
-            {formattedTimeAgo}
+            {formattedTimeAgo} {isUpdated ? "(edited)" : ""}
           </Text>
         </View>
 

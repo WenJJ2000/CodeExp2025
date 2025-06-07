@@ -34,6 +34,21 @@ export function ForumPost({
       : hoursAgo > 0
       ? ` ${hoursAgo}h`
       : `${minutesAgo}m`;
+
+  const formmatedTitle =
+    !fulltext && scamReport.title.split("\n").length > 2
+      ? scamReport.title.split("\n").slice(0, 2).join(" ").concat("...")
+      : scamReport.title.length > 100
+      ? scamReport.title.substring(0, 97) + "..."
+      : scamReport.title;
+
+  const formmatedContent =
+    !fulltext && scamReport.content.split("\n").length > 2
+      ? scamReport.content.split("\n").slice(0, 2).join(" ").concat("...")
+      : scamReport.content.length > 100
+      ? scamReport.content.substring(0, 97) + "..."
+      : scamReport.content.trimEnd();
+
   return (
     <Pressable
       className="w-full bg-secondary justify-center items-center mb-2 "
@@ -43,14 +58,14 @@ export function ForumPost({
         <View className="flex-row items-center gap-2 ">
           <Image
             src={
-              scamReport?.reporter?.profilePicture ||
+              scamReport?.createdBy?.profilePicture ||
               "~/assets/images/icon2.png"
             }
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"
           />
-          <Text className="text-xl ">{scamReport?.reporter.username}</Text>
+          <Text className="text-xl ">{scamReport?.createdBy.username}</Text>
           <Text className="text-xl text-muted-foreground">
             {formattedTimeAgo}
           </Text>
@@ -68,18 +83,15 @@ export function ForumPost({
               }
             />
           )}
+          {scamReport?.isEducation && (
+            <ForumTag variant={"EDUCATION" as ForumTagVariant} />
+          )}
         </View>
       </View>
       <View className="px-4 pb-2 w-full">
-        <Text className="text-xl font-bold text-start">
-          {scamReport?.title.length > 100 && !fulltext
-            ? scamReport?.title.substring(0, 97) + "..."
-            : scamReport?.title}
-        </Text>
+        <Text className="text-xl font-bold text-start">{formmatedTitle}</Text>
         <Text className="text-start text-muted-foreground">
-          {scamReport?.content.length > 100 && !fulltext
-            ? scamReport?.content.substring(0, 97) + "..."
-            : scamReport?.content}
+          {formmatedContent}
         </Text>
       </View>
       <View className="w-full px-4 pb-2">

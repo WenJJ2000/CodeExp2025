@@ -23,7 +23,7 @@ export default function ForumPage() {
   const { scamReportId } = useLocalSearchParams<{ scamReportId: string }>();
   const [scamReport, setScamReport] = useState<ScamReport>();
   const [scamReportOrReply, setScamReportOrReply] = useState<
-    ScamReport | Reply
+    ScamReport | Reply | undefined
   >();
   const [isScamReport, setIsScamReport] = useState(true);
   const [showReplyPopup, setShowReplyPopup] = useState(false);
@@ -66,10 +66,12 @@ export default function ForumPage() {
           renderItem={({ item }) => (
             <ForumReply reply={item} onClickReply={onClickReplyButton} />
           )}
-          contentContainerClassName="gap-2"
+          contentContainerClassName="gap-2 bg-transparent"
+          className="py-2 bg-secondary px-2"
+          keyExtractor={(item) => item.id}
         />
       </View>
-      {showReplyPopup && (
+      {showReplyPopup && scamReportOrReply && (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >

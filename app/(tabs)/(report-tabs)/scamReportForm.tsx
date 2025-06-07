@@ -178,7 +178,7 @@ export default function ScamReportForm() {
         sender: formData.sender,
         title: formData.title,
         content: formData.content,
-        reporter: user?.uid ?? "anonymous",
+        createdBy: user?.uid ?? "anonymous",
       });
       setStep(5);
     } catch (error) {

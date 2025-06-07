@@ -1,29 +1,31 @@
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
+import { ScamReport, ScamReportType } from "~/lib/types";
 
 export async function createReport({
   scamReportType,
   sender,
   title,
   content,
-  reporter,
+  createdBy,
+  isEducation = false,
+  image = "",
 }) {
   const uuidValue = uuid.v4();
 
   const reportData = {
-    reporter,
+    createdBy: createdBy,
     scamReportType,
-    // sender,
     title: sender,
-    content: `${title ? `${title || "No title"}\n${content}` : content}`, // content is required
-    // evidence: {
-    //   type: 'text',
-    //   url: '',
-    // },
-    numOfReplies:0,
+    content: `${title ? `${title || "No title"}\n${content}` : content}`,
+    numOfReplies: 0,
     createdAt: new Date(),
+    updatedAt: new Date(),
     scamReportStatus: "INVALID",
+    image: image || "",
+    isEducation,
+    isDeleted: false,
     votes: [],
     replies: [],
   };

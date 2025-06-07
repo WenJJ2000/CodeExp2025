@@ -51,8 +51,8 @@ export default function Screen() {
             return report.scamReportType === "SOCIAL_MEDIA";
           } else if (filter === "In Person") {
             return report.scamReportType === "IN_PERSON";
-            // } else if (filter === "Misinformation") {
-            // return report.scamReportType === "MISINFORMATION";
+          } else if (filter === "Education") {
+            return report.isEducation;
           } else if (filter === "Verified") {
             return report.scamReportStatus === "VALID";
           }

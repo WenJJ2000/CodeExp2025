@@ -47,7 +47,8 @@ export type Filters =
   | "Website"
   | "In Person"
   | "Misinformation"
-  | "Verified";
+  | "Verified"
+  | "Education";
 export type FilterProps = {
   filter: Filters;
   setFilter: (filter: Filters) => void;
@@ -66,6 +67,7 @@ export function Filter({ filter, setFilter }: FilterProps) {
     "Phone",
     "Social Media",
     "Website",
+    "Education",
   ];
 
   return (

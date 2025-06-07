@@ -24,7 +24,7 @@ const usePlatformSpecificSetup = Platform.select({
   android: useSetAndroidNavigationBar,
   default: noop,
 });
-
+import { PortalHost } from "@rn-primitives/portal";
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const router = useRouter();
@@ -38,59 +38,62 @@ export default function RootLayout() {
     router.setParams({ _queries: searchQuery, _filters: newFilter });
   };
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        animation: "slide_from_bottom",
-        animationDuration: 200,
-      }}
-      initialRouteName="index"
-    >
-      <Stack.Screen
-        name="forumPage"
-        options={{
-          headerShown: true,
-          header: (props) => {
-            return (
-              <SafeAreaView>
-                <ForumPageHeader />
-              </SafeAreaView>
-            );
-          },
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+          animationDuration: 200,
         }}
-      />
-      <Stack.Screen
-        name="addPostPage"
-        options={{
-          headerShown: true,
-          header: (props) => {
-            return (
-              <SafeAreaView>
-                <ForumPageHeader />
-              </SafeAreaView>
-            );
-          },
-        }}
-      />
-      <Stack.Screen
-        name="index"
-        options={{
-          headerShown: true,
-          header: (props) => {
-            return (
-              <SafeAreaView>
-                <ForumHeader
-                  searchQuery={searchQuery}
-                  filter={filter}
-                  setFilter={setFilter}
-                  setSearchQuery={setSearchQuery}
-                />
-              </SafeAreaView>
-            );
-          },
-        }}
-      />
-    </Stack>
+        initialRouteName="index"
+      >
+        <Stack.Screen
+          name="forumPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaView>
+                  <ForumPageHeader />
+                </SafeAreaView>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="addPostPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaView>
+                  <ForumPageHeader />
+                </SafeAreaView>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaView>
+                  <ForumHeader
+                    searchQuery={searchQuery}
+                    filter={filter}
+                    setFilter={setFilter}
+                    setSearchQuery={setSearchQuery}
+                  />
+                </SafeAreaView>
+              );
+            },
+          }}
+        />
+      </Stack>
+      <PortalHost />
+    </>
   );
 }
 

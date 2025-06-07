@@ -15,7 +15,8 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts",
-    "firebase/firebase.js"
+    "firebase/firebase.js",
+    "firebase/ScamReportApi.js"
   ],
   "extends": "expo/tsconfig.base"
 }

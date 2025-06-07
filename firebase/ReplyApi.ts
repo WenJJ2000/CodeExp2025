@@ -1,3 +1,4 @@
+import { Reply } from "~/lib/types";
 import { db } from "./firebase";
 import {
   doc,
@@ -13,7 +14,7 @@ import {
 export async function reply(
   userId: string,
   postId: string,
-  scamReportId:string,
+  scamReportId: string,
   content: string,
   image: string = "",
   isReply: boolean = false
@@ -24,8 +25,12 @@ export async function reply(
   if (!postId) {
     throw new Error("Post ID are required");
   }
-  const whereToAddReplieRef = doc(db, isReply ? "replies" :"scamReports", postId);
-  const scamReportRef = doc(db, "scamReports",  scamReportId );
+  const whereToAddReplieRef = doc(
+    db,
+    isReply ? "replies" : "scamReports",
+    postId
+  );
+  const scamReportRef = doc(db, "scamReports", scamReportId);
   const whereToAdd = await getDoc(whereToAddReplieRef);
   const scamReport = await getDoc(scamReportRef);
   if (!whereToAdd.exists()) {
@@ -37,8 +42,11 @@ export async function reply(
 
   const reply = {
     content: content,
-    user: userId,
+    createdBy: userId,
     createdAt: new Date(),
+    updatedAt: new Date(),
+    replies: [],
+    isDeleted: false,
     image: image,
   };
 
@@ -54,9 +62,10 @@ export async function reply(
   await setDoc(
     scamReportRef,
     {
-      numOfReplies: scamReport.data()?.numOfReplies + 1 || 0
-    },{merge:true}
-  )
+      numOfReplies: scamReport.data()?.numOfReplies + 1 || 0,
+    },
+    { merge: true }
+  );
 }
 export async function getReply(id: string) {
   if (!id) {
@@ -69,7 +78,7 @@ export async function getReply(id: string) {
   }
   const returnReply = replyDoc.data();
   // populate user
-  const userDoc = await getDoc(doc(db, "users", returnReply.user));
+  const userDoc = await getDoc(doc(db, "users", returnReply.createdBy));
   if (!userDoc.exists()) {
     throw new Error("User not found for the reply");
   }
@@ -78,26 +87,30 @@ export async function getReply(id: string) {
     throw new Error("User data is empty");
   }
   // populate replies
-  let repliess = []
+  let repliess = [];
   if (replyDoc.data().replies && replyDoc.data().replies.length > 0) {
-
     for (const replyId of replyDoc.data().replies) {
-      const reply:any = await getReply(replyId)
+      const reply: any = await getReply(replyId);
       repliess.push({
-        ...reply
+        ...reply,
       });
     }
   }
-
-  const date = new Date(Date.parse(returnReply.createdAt.toDate()));
-  const formattedDate = new Date(date.setHours(date.getHours() + 8));
-
+  const createdDate = new Date(Date.parse(returnReply.createdAt.toDate()));
+  const formattedCreatedDate = new Date(
+    createdDate.setHours(createdDate.getHours() + 8)
+  );
+  const updatedDate = new Date(Date.parse(returnReply.createdAt.toDate()));
+  const formattedUpdatedDate = new Date(
+    updatedDate.setHours(updatedDate.getHours() + 8)
+  );
   return {
     id: replyDoc.id,
-    createdAt: formattedDate || new Date(),
-    content:returnReply.content || "",
-    image:returnReply.image || "",
+    createdAt: formattedCreatedDate || new Date(),
+    updatedAt: formattedUpdatedDate || new Date(),
+    content: returnReply.content || "",
+    image: returnReply.image || "",
     replies: repliess || [],
-    user: { id: userDoc.id, ...userData },
-  };
+    createdBy: { id: userDoc.id, ...userData },
+  } as Reply;
 }
