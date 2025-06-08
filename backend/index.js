@@ -15,6 +15,13 @@ app.listen(process.env.PORT, () => {
   //   );
   // });
   // job.invoke(); // Invoke the job immediately for testing purposes
+  getAllUser()
+    .then((users) => {
+      console.log("Fetched users:", users);
+    })
+    .catch((error) => {
+      console.log("Error fetching users: " + error.message);
+    });
   console.log(`Server is running on port ${process.env.PORT}`);
 });
 
