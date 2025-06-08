@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   ScrollView,
   View,
@@ -23,15 +22,9 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "~/components/ui/dropdown-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScamReportType, scamReportTypes } from "~/lib/types";
 
@@ -66,16 +59,20 @@ export default function AddPostPage() {
       alert("You must be logged in to create a post");
       return;
     }
-
-    await createReport({
-      scamReportType: scamReportType,
-      sender: title,
-      title: undefined,
-      content,
-      createdBy: uid,
-      isEducation: true,
-      image: image || "",
-    });
+    try {
+      await createReport({
+        scamReportType: scamReportType,
+        sender: title,
+        title: undefined,
+        content,
+        createdBy: uid,
+        isEducation: true,
+        image: image || "",
+        location: "",
+      });
+    } catch (error) {
+      console.error("Error creating report:", error);
+    }
     router.push("/(tabs)/(forum-tabs)");
   };
   const pickImage = async () => {

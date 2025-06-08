@@ -32,5 +32,13 @@ export async function login(email, password) {
     email,
     password
   );
+  const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    return { user: userCredential.user, ...userData };
+  }
+  if (!userCredential.user) {
+    throw new Error("Login failed");
+  }
   return userCredential.user;
 }

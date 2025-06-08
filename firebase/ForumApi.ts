@@ -10,8 +10,10 @@ import {
   onSnapshot,
   DocumentSnapshot,
   DocumentData,
+  limit,
+  orderBy,
 } from "firebase/firestore";
-import { ScamReport } from "../lib/types";
+import { ScamReport, Notification } from "../lib/types";
 import { getReply } from "./ReplyApi";
 
 export async function getScamReports() {
@@ -115,7 +117,7 @@ export async function getAScamReport(id: string) {
 }
 export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
   console.log("running LiveUpdate");
-  const q = query(collection(db, "scamReports"));
+  const q = query(collection(db, "scamReports"), orderBy("createdAt", "desc"));
   const observer = onSnapshot(q, async (querySnapshot) => {
     const tempResult: any[] = [];
     const result: ScamReport[] = [];
@@ -123,11 +125,11 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
       const data = doc.data();
       const createdDate = new Date(Date.parse(data.createdAt.toDate()));
       const formattedCreatedDate = new Date(
-        createdDate.setHours(createdDate.getHours() + 8)
+        createdDate.setHours(createdDate.getHours())
       );
       const updatedDate = new Date(Date.parse(data.createdAt.toDate()));
       const formattedUpdatedDate = new Date(
-        updatedDate.setHours(updatedDate.getHours() + 8)
+        updatedDate.setHours(updatedDate.getHours())
       );
       tempResult.push({
         id: doc.id,
@@ -182,11 +184,11 @@ export const liveUpdateOnASingleScamReport = (
         }
         const createdDate = new Date(Date.parse(data.createdAt.toDate()));
         const formattedCreatedDate = new Date(
-          createdDate.setHours(createdDate.getHours() + 8)
+          createdDate.setHours(createdDate.getHours())
         );
         const updatedDate = new Date(Date.parse(data.createdAt.toDate()));
         const formattedUpdatedDate = new Date(
-          updatedDate.setHours(updatedDate.getHours() + 8)
+          updatedDate.setHours(updatedDate.getHours())
         );
         for (const key in data.replies) {
           const reply = await getReply(data.replies[key]);
@@ -227,5 +229,41 @@ export const liveUpdateOnASingleScamReport = (
     async (err) => console.error("Error in live update:", err)
   );
 
+  return observer;
+};
+
+export const getLiveNotifications = (
+  callback: (notifications: Notification[]) => void
+) => {
+  const changeMap: Record<string, string> = {
+    added: "New",
+    modified: "Updated",
+    removed: "Removed",
+  };
+  const q = query(collection(db, "scamReports"), orderBy("createdAt", "desc"));
+  const observer = onSnapshot(q, (snapshot) => {
+    const x: Notification[] = snapshot.docChanges().map((change) => {
+      const changeData = change.doc.data();
+      const timestamp =
+        change.type === "added" ? changeData.createdAt : changeData.updatedAt;
+      const title = changeMap[change.type];
+      return {
+        id: change.doc.id,
+        title: `${title} ${
+          changeData.isEducation ? "Educational Post" : "Scam Report"
+        } `,
+        subtitle: changeData.title || changeData.content,
+        timestamp: timestamp.toDate(),
+      } as Notification;
+    });
+    callback(
+      x.reduce((acc, curr) => {
+        if (acc.length < 5) {
+          acc.push(curr);
+        }
+        return acc;
+      }, [] as Notification[])
+    );
+  });
   return observer;
 };

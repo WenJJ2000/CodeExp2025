@@ -20,8 +20,8 @@ export default function Screen() {
       }
     };
     checkUser();
-    console.log("User in Index:", !!user);
-    console.log("UID in Index:", !!uid);
+    // console.log("User in Index:", !!user);
+    // console.log("UID in Index:", !!uid);
   }, [user, uid, navigator]);
   return (
     <SafeAreaView className="flex-1 justify-center items-center gap-1 p-6 bg-secondary/30">

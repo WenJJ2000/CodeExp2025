@@ -37,6 +37,12 @@ export type NotificationSetting = {
   sms: boolean;
   phone: boolean;
 };
+export type Notification = {
+  id: string;
+  title: string;
+  subtitle: string;
+  timestamp: Date;
+};
 export type QuizOption = {
   id: string;
   text: string;
@@ -80,6 +86,7 @@ export type ScamReport = {
   scamReportStatus: ScamReportStatus;
   votes: { type: VoteType; voterId: string }[];
   replies: Reply[];
+  location?: string;
 };
 
 export type Reply = {
