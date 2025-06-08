@@ -95,7 +95,7 @@ export type Reply = {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
-  image?: string;
+  images?: string[];
   replies?: Reply[];
   createdBy: User;
 };

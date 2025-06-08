@@ -11,6 +11,7 @@ import { reply } from "~/firebase/ReplyApi";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import * as FileSystem from "expo-file-system";
 import { PressableImage } from "../pressable-image";
+import ImageTray from "../image-tray";
 export function ForumReplyPopup({
   scamReportId,
   scamReportOrReply,
@@ -39,20 +40,26 @@ export function ForumReplyPopup({
   const [keyboardType, setKeyboardType] = useState<"keyboard" | "image">(
     "keyboard"
   );
-  const [zoom, setZoom] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      selectionLimit: 1, // Limit to one image
+      selectionLimit: 5, // Limit to one image
     });
 
     if (!result.canceled) {
-      setImage(await convertImageToBase64(result.assets[0].uri));
+      for (const image of result.assets) {
+        const base64Image = await convertImageToBase64(image.uri);
+        if (base64Image) {
+          setImages((prevImages) => [...prevImages, base64Image]);
+        } else {
+          console.error("Failed to convert image to base64");
+        }
+      }
     }
     setKeyboardType("keyboard");
     inputRef.current?.focus();
@@ -67,7 +74,7 @@ export function ForumReplyPopup({
     } catch (error) {
       console.error("Error converting image to base64:", error);
 
-      return null;
+      return "";
     }
   };
   const onSubmitReply = async () => {
@@ -88,11 +95,11 @@ export function ForumReplyPopup({
       scamReportOrReply.id,
       scamReportId,
       replyContent,
-      image ? image : "",
+      images,
       !isScamReport
     );
     setReplyContent("");
-    setImage(null);
+    setImages([]);
     onBlur(true, true);
   };
   useEffect(() => {
@@ -137,7 +144,7 @@ export function ForumReplyPopup({
           }}
         />
         <View className="w-full flex-row justify-between items-center mb-2">
-          {image && <PressableImage image={image} />}
+          {images && <ImageTray images={images} />}
         </View>
         <View className="flex-row justify-between items-center w-full">
           <View className="flex-row items-center gap-2 w-fit">

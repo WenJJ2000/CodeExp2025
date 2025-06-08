@@ -65,6 +65,7 @@ export function Filter({ filter, setFilter }: FilterProps) {
     "SMS",
     "Email",
     "Phone",
+    "In Person",
     "Social Media",
     "Website",
     "Education",
