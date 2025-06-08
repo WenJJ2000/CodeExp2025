@@ -34,6 +34,7 @@ export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
   const { user } = useAuth();
+  const [userName, setUserName] = useState("Lisa");
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
@@ -48,7 +49,9 @@ export default function Home() {
       console.log("Notifications updated:", x);
       setNotifications(x);
     });
-    console.log("Notifications:", [notifications]);
+    user &&
+      JSON.parse(user)?.username &&
+      setUserName(JSON.parse(user).username);
     return () => unsubscribe();
   }, []);
 
@@ -61,7 +64,7 @@ export default function Home() {
           className="w-12 h-12 rounded-full mr-3"
         />
         <Text className="text-2xl font-bold flex-1 text-black dark:text-white">
-          Welcome Lisa!
+          Welcome {userName}!
         </Text>
       </View>
 
