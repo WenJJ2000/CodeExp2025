@@ -33,7 +33,6 @@ export default function TabLayout() {
           </View>
         ),
       }}
-      initialRouteName="(forum-tabs)"
     >
       <Tabs.Screen
         name="(quiz-tabs)"

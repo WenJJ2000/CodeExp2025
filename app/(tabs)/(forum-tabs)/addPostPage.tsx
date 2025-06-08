@@ -59,17 +59,20 @@ export default function AddPostPage() {
       alert("You must be logged in to create a post");
       return;
     }
-
-    await createReport({
-      scamReportType: scamReportType,
-      sender: title,
-      title: undefined,
-      content,
-      createdBy: uid,
-      isEducation: true,
-      image: image || "",
-      location: "",
-    });
+    try {
+      await createReport({
+        scamReportType: scamReportType,
+        sender: title,
+        title: undefined,
+        content,
+        createdBy: uid,
+        isEducation: true,
+        image: image || "",
+        location: "",
+      });
+    } catch (error) {
+      console.error("Error creating report:", error);
+    }
     router.push("/(tabs)/(forum-tabs)");
   };
   const pickImage = async () => {

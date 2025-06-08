@@ -8,26 +8,18 @@ import {
   SetStateAction,
 } from "react";
 import * as SecureStore from "expo-secure-store";
-import React from "react";
+import { Notification } from "~/lib/types"; // Adjust the import path as necessary
 
 const NotificationContext = createContext<{
-  setUser: (newUser: string | null) => void;
-  setUid: (newUid: string | null) => void;
-  user?: string | null;
-  uid?: string | null;
+  notifications: Notification[] | null;
+  setNotifications: (newNotifications: Notification[]) => Promise<void> | void;
 }>({
-  setUser: (newUser: string | null) => {
-    console.warn("setUser function is not initialized");
-  },
-  setUid: (newUser: string | null) => {
-    console.warn("setUid function is not initialized");
-  },
-  user: null,
-  uid: null,
+  notifications: null,
+  setNotifications: () => {},
 });
 
 // This hook can be used to access the user info.
-export function useAuth() {
+export function useNotification() {
   const value = use(NotificationContext);
   if (!value) {
     throw new Error("useSession must be wrapped in a <SessionProvider />");
@@ -37,59 +29,69 @@ export function useAuth() {
 }
 
 export function NotificationProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<string | null>();
-  const [uid, setUid] = useState<string | null>();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchNotificationData = async () => {
       try {
-        const storedUser = await SecureStore.getItemAsync("user");
-        const storedUid = await SecureStore.getItemAsync("uid");
-        if (storedUser) {
-          console.log("NotificationContext storedUser:", !!storedUser);
-          setUser(storedUser);
-        }
-        if (storedUid) {
-          console.log("NotificationContext storedUid:", !!storedUid);
-          setUid(storedUid);
+        const storedNotifications = await SecureStore.getItemAsync(
+          "notifications"
+        );
+        if (storedNotifications) {
+          const parsedNotifications = JSON.parse(
+            storedNotifications
+          ) as Notification[];
+
+          setNotifications(
+            parsedNotifications.map((notification) => ({
+              ...notification,
+              timestamp: new Date(notification.timestamp),
+            }))
+          );
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching notification:", error);
       }
     };
-    fetchUserData();
-  }, [user, uid]);
-  const setuser = async (newUser: string | null) => {
-    setUser(newUser);
-    if (newUser) {
-      try {
-        await SecureStore.setItemAsync("user", newUser);
-      } catch (error) {
-        console.error("Error storing user:", error);
-      }
-    } else {
-      await SecureStore.deleteItemAsync("user");
+    fetchNotificationData();
+  }, [notifications]);
+  const setNotificationsLocal = async (
+    newNotifications: Notification[] = []
+  ) => {
+    const storedNotifications = await SecureStore.getItemAsync("notifications");
+    let parsedNotifications = [] as Notification[]; // Initialize as an empty array
+    if (storedNotifications) {
+      parsedNotifications = JSON.parse(storedNotifications) as Notification[];
     }
-  };
-  const setuid = async (newUid: string | null) => {
-    setUid(newUid);
-    if (newUid) {
+    const newParsedNotifications = parsedNotifications.map((notification) => ({
+      ...notification,
+      timestamp: new Date(notification.timestamp),
+    }));
+    const mergedNotifications = [
+      ...newNotifications,
+      ...newParsedNotifications,
+    ].filter(
+      (notification, index, self) =>
+        index === self.findIndex((n) => n.id === notification.id)
+    );
+    setNotifications(mergedNotifications);
+
+    if (mergedNotifications.length > 0) {
       try {
-        await SecureStore.setItemAsync("uid", newUid);
+        await SecureStore.setItemAsync(
+          "notifications",
+          JSON.stringify(mergedNotifications)
+        );
       } catch (error) {
-        console.error("Error storing UID:", error);
+        console.error("Error storing notifications:", error);
       }
-    } else {
-      await SecureStore.deleteItemAsync("uid");
     }
   };
   return (
     <NotificationContext
       value={{
-        setUser: setuser,
-        setUid: setuid,
-        user,
-        uid,
+        notifications,
+        setNotifications: setNotificationsLocal,
       }}
     >
       {children}

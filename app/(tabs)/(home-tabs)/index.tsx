@@ -16,6 +16,7 @@ import { getLiveNotifications } from "~/firebase/ForumApi";
 import { Notification as NotificationType } from "~/lib/types"; // update path as needed
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
 import { useAuth } from "~/lib/useContext/useAuthContext";
+import { useNotification } from "~/lib/useContext/useNotificationContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
@@ -36,18 +37,19 @@ export default function Home() {
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-
+  const { notifications, setNotifications } = useNotification();
   // Helper to toggle icon colors based on theme
   const iconColor = colorScheme === "dark" ? "#ccc" : "#000";
 
   useEffect(() => {
     // Subscribes to realtime updates
     // const unsubscribe = getNotifications(setNotifications);
-    getLiveNotifications((x) => {
+    const unsubscribe = getLiveNotifications((x) => {
+      console.log("Notifications updated:", x);
       setNotifications(x);
     });
-    // return () => unsubscribe();
+    console.log("Notifications:", [notifications]);
+    return () => unsubscribe();
   }, []);
 
   return (

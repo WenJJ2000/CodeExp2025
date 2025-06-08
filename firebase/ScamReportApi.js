@@ -17,7 +17,7 @@ export async function createReport({
   const reportData = {
     createdBy: createdBy,
     scamReportType,
-    title: title,
+    title: sender,
     content: `${title ? `${title || "No title"}\n${content}` : content}`,
     location: location,
     numOfReplies: 0,

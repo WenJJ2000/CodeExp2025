@@ -11,6 +11,7 @@ import {
   DocumentSnapshot,
   DocumentData,
   limit,
+  orderBy,
 } from "firebase/firestore";
 import { ScamReport, Notification } from "../lib/types";
 import { getReply } from "./ReplyApi";
@@ -116,7 +117,7 @@ export async function getAScamReport(id: string) {
 }
 export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
   console.log("running LiveUpdate");
-  const q = query(collection(db, "scamReports"));
+  const q = query(collection(db, "scamReports"), orderBy("createdAt", "desc"));
   const observer = onSnapshot(q, async (querySnapshot) => {
     const tempResult: any[] = [];
     const result: ScamReport[] = [];
@@ -236,27 +237,23 @@ export const getLiveNotifications = (
 ) => {
   const changeMap: Record<string, string> = {
     added: "New",
-    modified: "Modified",
+    modified: "Updated",
     removed: "Removed",
   };
-  const q = query(collection(db, "scamReports"));
+  const q = query(collection(db, "scamReports"), orderBy("createdAt", "desc"));
   const observer = onSnapshot(q, (snapshot) => {
     const x: Notification[] = snapshot.docChanges().map((change) => {
-      if (change.type === "added") {
-        console.log("New city: ", change.doc.data());
-      }
-      if (change.type === "modified") {
-        console.log("Modified city: ", change.doc.data());
-      }
-      if (change.type === "removed") {
-        console.log("Removed city: ", change.doc.data());
-      }
+      const changeData = change.doc.data();
+      const timestamp =
+        change.type === "added" ? changeData.createdAt : changeData.updatedAt;
       const title = changeMap[change.type];
       return {
         id: change.doc.id,
-        title: title,
-        subtitle: change.doc.data().title,
-        timestamp: change.doc.data().createdAt.toDate(),
+        title: `${title} ${
+          changeData.isEducation ? "Educational Post" : "Scam Report"
+        } `,
+        subtitle: changeData.title || changeData.content,
+        timestamp: timestamp.toDate(),
       } as Notification;
     });
     callback(
