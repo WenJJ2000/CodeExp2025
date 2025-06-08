@@ -15,7 +15,7 @@ import { Button } from "~/components/ui/button";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import { ForumReplyImage } from "~/components/custom-ui/forum/forum-reply-image";
+import { PressableImage } from "~/components/custom-ui/pressable-image";
 import {
   Option,
   Select,
@@ -152,7 +152,7 @@ export default function AddPostPage() {
             />
           </View>
           <View className="mb-2 ">
-            {image && <ForumReplyImage image={image} />}
+            {image && <PressableImage image={image} />}
           </View>
           <View className="mb-2 ">
             <Button

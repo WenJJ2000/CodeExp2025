@@ -10,7 +10,7 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { reply } from "~/firebase/ReplyApi";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import * as FileSystem from "expo-file-system";
-import { ForumReplyImage } from "./forum-reply-image";
+import { PressableImage } from "../pressable-image";
 export function ForumReplyPopup({
   scamReportId,
   scamReportOrReply,
@@ -137,7 +137,7 @@ export function ForumReplyPopup({
           }}
         />
         <View className="w-full flex-row justify-between items-center mb-2">
-          {image && <ForumReplyImage image={image} />}
+          {image && <PressableImage image={image} />}
         </View>
         <View className="flex-row justify-between items-center w-full">
           <View className="flex-row items-center gap-2 w-fit">

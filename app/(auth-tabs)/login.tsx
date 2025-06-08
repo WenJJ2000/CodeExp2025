@@ -1,49 +1,50 @@
-import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
-import { useState } from 'react';
-import { Image, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Text } from '~/components/ui/text';
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useState } from "react";
+import { Image, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Text } from "~/components/ui/text";
 
-import { login } from '~/firebase/AuthApi';
-import { useAuth } from '~/lib/useContext/useAuthContext';
+import { login } from "~/firebase/AuthApi";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 
 export default function Screen() {
   const navigator = useRouter();
   const { setUser, setUid } = useAuth();
   const handleLogin = async () => {
     if (!email || !password) {
-      console.error('Email and password are required');
+      console.error("Email and password are required");
       return;
     }
     try {
-      const user = await login(email, password);
-      if (!user) {
-        console.error('Login failed');
+      const x: any = await login(email, password);
+      if (!x) {
+        console.error("Login failed");
         return;
       }
-      await SecureStore.setItemAsync('user', JSON.stringify(user));
-      setUser(JSON.stringify(user));
-      await SecureStore.setItemAsync('uid', user.uid);
-      setUid(user.uid);
-      navigator.navigate('../');
+      await SecureStore.setItemAsync("user", JSON.stringify(x));
+      setUser(JSON.stringify(x));
+      await SecureStore.setItemAsync("uid", x.id);
+      setUid(x.id);
+
+      navigator.navigate("../");
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return;
     }
   };
   const handleCancel = () => {
     navigator.back();
   };
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <SafeAreaView className="flex-1 bg-secondary/30">
       <Image
-        source={require('~/assets/images/login-background.png')}
+        source={require("~/assets/images/login-background.png")}
         resizeMethod="resize"
         resizeMode="cover"
         className="w-full h-full  absolute top-0 left-0 opacity-50"

@@ -33,8 +33,9 @@ export async function getScamReports() {
         replies: data.replies || [],
         content: data.content || "",
         title: data.title || "",
-        image: data.image || "",
+        images: data.images || [],
         createdBy: data.createdBy || "",
+        location: data.location || "",
       };
     });
     for (const report of reports) {
@@ -83,8 +84,10 @@ export async function getAScamReport(id: string) {
       replies: data.replies || [],
       content: data.content || "",
       title: data.title || "",
-      image: data.image || "",
+
+      images: data.images || [],
       createdBy: data.createdBy || "",
+      location: data.location || "",
     };
   });
   for (const report of reports) {
@@ -142,11 +145,13 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
         numOfReplies: data.numOfReplies || 0,
         content: data.content || "",
         title: data.title || "",
-        image: data.image || "",
+
+        images: data.images || [],
         createdBy: data.createdBy || "",
         isEducation: data.isEducation || false,
         isDeleted: data.isDeleted || false,
         createdById: data.createdBy || "",
+        location: data.location || "",
       });
     });
     for (const report of tempResult) {
@@ -208,8 +213,9 @@ export const liveUpdateOnASingleScamReport = (
           replies: data.replies || [],
           content: data.content,
           title: data.title,
-          image: data.image,
+          images: data.images || [],
           createdBy: data.createdBy,
+          location: data.location || "",
         };
         const reporterDoc = await getDoc(doc(db, "users", result.createdBy));
         if (reporterDoc.exists()) {
