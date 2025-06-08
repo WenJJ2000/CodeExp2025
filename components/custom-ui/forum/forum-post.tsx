@@ -23,11 +23,13 @@ export function ForumPost({
   if (!scamReport) {
     return null; // Handle the case where scamReport is undefined
   }
-  const lastUpdated = new Date(Date.now() - scamReport.createdAt.getTime());
-  const daysAgo = lastUpdated.getDay();
-  const hoursAgo = lastUpdated.getHours();
-  const minutesAgo = lastUpdated.getMinutes();
-  // console.log(daysAgo, hoursAgo, minutesAgo);
+  const lastUpdated =
+    scamReport.updatedAt.getTime() > scamReport.createdAt.getTime()
+      ? new Date(new Date().getTime() - scamReport.updatedAt.getTime())
+      : new Date(new Date().getTime() - scamReport.createdAt.getTime());
+  const daysAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60 * 24)) - 1;
+  const hoursAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60)) - 1;
+  const minutesAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60));
   const formattedTimeAgo =
     daysAgo > 0
       ? `${daysAgo}d`

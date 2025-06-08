@@ -10,7 +10,7 @@ import { SettingsButton } from "~/components/settingsButton";
 export default function TabLayout() {
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
-    console.log("Settings pressed");
+    // console.log("Settings pressed");
   }
 
   return (

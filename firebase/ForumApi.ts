@@ -123,11 +123,11 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
       const data = doc.data();
       const createdDate = new Date(Date.parse(data.createdAt.toDate()));
       const formattedCreatedDate = new Date(
-        createdDate.setHours(createdDate.getHours() + 8)
+        createdDate.setHours(createdDate.getHours())
       );
       const updatedDate = new Date(Date.parse(data.createdAt.toDate()));
       const formattedUpdatedDate = new Date(
-        updatedDate.setHours(updatedDate.getHours() + 8)
+        updatedDate.setHours(updatedDate.getHours())
       );
       tempResult.push({
         id: doc.id,
@@ -182,11 +182,11 @@ export const liveUpdateOnASingleScamReport = (
         }
         const createdDate = new Date(Date.parse(data.createdAt.toDate()));
         const formattedCreatedDate = new Date(
-          createdDate.setHours(createdDate.getHours() + 8)
+          createdDate.setHours(createdDate.getHours())
         );
         const updatedDate = new Date(Date.parse(data.createdAt.toDate()));
         const formattedUpdatedDate = new Date(
-          updatedDate.setHours(updatedDate.getHours() + 8)
+          updatedDate.setHours(updatedDate.getHours())
         );
         for (const key in data.replies) {
           const reply = await getReply(data.replies[key]);
@@ -229,3 +229,7 @@ export const liveUpdateOnASingleScamReport = (
 
   return observer;
 };
+
+export const getLiveNotifications = (
+  callback: (notifications: DocumentData[]) => void
+) => {};

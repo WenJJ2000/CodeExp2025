@@ -56,7 +56,7 @@ export type FilterProps = {
 export function Filter({ filter, setFilter }: FilterProps) {
   const handleFilterPress = (selectedFilter: Filters) => {
     setFilter(selectedFilter);
-    console.log(`Filter set to: ${selectedFilter}`);
+    // console.log(`Filter set to: ${selectedFilter}`);
   };
   const { isDarkColorScheme } = useColorScheme();
   const [isClicked, setIsClicked] = useState(false);
