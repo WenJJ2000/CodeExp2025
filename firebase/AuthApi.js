@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, db } from "./firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export async function register(email, password, username) {
   const userCredential = await createUserWithEmailAndPassword(
@@ -35,7 +35,10 @@ export async function login(email, password) {
   const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
   if (userDoc.exists()) {
     const userData = userDoc.data();
-    return { user: userCredential.user, ...userData };
+    return {
+      id: userCredential.user.uid,
+      ...userData,
+    };
   }
   if (!userCredential.user) {
     throw new Error("Login failed");

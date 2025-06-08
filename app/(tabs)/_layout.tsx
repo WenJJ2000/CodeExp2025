@@ -6,11 +6,15 @@ import ForumHeader, {
   Filters,
 } from "~/components/custom-ui/forum/forum-header";
 import { SettingsButton } from "~/components/settingsButton";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 
 export default function TabLayout() {
+  const { setUid, setUser } = useAuth();
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
     // console.log("Settings pressed");
+    setUid("");
+    setUser("");
   }
 
   return (
