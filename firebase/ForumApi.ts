@@ -10,8 +10,9 @@ import {
   onSnapshot,
   DocumentSnapshot,
   DocumentData,
+  limit,
 } from "firebase/firestore";
-import { ScamReport } from "../lib/types";
+import { ScamReport, Notification } from "../lib/types";
 import { getReply } from "./ReplyApi";
 
 export async function getScamReports() {
@@ -231,5 +232,41 @@ export const liveUpdateOnASingleScamReport = (
 };
 
 export const getLiveNotifications = (
-  callback: (notifications: DocumentData[]) => void
-) => {};
+  callback: (notifications: Notification[]) => void
+) => {
+  const changeMap: Record<string, string> = {
+    added: "New",
+    modified: "Modified",
+    removed: "Removed",
+  };
+  const q = query(collection(db, "scamReports"));
+  const observer = onSnapshot(q, (snapshot) => {
+    const x: Notification[] = snapshot.docChanges().map((change) => {
+      if (change.type === "added") {
+        console.log("New city: ", change.doc.data());
+      }
+      if (change.type === "modified") {
+        console.log("Modified city: ", change.doc.data());
+      }
+      if (change.type === "removed") {
+        console.log("Removed city: ", change.doc.data());
+      }
+      const title = changeMap[change.type];
+      return {
+        id: change.doc.id,
+        title: title,
+        subtitle: change.doc.data().title,
+        timestamp: change.doc.data().createdAt.toDate(),
+      } as Notification;
+    });
+    callback(
+      x.reduce((acc, curr) => {
+        if (acc.length < 5) {
+          acc.push(curr);
+        }
+        return acc;
+      }, [] as Notification[])
+    );
+  });
+  return observer;
+};

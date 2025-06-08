@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   ScrollView,
   View,
@@ -23,15 +22,9 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-} from "~/components/ui/dropdown-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScamReportType, scamReportTypes } from "~/lib/types";
 

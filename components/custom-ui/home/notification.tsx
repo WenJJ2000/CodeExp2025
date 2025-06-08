@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { Text } from "~/components/ui/text";
-export default function Notification({ item }: { item: any }) {
+import { Notification as NotificationType } from "~/lib/types";
+export default function Notification({ item }: { item: NotificationType }) {
   return (
     <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3">
       <Text className="font-bold text-base mb-1 text-black dark:text-white">
@@ -10,7 +11,7 @@ export default function Notification({ item }: { item: any }) {
         {item.subtitle}
       </Text>
       <Text className="font-semibold text-blue-700 dark:text-blue-400">
-        {item.timestamp}
+        {item.timestamp.toTimeString().slice(0, 5)}
       </Text>
     </View>
   );
