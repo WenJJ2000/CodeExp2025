@@ -2,6 +2,18 @@ import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
 
+
+export interface ScamReportInput {
+  scamReportType: string;
+  sender: string;
+  title: string;
+  content: string;
+  location: string;
+  createdBy: string;
+  isEducation?: boolean;
+  images?: string[];
+}
+
 export async function createReport({
   scamReportType,
   sender,
@@ -10,8 +22,8 @@ export async function createReport({
   location,
   createdBy,
   isEducation = false,
-  image = "",
-}) {
+  images = [],
+}: ScamReportInput) {
   const uuidValue = uuid.v4();
 
   const reportData = {
@@ -24,7 +36,7 @@ export async function createReport({
     createdAt: new Date(),
     updatedAt: new Date(),
     scamReportStatus: "INVALID",
-    image: image || "",
+    images,
     isEducation,
     isDeleted: false,
     votes: [],
@@ -46,11 +58,11 @@ export async function getAllScamReports() {
 }
 
 export async function createScamCheck(
-  userId,
-  inputType,
-  inputData,
-  postedToForum
-) {
+  userId: string,
+  inputType: string,
+  inputData: string,
+  postedToForum: boolean
+){
   const uuidValue = uuid.v4();
 
   const d = {

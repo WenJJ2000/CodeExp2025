@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import Notification from "~/components/custom-ui/home/notification";
 import { getLiveNotifications } from "~/firebase/ForumApi";
-import { Notification as NotificationType } from "~/lib/types"; // update path as needed
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useNotification } from "~/lib/useContext/useNotificationContext";
@@ -88,9 +87,7 @@ export default function Home() {
       </View>
 
       {/* Shortcuts */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
-        Shortcuts
-      </Text>
+      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
           const IconComponent = sc.iconType;

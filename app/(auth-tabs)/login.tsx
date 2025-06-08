@@ -87,7 +87,8 @@ export default function Screen() {
           variant="secondary"
           className="w-full"
           size="lg"
-          onPress={() => handleCancel()}
+          // onPress={() => handleCancel()}
+          onPress={() => navigator.back()}
         >
           <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
             Cancel
