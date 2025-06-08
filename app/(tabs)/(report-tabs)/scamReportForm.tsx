@@ -95,6 +95,7 @@ export default function ScamReportForm() {
 
   const navigation = useNavigation();
 
+
   // Inside your component
   useFocusEffect(
     useCallback(() => {
@@ -127,33 +128,51 @@ export default function ScamReportForm() {
     });
   }, []);
 
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);      // for preview
+  const [imageBase64, setImageBase64] = useState<string | null>(null); // for storage
   const [extractedText, setExtractedText] = useState("");
+  // Bottom images for evidence (array)
+const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: string }[]>([]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
-      base64: true, // needed for Vision API
+      base64: true,
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      const base64Img = result.assets[0].base64;
-      setImage(result.assets[0].uri); // for preview
-      if (base64Img) {
-        extractTextFromImage(base64Img);
+      const uri = result.assets[0].uri;
+      const base64 = result.assets[0].base64 ?? null;
+
+      setImage(uri);
+      setImageBase64(base64);
+
+      if (base64) {
+        extractTextFromImage(base64); // autofill content
       }
     }
   };
 
-  const IN_PERSON_LOCATIONS = [
-    { label: "Mall", value: "mall" },
-    { label: "MRT Station", value: "mrt" },
-    { label: "HDB Void Deck", value: "void_deck" },
-    { label: "Coffee Shop", value: "coffee_shop" },
-    { label: "Others", value: "others" },
-  ];
+  const pickEvidenceImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    quality: 1,
+    base64: true,
+    allowsMultipleSelection: true, // Only works on web, but you can handle manually
+  });
 
+  if (!result.canceled && result.assets.length > 0) {
+    // Add all selected images to array
+    setEvidenceImages(prev => [
+      ...prev,
+      ...result.assets.map(asset => ({
+        uri: asset.uri,
+        base64: asset.base64 ?? ""
+      }))
+    ]);
+  }
+};
 
   const extractTextFromImage = async (base64Image: string) => {
     try {
@@ -218,6 +237,7 @@ export default function ScamReportForm() {
         content: formData.content,
         location: formData.location,
         createdBy: user?.uid ?? "anonymous",
+        evidenceImages: evidenceImages.map(img => img.base64),
       });
       setStep(5);
     } catch (error) {
@@ -262,6 +282,11 @@ export default function ScamReportForm() {
           // Optionally add more:
           case "SOCIAL_MEDIA":
           case "APP":
+            if (formData.sender.trim().length < 3) {
+              newErrors.sender = "Too short.";
+              isValid = false;
+            }
+            break;
           case "IN_PERSON":
             if (formData.sender.trim().length < 3) {
               newErrors.sender = "Too short.";
@@ -459,10 +484,10 @@ export default function ScamReportForm() {
                   setErrors((prev) => ({ ...prev, title: "" }));
                 }}
                 className={`border rounded-lg p-3 mb-1 ${errors.title
-                    ? "border-red-500"
-                    : isDark
-                      ? "bg-gray-900 text-white border-gray-600"
-                      : "bg-white text-black border-gray-400"
+                  ? "border-red-500"
+                  : isDark
+                    ? "bg-gray-900 text-white border-gray-600"
+                    : "bg-white text-black border-gray-400"
                   }`}
                 placeholder={config.titleLabel}
                 placeholderTextColor={isDark ? "#999" : "#666"}
@@ -495,7 +520,7 @@ export default function ScamReportForm() {
             </Text>
           </TouchableOpacity>
 
-          {extractedText ? (
+          {/* {extractedText ? (
             <View className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
               <Text className={`${isDark ? "text-white" : "text-black"}`}>
                 Extracted Text:
@@ -504,7 +529,7 @@ export default function ScamReportForm() {
                 {extractedText}
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
 
           <Text
             className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"
@@ -528,10 +553,10 @@ export default function ScamReportForm() {
               setErrors((prev) => ({ ...prev, content: "" }));
             }}
             className={`border rounded-lg p-3 mb-1 ${errors.content
-                ? "border-red-500"
-                : isDark
-                  ? "bg-gray-900 text-white border-gray-600"
-                  : "bg-white text-black border-gray-400"
+              ? "border-red-500"
+              : isDark
+                ? "bg-gray-900 text-white border-gray-600"
+                : "bg-white text-black border-gray-400"
               }`}
             placeholder={config.contentLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
@@ -539,18 +564,60 @@ export default function ScamReportForm() {
           {errors.content ? (
             <Text className="text-red-500 text-sm mb-3">{errors.content}</Text>
           ) : null}
+
+          <View className="mt-6">
+            <Text className={`text-base font-semibold mb-2 ${isDark ? "text-white" : "text-black"}`}>
+              Upload Additional Images (optional)
+            </Text>
+            <TouchableOpacity
+              onPress={pickEvidenceImage}
+              className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
+            >
+              <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
+              <Text className={`${isDark ? "text-white" : "text-black"}`}>Upload Evidence Image</Text>
+            </TouchableOpacity>
+
+            {evidenceImages.length > 0 && (
+              <View className="flex-row flex-wrap">
+                {evidenceImages.map((img, idx) => (
+                  <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
+                    <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
+                    <View style={{ width: 200, height: 200, marginVertical: 8 }}>
+                      <Image
+                        source={{ uri: img.uri }}
+                        style={{ width: 200, height: 200, borderRadius: 8 }}
+                        resizeMode="cover"
+                      />
+                      <TouchableOpacity
+                        onPress={() => setEvidenceImages(prev => prev.filter((_, i) => i !== idx))}
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          zIndex: 2,
+                          backgroundColor: "rgba(255,0,0,0.8)",
+                          borderRadius: 12,
+                          width: 16,
+                          height: 16,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Ionicons name="close" size={12} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
+
+          </View>
         </>
       )}
-
-      {/* Step 4: Preview */}
+            
       {step === 4 && (
         <>
-          <Text
-            className={`text-xl font-bold mb-4 ${isDark ? "text-white" : "text-black"
-              }`}
-          >
-            Preview
-          </Text>
+          <Text className={`text-xl font-bold mb-4 ${isDark ? "text-white" : "text-black"}`}>Preview</Text>
           <Text className={`mb-2 ${isDark ? "text-white" : "text-black"}`}>
             <Text className="font-semibold">Type of scam: </Text>
             {scamType}
@@ -565,12 +632,7 @@ export default function ScamReportForm() {
               {formData.title}
             </Text>
           )}
-          <Text
-            className={`mb-2 font-semibold ${isDark ? "text-white" : "text-black"
-              }`}
-          >
-            Message:
-          </Text>
+          <Text className={`mb-2 font-semibold ${isDark ? "text-white" : "text-black"}`}>Message:</Text>
           <Text
             className={`border rounded-md p-3 ${isDark
                 ? "bg-gray-900 text-white border-gray-600"
@@ -579,6 +641,41 @@ export default function ScamReportForm() {
           >
             {formData.content}
           </Text>
+
+          {evidenceImages.length > 0 && (
+            <View className="flex-row flex-wrap">
+              {evidenceImages.map((img, idx) => (
+                <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
+                  <View style={{ width: 200, height: 200, marginVertical: 8 }}>
+                    <Image
+                      source={{ uri: img.uri }}
+                      style={{ width: 200, height: 200, borderRadius: 8 }}
+                      resizeMode="cover"
+                    />
+                    <TouchableOpacity
+                      onPress={() => setEvidenceImages(prev => prev.filter((_, i) => i !== idx))}
+                      style={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        zIndex: 2,
+                        backgroundColor: "rgba(255,0,0,0.8)",
+                        borderRadius: 12,
+                        width: 16,
+                        height: 16,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Ionicons name="close" size={12} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
         </>
       )}
 
@@ -634,6 +731,8 @@ export default function ScamReportForm() {
           </TouchableOpacity>
         </View>
       )}
+      
     </ScrollView>
+
   );
 }

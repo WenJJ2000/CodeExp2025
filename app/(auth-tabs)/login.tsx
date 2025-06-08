@@ -1,11 +1,11 @@
+import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { useState } from 'react';
 import { Image, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Text } from '~/components/ui/text';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
 
 import { login } from '~/firebase/AuthApi';
 import { useAuth } from '~/lib/useContext/useAuthContext';
@@ -86,7 +86,8 @@ export default function Screen() {
           variant="secondary"
           className="w-full"
           size="lg"
-          onPress={() => handleCancel()}
+          // onPress={() => handleCancel()}
+          onPress={() => navigator.back()}
         >
           <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
             Cancel

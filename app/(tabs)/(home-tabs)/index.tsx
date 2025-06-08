@@ -51,7 +51,7 @@ export default function Home() {
 
 
       {/* Shortcuts */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Shortcuts</Text>
+      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
           const IconComponent = sc.iconType;

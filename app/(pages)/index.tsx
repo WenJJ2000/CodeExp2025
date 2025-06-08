@@ -1,12 +1,12 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
+import * as SercureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
-import * as SercureStore from "expo-secure-store";
 
 export default function Screen() {
   const navigator = useRouter();
@@ -42,7 +42,7 @@ export default function Screen() {
           variant="default"
           size="lg"
           onPress={() => {
-            navigator.replace("../(auth-tabs)/signup");
+            navigator.push("../(auth-tabs)/signup");
           }}
         >
           <Text className="text-lg dark:color-white">Let's get started</Text>
