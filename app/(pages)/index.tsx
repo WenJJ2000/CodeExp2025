@@ -33,7 +33,7 @@ export default function Screen() {
         style={{ aspectRatio: 1 }}
       />
       <View className="flex-1 justify-center items-center gap-5 p-6">
-        <Text className="text-6xl text-center ">ScamBusters</Text>
+        <Text className="text-5xl text-center ">ScamBusters</Text>
         <Text className="text-lg text-center text-muted-foreground">
           Detect, Report, and Defeat Online Threats
         </Text>

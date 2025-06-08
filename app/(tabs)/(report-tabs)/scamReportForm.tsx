@@ -6,6 +6,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
@@ -28,6 +29,7 @@ const ScamCategoryMap: Record<ScamReportType, string> = {
   WEBSITE: "website",
   IN_PERSON: "inPerson",
   APP: "app",
+  CRYPTO: "crypto",
 };
 
 const SCAM_CONFIG: Record<
@@ -67,6 +69,10 @@ const SCAM_CONFIG: Record<
   APP: {
     senderLabel: "App name or developer",
     contentLabel: "What did the app do?",
+  },
+  CRYPTO: { // Add crypto configuration
+    senderLabel: "Crypto Platform / Wallet",
+    contentLabel: "What happened with the crypto transaction?",
   },
 };
 
@@ -279,6 +285,15 @@ export default function ScamReportForm() {
               isValid = false;
             }
             break;
+          case "CRYPTO":
+            // Updated regex: allows both 'http://', 'https://', and 'www.' URLs
+            if (
+              !/^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(formData.sender.trim())
+            ) {
+              newErrors.sender = "Must be a valid crypto platform URL (with or without 'http(s)://').";
+              isValid = false;
+            }
+            break;
         }
       }
 
@@ -307,6 +322,16 @@ export default function ScamReportForm() {
       className={`flex-1 px-5 pt-10 ${isDark ? "bg-black" : "bg-white"}`}
       contentContainerStyle={{ paddingBottom: 100 }}
     >
+
+      {/* Back Button with Arrow */}
+      <Pressable onPress={() => navigation.goBack()} className="mb-4">
+        <Ionicons
+          name="arrow-back"
+          size={30}
+          color={isDark ? "white" : "black"}
+        />
+      </Pressable>
+            
       {/* Step indicator */}
       <View className="flex-row justify-between mb-6">
         {[1, 2, 3, 4].map((s) => (
@@ -396,17 +421,9 @@ export default function ScamReportForm() {
               scamType === "SMS" || scamType === "PHONE" ? 8 : undefined
             }
             className={`border rounded-lg p-3 mb-1
-                            ${errors.sender
-                ? "border-red-500"
-                : isDark
-                  ? "border-gray-600"
-                  : "border-gray-400"
-              }
-                            ${isDark
-                ? "text-white bg-gray-900"
-                : "text-black bg-white"
-              }
-                        `}
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
             placeholder={config.senderLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
           />
@@ -431,16 +448,10 @@ export default function ScamReportForm() {
                 keyboardType="numeric"
                 maxLength={6}
                 className={`border rounded-lg p-3 mb-1
-        ${errors.location
-                    ? "border-red-500"
-                    : isDark
-                      ? "border-gray-600"
-                      : "border-gray-400"}
-        ${isDark
-                    ? "text-white bg-gray-900"
-                    : "text-black bg-white"}
-      `}
-                placeholder="Enter postal code"
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+                placeholder={config.senderLabel}
                 placeholderTextColor={isDark ? "#999" : "#666"}
               />
               {errors.location ? (
@@ -464,13 +475,11 @@ export default function ScamReportForm() {
                   updateField("title", text);
                   setErrors((prev) => ({ ...prev, title: "" }));
                 }}
-                className={`border rounded-lg p-3 mb-1 ${errors.title
-                  ? "border-red-500"
-                  : isDark
-                    ? "bg-gray-900 text-white border-gray-600"
-                    : "bg-white text-black border-gray-400"
-                  }`}
-                placeholder={config.titleLabel}
+                className={`border rounded-lg p-3 mb-1
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+                placeholder={config.senderLabel}
                 placeholderTextColor={isDark ? "#999" : "#666"}
               />
               {errors.title ? (
@@ -533,13 +542,11 @@ export default function ScamReportForm() {
               updateField("content", text);
               setErrors((prev) => ({ ...prev, content: "" }));
             }}
-            className={`border rounded-lg p-3 mb-1 ${errors.content
-              ? "border-red-500"
-              : isDark
-                ? "bg-gray-900 text-white border-gray-600"
-                : "bg-white text-black border-gray-400"
-              }`}
-            placeholder={config.contentLabel}
+            className={`border rounded-lg p-3 mb-1
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+            placeholder={config.senderLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
           />
           {errors.content ? (

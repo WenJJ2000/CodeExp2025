@@ -1,4 +1,5 @@
 import { GOOGLE_VISION_API_KEY } from "@env";
+import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -20,13 +21,13 @@ import {
 } from "react-native";
 import { checkScamWithGradio } from "./checkScamWithGradio";
 
-const tabs = ["Text", "Image", "Number", "App"];
+const tabs = ["Text", "Image", "Number", "App", "Crypto"];
 
 export default function CheckTypePage() {
   const { type } = useLocalSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<
-    "text" | "image" | "number" | "app"
+    "text" | "image" | "number" | "app" | "crypto"
   >("text");
   const [input, setInput] = useState("");
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -96,7 +97,7 @@ export default function CheckTypePage() {
 
   useEffect(() => {
     const tabType = (type as string)?.toLowerCase();
-    if (["text", "image", "number", "app"].includes(tabType)) {
+    if (["text", "image", "number", "app", "crypto"].includes(tabType)) {
       setActiveTab(tabType as any);
     }
   }, [type]);
@@ -151,6 +152,10 @@ export default function CheckTypePage() {
           // console.log('Image input triggered – open file picker or camera logic here.');
           break;
 
+        case "crypto":
+          // console.log('File input triggered – open file picker or camera logic here.');
+          break;
+
         default:
         // console.log('Unknown tab selected.');
       }
@@ -162,7 +167,7 @@ export default function CheckTypePage() {
     }
   };
 
-  const handleTabChange = (tab: "text" | "image" | "number" | "app") => {
+  const handleTabChange = (tab: "text" | "image" | "number" | "app" | "crypto") => {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 150,
@@ -342,6 +347,24 @@ export default function CheckTypePage() {
             />
           </View>
         );
+        case "crypto":
+        return (
+          <View
+            className={`border rounded-2xl p-4 mb-2 ${
+              colorScheme === "dark" ? "border-gray-600" : "border-gray-300"
+            }`}
+          >
+            <TextInput
+              multiline
+              numberOfLines={4}
+              placeholder="Enter apple/google store app download link"
+              placeholderTextColor={colorScheme === "dark" ? "#aaa" : "#666"}
+              className={inputClass}
+              value={appInput}
+              onChangeText={setAppInput}
+            />
+          </View>
+        );
       default:
         return null;
     }
@@ -358,6 +381,15 @@ export default function CheckTypePage() {
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-1 p-5 bg-white dark:bg-black">
+          {/* Back Button with Arrow */}
+            <Pressable onPress={() => navigation.goBack()} className="mb-4">
+              <Ionicons
+                name="arrow-back"
+                size={30}
+                color={colorScheme === "dark" ? "white" : "black"}
+              />
+            </Pressable>
+
             {/* Header */}
             <View className="flex-row justify-between items-center mb-5">
               <Text className="text-3xl font-bold text-black dark:text-white">
@@ -369,7 +401,7 @@ export default function CheckTypePage() {
             </Text>
 
             {/* Tabs */}
-            <View className="flex-row p-1 rounded-full self-start mb-4 bg-[#eaf0ff] dark:bg-slate-800">
+            {/* <View className="flex-row p-1 rounded-full self-start mb-4 bg-[#eaf0ff] dark:bg-slate-800">
               {tabs.map((tab) => (
                 <Pressable
                   key={tab}
@@ -391,7 +423,39 @@ export default function CheckTypePage() {
                   </Text>
                 </Pressable>
               ))}
+            </View> */}
+
+            {/* Tabs */}
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <ScrollView
+                horizontal={true} // Enable horizontal scrolling
+                showsHorizontalScrollIndicator={false} // Hide the horizontal scrollbar
+                contentContainerStyle={{
+                  flexDirection: "row",
+                  justifyContent: "center", // Centers the content horizontally
+                  alignItems: "center", // Aligns items to the center vertically
+                }}
+              >
+                <View className="flex-row p-1 rounded-full self-start mb-4 bg-[#eaf0ff] dark:bg-slate-800">
+                  {tabs.map((tab) => (
+                    <Pressable
+                      key={tab}
+                      onPress={() => handleTabChange(tab.toLowerCase() as any)}
+                      className={`flex-1 px-8 py-2 rounded-full items-center justify-center ${activeTab === tab.toLowerCase() ? "bg-white dark:bg-black" : ""
+                        }`}
+                    >
+                      <Text
+                        className={`font-medium ${activeTab === tab.toLowerCase() ? "text-black dark:text-white" : "text-blue-400"
+                          }`}
+                      >
+                        {tab}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </ScrollView>
             </View>
+
 
             {/* Animated Input Section */}
             <Animated.View style={{ opacity: fadeAnim }}>

@@ -8,7 +8,8 @@ export type ScamReportType =
   | "WEBSITE"
   // | "MISINFORMATION"
   | "IN_PERSON"
-  | "APP";
+  | "APP"
+  | "CRYPTO";
 export const scamReportTypes: { value: ScamReportType; label: string }[] = [
   { value: "SMS", label: "SMS" },
   { value: "EMAIL", label: "Email" },
@@ -17,6 +18,7 @@ export const scamReportTypes: { value: ScamReportType; label: string }[] = [
   { value: "WEBSITE", label: "Website" },
   { value: "IN_PERSON", label: "In Person" },
   { value: "APP", label: "App" },
+  { value: "CRYPTO", label: "Crypto" },
 ];
 export type ForumTagVariant =
   | "PHONE"
@@ -27,8 +29,7 @@ export type ForumTagVariant =
   // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP"
-  | "VERIFIED"
-  | "EDUCATION";
+  | "CRYPTO";
 export type VoteType = "UPVOTE" | "DOWNVOTE";
 export type NotificationSetting = {
   id: string;

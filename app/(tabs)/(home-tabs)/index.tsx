@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  ScrollView,
   Text,
   View,
   useColorScheme,
@@ -27,6 +28,12 @@ const shortcuts = [
     iconType: Ionicons,
     iconName: "phone-portrait-outline",
     label: "App",
+  },
+  {
+    key: "crypto",
+    iconType: MaterialIcons,
+    iconName: "security",
+    label: "Crypto",
   },
 ];
 export default function Home() {
@@ -87,7 +94,7 @@ export default function Home() {
       </View>
 
       {/* Shortcuts */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
+      {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
           const IconComponent = sc.iconType;
@@ -109,7 +116,53 @@ export default function Home() {
             </Pressable>
           );
         })}
-      </View>
+      </View> */}
+
+<View className="mb-6">
+  <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+    Check Scams
+  </Text>
+  <ScrollView
+    horizontal={true}  // Enable horizontal scrolling
+    showsHorizontalScrollIndicator={false}  // Hide the horizontal scrollbar
+    contentContainerStyle={{ paddingHorizontal: 8 }}  // Optional: Adds padding to the left and right
+  >
+    {/* Use flex-row and justifyContent to manage spacing */}
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
+      {shortcuts.map((sc) => {
+        const IconComponent = sc.iconType;
+        return (
+          <Pressable
+            key={sc.key}
+            className="shortcut-btn"
+            onPress={() =>
+              router.push(`/(home-tabs)/checkScam?type=${sc.key}` as any)
+            }
+            android_ripple={{ color: "#ccc" }}
+            style={{
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: 10,  // Padding for better spacing within the button
+              borderWidth: 1, // Border width for the button
+              borderColor: colorScheme === "dark" ? "#ccc" : "#000", // Border color based on theme
+              borderRadius: 12, // Rounded corners for button
+              backgroundColor: colorScheme === "dark" ? "#333" : "#fff", // Button background color
+              flexShrink: 0, // Prevent button from shrinking if space is tight
+            }}
+          >
+            <IconComponent
+              name={sc.iconName}
+              size={30}  // Icon size
+              color={colorScheme === "dark" ? "#ccc" : "#000"}
+            />
+            <Text className="shortcut-label text-sm">{sc.label}</Text> {/* Button label */}
+          </Pressable>
+        );
+      })}
+    </View>
+  </ScrollView>
+</View>
+
 
       {/* Notifications */}
       <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
