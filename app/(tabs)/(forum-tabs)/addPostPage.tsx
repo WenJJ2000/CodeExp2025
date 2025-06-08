@@ -68,6 +68,7 @@ export default function AddPostPage() {
       createdBy: uid,
       isEducation: true,
       image: image || "",
+      location: "",
     });
     router.push("/(tabs)/(forum-tabs)");
   };
