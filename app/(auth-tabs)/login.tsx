@@ -35,7 +35,7 @@ export default function Screen() {
     }
   };
   const handleCancel = () => {
-    navigator.replace('../(pages)');
+    navigator.back();
   };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -86,8 +86,7 @@ export default function Screen() {
           variant="secondary"
           className="w-full"
           size="lg"
-          // onPress={() => handleCancel()}
-          onPress={() => navigator.back()}
+          onPress={() => handleCancel()}
         >
           <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
             Cancel
