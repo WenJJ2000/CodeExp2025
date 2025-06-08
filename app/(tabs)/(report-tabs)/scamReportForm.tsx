@@ -97,7 +97,7 @@ export default function ScamReportForm() {
     setFormData({ sender: "", title: "", content: "", location: "" });
     setErrors({ sender: "", title: "", content: "", location: "" });
     setExtractedText("");
-    setEvidenceImages([]);
+    setImages([]);
   }, [scamType]);
 
 
@@ -113,7 +113,7 @@ export default function ScamReportForm() {
   const [imageBase64, setImageBase64] = useState<string | null>(null); // for storage
   const [extractedText, setExtractedText] = useState("");
   // Bottom images for evidence (array)
-const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: string }[]>([]);
+  const [images, setImages] = useState<{ uri: string, base64: string }[]>([]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -145,7 +145,7 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
 
   if (!result.canceled && result.assets.length > 0) {
     // Add all selected images to array
-    setEvidenceImages(prev => [
+    setImages(prev => [
       ...prev,
       ...result.assets.map(asset => ({
         uri: asset.uri,
@@ -218,7 +218,7 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
         content: formData.content,
         location: formData.location,
         createdBy: user?.uid ?? "anonymous",
-        evidenceImages: evidenceImages.map(img => img.base64),
+        images: images.map(img => img.base64),
       });
       setStep(5);
     } catch (error) {
@@ -558,9 +558,9 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
               <Text className={`${isDark ? "text-white" : "text-black"}`}>Upload Evidence Image</Text>
             </TouchableOpacity>
 
-            {evidenceImages.length > 0 && (
+            {images.length > 0 && (
               <View className="flex-row flex-wrap">
-                {evidenceImages.map((img, idx) => (
+                {images.map((img, idx) => (
                   <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
                     <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
                     <View style={{ width: 200, height: 200, marginVertical: 8 }}>
@@ -570,7 +570,7 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
                         resizeMode="cover"
                       />
                       <TouchableOpacity
-                        onPress={() => setEvidenceImages(prev => prev.filter((_, i) => i !== idx))}
+                        onPress={() => setImages(prev => prev.filter((_, i) => i !== idx))}
                         style={{
                           position: "absolute",
                           top: 4,
@@ -623,9 +623,9 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
             {formData.content}
           </Text>
 
-          {evidenceImages.length > 0 && (
+          {images.length > 0 && (
             <View className="flex-row flex-wrap">
-              {evidenceImages.map((img, idx) => (
+              {images.map((img, idx) => (
                 <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
                   <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
                   <View style={{ width: 200, height: 200, marginVertical: 8 }}>
@@ -635,7 +635,7 @@ const [evidenceImages, setEvidenceImages] = useState<{ uri: string, base64: stri
                       resizeMode="cover"
                     />
                     <TouchableOpacity
-                      onPress={() => setEvidenceImages(prev => prev.filter((_, i) => i !== idx))}
+                      onPress={() => setImages(prev => prev.filter((_, i) => i !== idx))}
                       style={{
                         position: "absolute",
                         top: 4,

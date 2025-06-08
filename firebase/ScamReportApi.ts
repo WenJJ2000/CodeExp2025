@@ -11,8 +11,7 @@ export interface ScamReportInput {
   location: string;
   createdBy: string;
   isEducation?: boolean;
-  image?: string;
-  evidenceImages?: string[];
+  images?: string[];
 }
 
 export async function createReport({
@@ -23,7 +22,7 @@ export async function createReport({
   location,
   createdBy,
   isEducation = false,
-  evidenceImages = [],
+  images = [],
 }: ScamReportInput) {
   const uuidValue = uuid.v4();
 
@@ -37,7 +36,7 @@ export async function createReport({
     createdAt: new Date(),
     updatedAt: new Date(),
     scamReportStatus: "INVALID",
-    evidenceImages,
+    images,
     isEducation,
     isDeleted: false,
     votes: [],
