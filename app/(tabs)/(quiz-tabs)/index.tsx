@@ -5,12 +5,39 @@ import ShieldBadge from '~/components/QuizPage/Badge';
 import UserHeader from '~/components/QuizPage/UserHeader';
 import { Check } from '~/lib/icons/Check';
 import AnimatedProgressBar from '~/components/QuizPage/AnimatedProgressBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
+import { Pressable } from 'react-native';
+import { useAuth } from '~/lib/useContext/useAuthContext';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getCurrentUserData } from '~/firebase/UserApi';
 
 export default function Screen() {
   const maxLevel = 10;
   const [currLevel, setCurrLevel] = useState<number>(1);
+  const router = useRouter();
+  const [currentLevel, setCurrentLevel] = useState<number>(1);
+  const { user, uid } = useAuth();
 
+  //   async function getCurrentLevel(id: string) {
+  //     let userData = await getCurrentUserData(id);
+  //     console.log('User Data:', userData);
+  //     // setCurrLevel(userData);
+  //     return userData;
+  //   }
+
+  useEffect(() => {
+    if (uid) {
+      console.log(getCurrentUserData(uid));
+    } else {
+      console.log('No user ID found, unable to get current level.');
+    }
+  }, []);
+
+  useEffect(() => {
+    // console.log("User in QuizPage:", user);
+    // console.log("UID in QuizPage:", uid);
+  }, [user, uid]);
 
   return (
     <View className="flex-1 bg-secondary/30 px-6 pt-4">
@@ -32,6 +59,9 @@ export default function Screen() {
             backgroundColor: '#004CFF',
             minWidth: 300,
           }}
+          onPress={() => {
+            router.push('/(tabs)/(quiz-tabs)/questionPage' as any);
+          }}
         >
           <Text
             style={{
@@ -44,4 +74,7 @@ export default function Screen() {
       </View>
     </View>
   );
+}
+function getCurrentUserData(id: string) {
+  throw new Error('Function not implemented.');
 }
