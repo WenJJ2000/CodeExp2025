@@ -14,8 +14,6 @@ import {
   useColorScheme,
 } from "react-native";
 
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
 
 import { GOOGLE_VISION_API_KEY } from "@env";
 import { ScamReportType } from "~/lib/types";
@@ -95,28 +93,11 @@ export default function ScamReportForm() {
 
   const navigation = useNavigation();
 
-
-  // Inside your component
-  useFocusEffect(
-    useCallback(() => {
-      // When the screen is focused, do nothing (keep state)
-      return () => {
-        // When the screen is unfocused (navigated away), reset your state
-        setStep(1);
-        setScamType("EMAIL");
-        setFormData({ sender: "", title: "", content: "", location: "" });
-        setErrors({ sender: "", title: "", content: "", location: "" });
-        setExtractedText("");
-        setImage(null);
-      };
-    }, [])
-  );
-
   useEffect(() => {
     setFormData({ sender: "", title: "", content: "", location: "" });
     setErrors({ sender: "", title: "", content: "", location: "" });
     setExtractedText("");
-    setImage(null);
+    setEvidenceImages([]);
   }, [scamType]);
 
 
