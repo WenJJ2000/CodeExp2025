@@ -1,13 +1,13 @@
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
-import { ScamReport, ScamReportType } from "~/lib/types";
 
 export async function createReport({
   scamReportType,
   sender,
   title,
   content,
+  location,
   createdBy,
   isEducation = false,
   image = "",
@@ -17,8 +17,9 @@ export async function createReport({
   const reportData = {
     createdBy: createdBy,
     scamReportType,
-    title: sender,
+    title: title,
     content: `${title ? `${title || "No title"}\n${content}` : content}`,
+    location: location,
     numOfReplies: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -50,6 +51,8 @@ export async function createScamCheck(
   inputData,
   postedToForum
 ) {
+  const uuidValue = uuid.v4();
+
   const d = {
     userId,
     inputType,
