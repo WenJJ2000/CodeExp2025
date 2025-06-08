@@ -33,7 +33,7 @@ export async function getScamReports() {
         replies: data.replies || [],
         content: data.content || "",
         title: data.title || "",
-        image: data.image || "",
+        images: data.images || [],
         createdBy: data.createdBy || "",
         location: data.location || "",
       };
@@ -84,7 +84,8 @@ export async function getAScamReport(id: string) {
       replies: data.replies || [],
       content: data.content || "",
       title: data.title || "",
-      image: data.image || "",
+
+      images: data.images || [],
       createdBy: data.createdBy || "",
       location: data.location || "",
     };
@@ -144,7 +145,8 @@ export const liveUpdate = (callback: (doc: ScamReport[]) => void) => {
         numOfReplies: data.numOfReplies || 0,
         content: data.content || "",
         title: data.title || "",
-        image: data.image || "",
+
+        images: data.images || [],
         createdBy: data.createdBy || "",
         isEducation: data.isEducation || false,
         isDeleted: data.isDeleted || false,
@@ -211,7 +213,7 @@ export const liveUpdateOnASingleScamReport = (
           replies: data.replies || [],
           content: data.content,
           title: data.title,
-          image: data.image,
+          images: data.images || [],
           createdBy: data.createdBy,
           location: data.location || "",
         };

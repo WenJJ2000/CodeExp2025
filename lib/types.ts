@@ -76,7 +76,7 @@ export type ScamReport = {
   content: string;
   createdAt: Date;
   updatedAt: Date;
-  image?: string;
+  images?: string[];
   title: string;
   createdBy: User;
   numOfReplies: number;

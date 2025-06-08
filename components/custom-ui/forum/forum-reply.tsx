@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Reply } from "~/lib/types";
-import { ForumReplyImage } from "./forum-reply-image";
+import { PressableImage } from "../pressable-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { ForumReplyButton } from "./forum-reply-button";
 import { ForumReplyPopup } from "./forum-reply-popup";
@@ -56,7 +56,7 @@ export function ForumReply({
           <Text className="text-base text-muted-foreground">
             {reply.content}
           </Text>
-          {reply.image && <ForumReplyImage image={reply.image} />}
+          {reply.image && <PressableImage image={reply.image} />}
         </View>
         <View className="px-2   ml-2 border-l-2 border-l-primary items-end gap-2">
           <ForumReplyButton onPress={() => onClickReply(reply)} />

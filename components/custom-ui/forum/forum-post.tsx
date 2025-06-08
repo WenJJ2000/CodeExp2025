@@ -7,7 +7,9 @@ import { useRouter } from "expo-router";
 import { ForumVoteButton } from "./forum-vote-button";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { ForumReplyButton } from "./forum-reply-button";
-import { ForumReplyImage } from "./forum-reply-image";
+import { PressableImage } from "../pressable-image";
+import { ForumPostMap } from "./forum-post-map";
+import ImageTray from "../image-tray";
 export function ForumPost({
   scamReport,
   fulltext = false,
@@ -97,10 +99,13 @@ export function ForumPost({
           {formmatedContent}
         </Text>
       </View>
-      {scamReport?.image && fulltext && (
+      {scamReport?.images && fulltext && (
         <View className="px-4 pb-2 w-full">
-          <ForumReplyImage image={scamReport.image} />
+          <ImageTray images={scamReport.images} />
         </View>
+      )}
+      {scamReport?.location && fulltext && (
+        <ForumPostMap location={scamReport?.location} />
       )}
       <View className="w-full px-4 pb-2">
         <View className="flex-row  bg-secondary justify-between items-center gap-2">
