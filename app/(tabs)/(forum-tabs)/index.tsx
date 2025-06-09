@@ -33,42 +33,38 @@ export default function Index() {
     }
   }, [_queries, _filters]);
   function filterScamReports() {
-    if (
-      (searchQuery && searchQuery.length > 0 && searchQuery != "") ||
-      filter !== "All"
-    ) {
-      const filteredReports = scamReports
-        .filter(
-          (report) =>
-            report.title &&
-            report.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .filter((report) => {
-          if (filter === "EMAIL") {
-            return report.scamReportType === "EMAIL";
-          } else if (filter === "SMS") {
-            return report.scamReportType === "SMS";
-          } else if (filter === "PHONE") {
-            return report.scamReportType === "PHONE";
-          } else if (filter === "SOCIAL_MEDIA") {
-            return report.scamReportType === "SOCIAL_MEDIA";
-          } else if (filter === "WEBSITE") {
-            return report.scamReportType === "WEBSITE";
-          } else if (filter === "IN_PERSON") {
-            return report.scamReportType === "IN_PERSON";
-          } else if (filter === "APP") {
-            return report.scamReportType === "APP";
-          } else if (filter === "EDUCATION") {
-            return report.isEducation;
-          } else if (filter === "VERIFIED") {
-            return report.scamReportStatus === "VALID";
-          }
-          return false; // Default case, should not happen
-        });
-      setFilteredReports(filteredReports);
-    } else {
-      setFilteredReports(scamReports);
+    let filteredReports = scamReports;
+    if (filter !== "All") {
+      filteredReports = filteredReports.filter((report) => {
+        if (filter === "EMAIL") {
+          return report.scamReportType === "EMAIL";
+        } else if (filter === "SMS") {
+          return report.scamReportType === "SMS";
+        } else if (filter === "PHONE") {
+          return report.scamReportType === "PHONE";
+        } else if (filter === "SOCIAL_MEDIA") {
+          return report.scamReportType === "SOCIAL_MEDIA";
+        } else if (filter === "WEBSITE") {
+          return report.scamReportType === "WEBSITE";
+        } else if (filter === "IN_PERSON") {
+          return report.scamReportType === "IN_PERSON";
+        } else if (filter === "APP") {
+          return report.scamReportType === "APP";
+        } else if (filter === "EDUCATION") {
+          return report.isEducation;
+        } else if (filter === "VERIFIED") {
+          return report.scamReportStatus === "VALID";
+        }
+        return false; // Default case, should not happen
+      });
     }
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      filteredReports = filteredReports.filter((report) => {
+        return report.title.toLowerCase().includes(searchLower);
+      });
+    }
+    setFilteredReports(filteredReports);
   }
   async function fetchScamReports(reports: ScamReport[] = []) {
     setScamReports(reports);
