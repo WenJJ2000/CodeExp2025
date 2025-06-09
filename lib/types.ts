@@ -60,13 +60,6 @@ export type ForumTagVariant =
   | "VERIFIED"
   | "EDUCATION";
 export type VoteType = "UPVOTE" | "DOWNVOTE";
-export type NotificationSetting = {
-  id: string;
-  scamTest: boolean;
-  email: boolean;
-  sms: boolean;
-  phone: boolean;
-};
 export type Notification = {
   id: string;
   title: string;
@@ -98,7 +91,12 @@ export type User = {
   username: string;
   profilePicture?: string;
   quizLevelCleared: number;
-  notificationSettings: NotificationSetting;
+  notificationSettings: {
+    scamTest: boolean;
+    email: boolean;
+    sms: boolean;
+    phone: boolean;
+  };
   badgesObtained: Badge[];
 };
 

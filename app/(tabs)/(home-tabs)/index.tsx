@@ -16,6 +16,7 @@ import { getLiveNotifications } from "~/firebase/ForumApi";
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useNotification } from "~/lib/useContext/useNotificationContext";
+import { useUser } from "~/lib/useContext/useUserContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
@@ -32,7 +33,7 @@ const shortcuts = [
 export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
-  const { user } = useAuth();
+  const { user } = useUser();
   const [userName, setUserName] = useState("Lisa");
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
@@ -47,9 +48,8 @@ export default function Home() {
     const unsubscribe = getLiveNotifications((x) => {
       setNotifications(x);
     });
-    user &&
-      JSON.parse(user)?.username &&
-      setUserName(JSON.parse(user).username);
+    console.log("user:", user);
+    user && setUserName(user.username);
     return () => unsubscribe();
   }, []);
 
