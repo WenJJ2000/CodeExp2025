@@ -9,7 +9,10 @@ export type ScamReportType =
   // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP";
-export const scamReportTypes: { value: ScamReportType; label: string }[] = [
+export const scamReportTypes: {
+  value: ScamReportType;
+  label: string;
+}[] = [
   { value: "SMS", label: "SMS" },
   { value: "EMAIL", label: "Email" },
   { value: "PHONE", label: "Phone" },
@@ -17,6 +20,33 @@ export const scamReportTypes: { value: ScamReportType; label: string }[] = [
   { value: "WEBSITE", label: "Website" },
   { value: "IN_PERSON", label: "In Person" },
   { value: "APP", label: "App" },
+  // { value: "MISINFORMATION", label: "Misinformation" },
+];
+export type Filters =
+  | "All"
+  | "SMS"
+  | "EMAIL"
+  | "PHONE"
+  | "SOCIAL_MEDIA"
+  | "WEBSITE"
+  | "IN_PERSON"
+  | "APP"
+  | "EDUCATION"
+  | "VERIFIED";
+export const ScamReportFilterTypes: {
+  value: Filters;
+  label: string;
+}[] = [
+  { value: "All", label: "All" },
+  { value: "SMS", label: "SMS" },
+  { value: "EMAIL", label: "Email" },
+  { value: "PHONE", label: "Phone" },
+  { value: "SOCIAL_MEDIA", label: "Social Media" },
+  { value: "WEBSITE", label: "Website" },
+  { value: "IN_PERSON", label: "In Person" },
+  { value: "APP", label: "App" },
+  { value: "EDUCATION", label: "Education" },
+  { value: "VERIFIED", label: "Verified" },
 ];
 export type ForumTagVariant =
   | "PHONE"

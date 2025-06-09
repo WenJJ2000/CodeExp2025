@@ -6,11 +6,9 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import ForumHeader, {
-  Filters,
-} from "~/components/custom-ui/forum/forum-header";
+import ForumHeader from "~/components/custom-ui/forum/forum-header";
 import { ForumPost } from "~/components/custom-ui/forum/forum-post";
-import { ScamReport } from "~/lib/types";
+import { Filters, ScamReport } from "~/lib/types";
 
 import { liveUpdate } from "~/firebase/ForumApi";
 import { useGlobalSearchParams, useRouter } from "expo-router";
@@ -40,24 +38,26 @@ export default function Index() {
           report.title.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .filter((report) => {
-          if (filter === "Email") {
+          if (filter === "EMAIL") {
             return report.scamReportType === "EMAIL";
           } else if (filter === "SMS") {
             return report.scamReportType === "SMS";
-          } else if (filter === "Phone") {
+          } else if (filter === "PHONE") {
             return report.scamReportType === "PHONE";
-          } else if (filter === "Website") {
-            return report.scamReportType === "WEBSITE";
-          } else if (filter === "Social Media") {
+          } else if (filter === "SOCIAL_MEDIA") {
             return report.scamReportType === "SOCIAL_MEDIA";
-          } else if (filter === "In Person") {
+          } else if (filter === "WEBSITE") {
+            return report.scamReportType === "WEBSITE";
+          } else if (filter === "IN_PERSON") {
             return report.scamReportType === "IN_PERSON";
-          } else if (filter === "Education") {
+          } else if (filter === "APP") {
+            return report.scamReportType === "APP";
+          } else if (filter === "EDUCATION") {
             return report.isEducation;
-          } else if (filter === "Verified") {
+          } else if (filter === "VERIFIED") {
             return report.scamReportStatus === "VALID";
           }
-          return true; // Default case, should not happen
+          return false; // Default case, should not happen
         });
       setFilteredReports(filteredReports);
     } else {

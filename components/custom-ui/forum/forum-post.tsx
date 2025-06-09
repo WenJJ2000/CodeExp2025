@@ -106,7 +106,7 @@ export function ForumPost({
       )}
       {scamReport?.location && fulltext && (
         <View className="px-4 pb-2 w-full">
-          {/* <ForumPostMap location={scamReport?.location} /> */}
+          <ForumPostMap location={scamReport?.location} />
         </View>
       )}
       <View className="w-full px-4 pb-2">

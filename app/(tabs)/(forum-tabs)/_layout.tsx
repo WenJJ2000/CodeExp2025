@@ -1,17 +1,10 @@
 import "~/global.css";
 
-import {
-  Stack,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import * as React from "react";
-import { Appearance, Platform, SafeAreaView } from "react-native";
+import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import ForumHeader, {
-  Filters,
-} from "~/components/custom-ui/forum/forum-header";
+import ForumHeader from "~/components/custom-ui/forum/forum-header";
 import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
 
 export {
@@ -26,6 +19,7 @@ const usePlatformSpecificSetup = Platform.select({
 });
 import { PortalHost } from "@rn-primitives/portal";
 import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { Filters } from "~/lib/types";
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const router = useRouter();
