@@ -25,6 +25,7 @@ const usePlatformSpecificSetup = Platform.select({
   default: noop,
 });
 import { PortalHost } from "@rn-primitives/portal";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const router = useRouter();
@@ -48,14 +49,32 @@ export default function RootLayout() {
         initialRouteName="index"
       >
         <Stack.Screen
+          name="index"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumHeader
+                    searchQuery={searchQuery}
+                    filter={filter}
+                    setFilter={setFilter}
+                    setSearchQuery={setSearchQuery}
+                  />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
           name="forumPage"
           options={{
             headerShown: true,
             header: (props) => {
               return (
-                <SafeAreaView>
+                <SafeAreaViewForAndroid>
                   <ForumPageHeader />
-                </SafeAreaView>
+                </SafeAreaViewForAndroid>
               );
             },
           }}
@@ -66,27 +85,9 @@ export default function RootLayout() {
             headerShown: true,
             header: (props) => {
               return (
-                <SafeAreaView>
+                <SafeAreaViewForAndroid>
                   <ForumPageHeader />
-                </SafeAreaView>
-              );
-            },
-          }}
-        />
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: true,
-            header: (props) => {
-              return (
-                <SafeAreaView>
-                  <ForumHeader
-                    searchQuery={searchQuery}
-                    filter={filter}
-                    setFilter={setFilter}
-                    setSearchQuery={setSearchQuery}
-                  />
-                </SafeAreaView>
+                </SafeAreaViewForAndroid>
               );
             },
           }}

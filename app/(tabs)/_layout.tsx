@@ -43,7 +43,12 @@ export default function TabLayout() {
         options={{
           title: "Quiz",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="book" size={size} color={color} />
+            <FontAwesome6
+              name="book"
+              size={size}
+              color={color}
+              style={{ marginBottom: -3 }}
+            />
           ),
           tabBarButton: (props) => (
             <>

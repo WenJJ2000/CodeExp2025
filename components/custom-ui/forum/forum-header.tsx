@@ -19,7 +19,7 @@ export default function ForumHeader({
 }) {
   return (
     <AppHeader
-      leftChildren={<Text className="text-2xl font-bold">Forum</Text>}
+      leftChildren={<Text className="text-2xl font-bold ">Forum</Text>}
       rightChildren={
         <>
           <Input

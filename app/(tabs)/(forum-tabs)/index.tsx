@@ -16,8 +16,9 @@ import { liveUpdate } from "~/firebase/ForumApi";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useColorScheme } from "~/lib/useColorScheme";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 
-export default function Screen() {
+export default function Index() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +79,7 @@ export default function Screen() {
   }, [filter, searchQuery, scamReports]);
 
   return (
-    <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
       <FlatList
         className="-z-10"
         data={filteredReports}
@@ -108,6 +109,6 @@ export default function Screen() {
           color={colorScheme === "light" ? "black" : "white"}
         />
       </Pressable>
-    </SafeAreaView>
+    </SafeAreaViewForAndroid>
   );
 }

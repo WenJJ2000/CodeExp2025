@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { ForumReply } from "~/components/custom-ui/forum/forum-reply";
 import { ForumReplyPopup } from "~/components/custom-ui/forum/forum-reply-popup";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 import { Text } from "~/components/ui/text";
 import { liveUpdateOnASingleScamReport } from "~/firebase/ForumApi";
 import { Reply, ScamReport } from "~/lib/types";
@@ -38,9 +39,9 @@ export default function ForumPage() {
   useEffect(() => {}, []);
   if (scamReport === undefined) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-secondary/30">
+      <SafeAreaViewForAndroid className="flex-1 justify-center items-center bg-secondary/30">
         <Text className="text-lg">Loading...</Text>
-      </SafeAreaView>
+      </SafeAreaViewForAndroid>
     );
   }
   const onClickReplyButton = (item: Reply) => {

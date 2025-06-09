@@ -28,6 +28,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScamReportType, scamReportTypes } from "~/lib/types";
 import ImageTray from "~/components/custom-ui/image-tray";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 
 export default function AddPostPage() {
   const router = useRouter();
@@ -112,7 +113,7 @@ export default function AddPostPage() {
     }
   };
   return (
-    <SafeAreaView className="flex-1 bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 bg-secondary/30">
       <ScrollView className="ml-4 mr-4 mt-4 mb-2 p-4">
         <KeyboardAvoidingView>
           <View className="flex-row items-center justify-between mb-4">
@@ -198,6 +199,6 @@ export default function AddPostPage() {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaViewForAndroid>
   );
 }

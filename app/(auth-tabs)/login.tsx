@@ -9,6 +9,7 @@ import * as SecureStore from "expo-secure-store";
 
 import { login } from "~/firebase/AuthApi";
 import { useAuth } from "~/lib/useContext/useAuthContext";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 
 export default function Screen() {
   const navigator = useRouter();
@@ -42,7 +43,7 @@ export default function Screen() {
   const [password, setPassword] = useState("");
 
   return (
-    <SafeAreaView className="flex-1 bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 bg-secondary/30">
       <Image
         source={require("~/assets/images/login-background.png")}
         resizeMethod="resize"
@@ -95,6 +96,6 @@ export default function Screen() {
           </Text>
         </Button>
       </View>
-    </SafeAreaView>
+    </SafeAreaViewForAndroid>
   );
 }
