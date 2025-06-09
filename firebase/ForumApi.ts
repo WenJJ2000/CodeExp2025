@@ -260,6 +260,7 @@ export const getLiveNotifications = (
         } `,
         subtitle: changeData.title || changeData.content,
         timestamp: timestamp.toDate(),
+        action: change.type,
       } as Notification;
     });
     callback(

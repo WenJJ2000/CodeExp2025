@@ -1,4 +1,5 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { Redirect } from "expo-router";
 import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import { useEffect, useState } from "react";
 import {
@@ -28,10 +29,11 @@ export default function ForumPage() {
   >();
   const [isScamReport, setIsScamReport] = useState(true);
   const [showReplyPopup, setShowReplyPopup] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     liveUpdateOnASingleScamReport(scamReportId, (data: any) => {
       setScamReport(data as ScamReport);
+      setIsLoading(false);
     });
   }, [scamReportId]);
   const router = useRouter();
@@ -41,6 +43,7 @@ export default function ForumPage() {
     return (
       <SafeAreaViewForAndroid className="flex-1 justify-center items-center bg-secondary/30">
         <Text className="text-lg">Loading...</Text>
+        {!isLoading && <Redirect href={"/(tabs)/(forum-tabs)"} />}
       </SafeAreaViewForAndroid>
     );
   }

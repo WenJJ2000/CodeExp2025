@@ -72,6 +72,7 @@ export type Notification = {
   title: string;
   subtitle: string;
   timestamp: Date;
+  action: "removed" | "added" | "modified";
 };
 export type QuizOption = {
   id: string;

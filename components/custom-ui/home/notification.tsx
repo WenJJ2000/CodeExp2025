@@ -17,10 +17,12 @@ export default function Notification({ item }: { item: NotificationType }) {
   return (
     <Pressable
       onPress={() =>
-        router.push({
-          pathname: "/forumPage",
-          params: { scamReportId: item.id },
-        })
+        item.action !== "removed"
+          ? router.push({
+              pathname: "/forumPage",
+              params: { scamReportId: item.id },
+            })
+          : {}
       }
     >
       <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3">
