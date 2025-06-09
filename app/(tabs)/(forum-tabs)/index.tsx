@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   SafeAreaView,
@@ -83,7 +83,14 @@ export default function Index() {
   useEffect(() => {
     filterScamReports();
   }, [filter, searchQuery, scamReports]);
+  const ref = useRef(null as FlatList<ScamReport> | null);
 
+  const scrollToIndex = (index: number) => {
+    ref?.current?.scrollToIndex({
+      animated: true,
+      index: index,
+    });
+  };
   return (
     <SafeAreaViewForAndroid className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
       {filter == "IN_PERSON" && (
@@ -100,16 +107,16 @@ export default function Index() {
                   title={report.title}
                   description={`Posted by ${report.createdBy.username}`}
                   onPress={() => {
-                    alert("Marker Pressed");
+                    // alert("Marker Pressed");
                     filteredReports.findIndex(
                       (item) => item.id === report.id
                     ) !== -1
-                      ? setScrollToIndex(
+                      ? scrollToIndex(
                           filteredReports.findIndex(
                             (item) => item.id === report.id
                           )
                         )
-                      : setScrollToIndex(0);
+                      : scrollToIndex(0);
                     // router.push({
                     //   pathname: "/forumPage",
                     //   params: { scamReportId: report.id },
@@ -134,6 +141,7 @@ export default function Index() {
         </MapView>
       )}
       <FlatList
+        ref={ref}
         data={filteredReports}
         renderItem={({ item }) => {
           return (

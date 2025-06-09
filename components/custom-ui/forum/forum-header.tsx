@@ -70,10 +70,10 @@ export function Filter({ filter, setFilter }: FilterProps) {
   };
   const { isDarkColorScheme } = useColorScheme();
   const contentInsets = {
-    top: 0,
+    top: 12,
     bottom: 0,
     left: 0,
-    right: 0,
+    right: 8,
   };
   return (
     <Select
