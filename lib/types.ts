@@ -116,7 +116,7 @@ export type ScamReport = {
   scamReportStatus: ScamReportStatus;
   votes: { type: VoteType; voterId: string }[];
   replies: Reply[];
-  location?: string;
+  location?: { postalCode: string; latitude: number; longitude: number };
 };
 
 export type Reply = {

@@ -1,11 +1,12 @@
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useEffect, useState } from "react";
 import MapView from "react-native-maps";
 import { Marker } from "react-native-maps";
 import { Text } from "~/components/ui/text";
+import { getLongLat, getToken } from "~/firebase/OneMapApi";
 export function ForumPostMap({ location }: { location: string }) {
   if (!location) {
-    return null; // Handle the case where location is undefined
+    return <></>; // Handle the case where location is undefined
   }
   const [token, setToken] = useState<string>("");
   const gennerateToken = async () => {
@@ -32,10 +33,14 @@ export function ForumPostMap({ location }: { location: string }) {
   useEffect(() => {
     gennerateToken();
     gennerateLongLat();
+    console.log("Location:", location);
   }, [location]);
   return (
     <View className="">
-      <MapView>
+      <MapView
+        className="w-full h-64"
+        mapType={Platform.OS == "android" ? "none" : "standard"}
+      >
         <Marker
           coordinate={{
             latitude: parseFloat(lat) || 37.78825, // Fallback to default if lat is not available
@@ -46,26 +51,3 @@ export function ForumPostMap({ location }: { location: string }) {
     </View>
   );
 }
-const getToken = () => {
-  const url = "https://www.onemap.gov.sg/api/auth/post/getToken";
-
-  // Prepare the data payload
-  const data = {
-    email: process.env.ONEMAP_EMAIL,
-    password: process.env.ONEMAP_EMAIL_PASSWORD,
-  };
-  return fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    method: "POST",
-  });
-};
-const getLongLat = (location: string, token: string) => {
-  const url = `https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${location}&returnGeom=Y&getAddrDetails=Y&pageNum=1`;
-  return fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `${token}`, // API token for authorization
-    },
-  });
-};

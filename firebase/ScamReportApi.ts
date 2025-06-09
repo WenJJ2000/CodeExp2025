@@ -2,13 +2,12 @@ import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
 
-
 export interface ScamReportInput {
   scamReportType: string;
   sender: string;
   title: string;
   content: string;
-  location: string;
+  location: { postalCode: string; latitude: number; longitude: number };
   createdBy: string;
   isEducation?: boolean;
   images?: string[];
@@ -62,7 +61,7 @@ export async function createScamCheck(
   inputType: string,
   inputData: string,
   postedToForum: boolean
-){
+) {
   const uuidValue = uuid.v4();
 
   const d = {

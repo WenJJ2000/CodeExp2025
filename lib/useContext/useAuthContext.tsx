@@ -46,11 +46,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const storedUser = await SecureStore.getItemAsync("user");
         const storedUid = await SecureStore.getItemAsync("uid");
         if (storedUser) {
-          console.log("AuthContext storedUser:", !!storedUser);
+          // console.log("AuthContext storedUser:", !!storedUser);
           setUser(storedUser);
         }
         if (storedUid) {
-          console.log("AuthContext storedUid:", !!storedUid);
+          // console.log("AuthContext storedUid:", !!storedUid);
           setUid(storedUid);
         }
       } catch (error) {

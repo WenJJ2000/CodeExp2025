@@ -14,11 +14,12 @@ import {
   useColorScheme,
 } from "react-native";
 
-
 import { GOOGLE_VISION_API_KEY } from "@env";
 import { ScamReportType } from "~/lib/types";
 import { createReport } from "../../../firebase/ScamReportApi";
 import { auth } from "../../../firebase/firebase";
+import { getLongLat, getToken } from "~/firebase/OneMapApi";
+import MapView, { Marker } from "react-native-maps";
 
 const ScamCategoryMap: Record<ScamReportType, string> = {
   EMAIL: "email",
@@ -85,7 +86,14 @@ export default function ScamReportForm() {
     content: "",
     location: "",
   });
-
+  const [locationLongLat, setLocationLongLat] = useState<{
+    longitude: number;
+    latitude: number;
+  }>({
+    longitude: 0,
+    latitude: 0,
+  });
+  const [oneMapToken, setOneMapToken] = useState<string>("");
   const isDark = useColorScheme() === "dark";
   const config = SCAM_CONFIG[scamType];
   const user = auth.currentUser;
@@ -98,8 +106,22 @@ export default function ScamReportForm() {
     setErrors({ sender: "", title: "", content: "", location: "" });
     setExtractedText("");
     setImages([]);
+    setLocationLongLat({
+      longitude: 0,
+      latitude: 0,
+    });
+    if (oneMapToken === "") {
+      getToken()
+        .then((data) => data.json())
+        .then((tokenData) => {
+          if (tokenData.access_token) {
+            setOneMapToken(tokenData.access_token);
+          } else {
+            Alert.alert("Error", "Failed to retrieve OneMap token.");
+          }
+        });
+    }
   }, [scamType]);
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -109,11 +131,11 @@ export default function ScamReportForm() {
     });
   }, []);
 
-  const [image, setImage] = useState<string | null>(null);      // for preview
+  const [image, setImage] = useState<string | null>(null); // for preview
   const [imageBase64, setImageBase64] = useState<string | null>(null); // for storage
   const [extractedText, setExtractedText] = useState("");
   // Bottom images for evidence (array)
-  const [images, setImages] = useState<{ uri: string, base64: string }[]>([]);
+  const [images, setImages] = useState<{ uri: string; base64: string }[]>([]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -136,24 +158,24 @@ export default function ScamReportForm() {
   };
 
   const pickEvidenceImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    quality: 1,
-    base64: true,
-    allowsMultipleSelection: true, // Only works on web, but you can handle manually
-  });
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      base64: true,
+      allowsMultipleSelection: true, // Only works on web, but you can handle manually
+    });
 
-  if (!result.canceled && result.assets.length > 0) {
-    // Add all selected images to array
-    setImages(prev => [
-      ...prev,
-      ...result.assets.map(asset => ({
-        uri: asset.uri,
-        base64: asset.base64 ?? ""
-      }))
-    ]);
-  }
-};
+    if (!result.canceled && result.assets.length > 0) {
+      // Add all selected images to array
+      setImages((prev) => [
+        ...prev,
+        ...result.assets.map((asset) => ({
+          uri: asset.uri,
+          base64: asset.base64 ?? "",
+        })),
+      ]);
+    }
+  };
 
   const extractTextFromImage = async (base64Image: string) => {
     try {
@@ -216,9 +238,9 @@ export default function ScamReportForm() {
         sender: formData.sender,
         title: formData.title,
         content: formData.content,
-        location: formData.location,
+        location: { postalCode: formData.location, ...locationLongLat },
         createdBy: user?.uid ?? "anonymous",
-        images: images.map(img => img.base64),
+        images: images.map((img) => img.base64),
       });
       setStep(5);
     } catch (error) {
@@ -239,7 +261,9 @@ export default function ScamReportForm() {
         switch (scamType) {
           case "EMAIL":
             if (
-              !/^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.sender.trim())
+              !/^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                formData.sender.trim()
+              )
             ) {
               newErrors.sender = "Must be a valid email address.";
               isValid = false;
@@ -254,7 +278,9 @@ export default function ScamReportForm() {
             break;
           case "WEBSITE":
             if (
-              !/^((https?:\/\/)?www\.[\w.-]+\.[a-zA-Z]{2,})(\/\S*)?$/i.test(formData.sender.trim())
+              !/^((https?:\/\/)?www\.[\w.-]+\.[a-zA-Z]{2,})(\/\S*)?$/i.test(
+                formData.sender.trim()
+              )
             ) {
               newErrors.sender = "Enter a valid website (must start with www.)";
               isValid = false;
@@ -301,7 +327,21 @@ export default function ScamReportForm() {
     setErrors(newErrors);
     return isValid;
   };
-
+  const handleLocation = (text: string) => {
+    getLongLat(text, oneMapToken)
+      .then((data) => data.json())
+      .then((longLatData) => {
+        if (longLatData.results && longLatData.results.length > 0) {
+          const result = longLatData.results[0];
+          setLocationLongLat({
+            longitude: parseFloat(result.LONGITUDE),
+            latitude: parseFloat(result.LATITUDE),
+          });
+        } else {
+          setLocationLongLat({ longitude: 0, latitude: 0 });
+        }
+      });
+  };
   return (
     <ScrollView
       className={`flex-1 px-5 pt-10 ${isDark ? "bg-black" : "bg-white"}`}
@@ -312,8 +352,9 @@ export default function ScamReportForm() {
         {[1, 2, 3, 4].map((s) => (
           <View
             key={s}
-            className={`h-2 flex-1 mx-1 rounded-full ${s <= step ? "bg-blue-600" : isDark ? "bg-gray-700" : "bg-gray-300"
-              }`}
+            className={`h-2 flex-1 mx-1 rounded-full ${
+              s <= step ? "bg-blue-600" : isDark ? "bg-gray-700" : "bg-gray-300"
+            }`}
           />
         ))}
       </View>
@@ -322,21 +363,24 @@ export default function ScamReportForm() {
       {step === 1 && (
         <>
           <Text
-            className={`text-xl font-semibold mb-4 ${isDark ? "text-white" : "text-black"
-              }`}
+            className={`text-xl font-semibold mb-4 ${
+              isDark ? "text-white" : "text-black"
+            }`}
           >
             What would you like to report?
           </Text>
           {(Object.keys(SCAM_CONFIG) as ScamReportType[]).map((type) => (
             <TouchableOpacity
               key={type}
-              className={`border rounded-xl py-4 mb-3 items-center ${isDark ? "border-gray-500" : "border-black"
-                } ${scamType === type ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+              className={`border rounded-xl py-4 mb-3 items-center ${
+                isDark ? "border-gray-500" : "border-black"
+              } ${scamType === type ? "bg-blue-100 dark:bg-blue-900" : ""}`}
               onPress={() => setScamType(type)}
             >
               <Text
-                className={`capitalize text-lg ${isDark ? "text-white" : "text-black"
-                  }`}
+                className={`capitalize text-lg ${
+                  isDark ? "text-white" : "text-black"
+                }`}
               >
                 {ScamCategoryMap[type].replace(/([A-Z])/g, " $1")} scam
               </Text>
@@ -396,16 +440,18 @@ export default function ScamReportForm() {
               scamType === "SMS" || scamType === "PHONE" ? 8 : undefined
             }
             className={`border rounded-lg p-3 mb-1
-                            ${errors.sender
-                ? "border-red-500"
-                : isDark
-                  ? "border-gray-600"
-                  : "border-gray-400"
-              }
-                            ${isDark
-                ? "text-white bg-gray-900"
-                : "text-black bg-white"
-              }
+                            ${
+                              errors.sender
+                                ? "border-red-500"
+                                : isDark
+                                ? "border-gray-600"
+                                : "border-gray-400"
+                            }
+                            ${
+                              isDark
+                                ? "text-white bg-gray-900"
+                                : "text-black bg-white"
+                            }
                         `}
             placeholder={config.senderLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
@@ -417,44 +463,80 @@ export default function ScamReportForm() {
           {scamType === "IN_PERSON" && (
             <>
               <Text
-                className={`text-base mb-2 ${isDark ? "text-white" : "text-black"}`}
+                className={`text-base mb-2 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
               >
                 Postal code where it happened
               </Text>
               <TextInput
                 value={formData.location}
-                onChangeText={text => {
+                onChangeText={(text) => {
                   const filtered = text.replace(/[^0-9]/g, "").slice(0, 6);
                   updateField("location", filtered);
-                  setErrors(prev => ({ ...prev, location: "" }));
+                  handleLocation(filtered);
+                  setErrors((prev) => ({ ...prev, location: "" }));
                 }}
                 keyboardType="numeric"
                 maxLength={6}
                 className={`border rounded-lg p-3 mb-1
-        ${errors.location
-                    ? "border-red-500"
-                    : isDark
+                  ${
+                    errors.location
+                      ? "border-red-500"
+                      : isDark
                       ? "border-gray-600"
-                      : "border-gray-400"}
-        ${isDark
-                    ? "text-white bg-gray-900"
-                    : "text-black bg-white"}
-      `}
+                      : "border-gray-400"
+                  }
+                  ${isDark ? "text-white bg-gray-900" : "text-black bg-white"}
+                mb-4`}
                 placeholder="Enter postal code"
                 placeholderTextColor={isDark ? "#999" : "#666"}
               />
+              <MapView
+                className="w-full h-64 mb-4"
+                style={{ borderRadius: 12, width: "100%", height: 250 }}
+                mapType="standard"
+                showsMyLocationButton={true}
+                showsCompass={true}
+                showsScale={true}
+                showsPointsOfInterest={true}
+                showsTraffic={true}
+                showsIndoors={true}
+                showsBuildings={true}
+                showsUserLocation={true}
+                initialRegion={{
+                  latitude: 1.3521, // Default to Singapore
+                  longitude: 103.8198,
+                  latitudeDelta: 0.15,
+                  longitudeDelta: 0.15,
+                }}
+                followsUserLocation={true}
+              >
+                {locationLongLat.latitude !== 0 &&
+                  locationLongLat.longitude !== 0 && (
+                    <Marker
+                      coordinate={{
+                        latitude: locationLongLat.latitude,
+                        longitude: locationLongLat.longitude,
+                      }}
+                      title="Scam Location"
+                    />
+                  )}
+              </MapView>
               {errors.location ? (
-                <Text className="text-red-500 text-sm mb-3">{errors.location}</Text>
+                <Text className="text-red-500 text-sm mb-3">
+                  {errors.location}
+                </Text>
               ) : null}
             </>
           )}
 
-
           {config.titleLabel && (
             <>
               <Text
-                className={`text-base mb-2 ${isDark ? "text-white" : "text-black"
-                  }`}
+                className={`text-base mb-2 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
               >
                 {config.titleLabel}
               </Text>
@@ -464,12 +546,13 @@ export default function ScamReportForm() {
                   updateField("title", text);
                   setErrors((prev) => ({ ...prev, title: "" }));
                 }}
-                className={`border rounded-lg p-3 mb-1 ${errors.title
-                  ? "border-red-500"
-                  : isDark
+                className={`border rounded-lg p-3 mb-1 ${
+                  errors.title
+                    ? "border-red-500"
+                    : isDark
                     ? "bg-gray-900 text-white border-gray-600"
                     : "bg-white text-black border-gray-400"
-                  }`}
+                }`}
                 placeholder={config.titleLabel}
                 placeholderTextColor={isDark ? "#999" : "#666"}
               />
@@ -488,8 +571,9 @@ export default function ScamReportForm() {
         <>
           <TouchableOpacity
             onPress={pickImage}
-            className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"
-              }`}
+            className={`border rounded-lg p-4 mb-3 items-center ${
+              isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"
+            }`}
           >
             <Ionicons
               name="camera"
@@ -513,8 +597,9 @@ export default function ScamReportForm() {
           ) : null} */}
 
           <Text
-            className={`text-center text-lg mb-2 ${isDark ? "text-white" : "text-black"
-              }`}
+            className={`text-center text-lg mb-2 ${
+              isDark ? "text-white" : "text-black"
+            }`}
           >
             OR
           </Text>
@@ -533,12 +618,13 @@ export default function ScamReportForm() {
               updateField("content", text);
               setErrors((prev) => ({ ...prev, content: "" }));
             }}
-            className={`border rounded-lg p-3 mb-1 ${errors.content
-              ? "border-red-500"
-              : isDark
+            className={`border rounded-lg p-3 mb-1 ${
+              errors.content
+                ? "border-red-500"
+                : isDark
                 ? "bg-gray-900 text-white border-gray-600"
                 : "bg-white text-black border-gray-400"
-              }`}
+            }`}
             placeholder={config.contentLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
           />
@@ -547,30 +633,51 @@ export default function ScamReportForm() {
           ) : null}
 
           <View className="mt-6">
-            <Text className={`text-base font-semibold mb-2 ${isDark ? "text-white" : "text-black"}`}>
+            <Text
+              className={`text-base font-semibold mb-2 ${
+                isDark ? "text-white" : "text-black"
+              }`}
+            >
               Upload Additional Images (optional)
             </Text>
             <TouchableOpacity
               onPress={pickEvidenceImage}
-              className={`border rounded-lg p-4 mb-3 items-center ${isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"}`}
+              className={`border rounded-lg p-4 mb-3 items-center ${
+                isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"
+              }`}
             >
-              <Ionicons name="camera" size={24} color={isDark ? "white" : "black"} />
-              <Text className={`${isDark ? "text-white" : "text-black"}`}>Upload Evidence Image</Text>
+              <Ionicons
+                name="camera"
+                size={24}
+                color={isDark ? "white" : "black"}
+              />
+              <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                Upload Evidence Image
+              </Text>
             </TouchableOpacity>
 
             {images.length > 0 && (
               <View className="flex-row flex-wrap">
                 {images.map((img, idx) => (
-                  <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
-                    <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
-                    <View style={{ width: 200, height: 200, marginVertical: 8 }}>
+                  <View
+                    key={idx}
+                    className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center"
+                  >
+                    <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                      Evidence Image {idx + 1}:
+                    </Text>
+                    <View
+                      style={{ width: 200, height: 200, marginVertical: 8 }}
+                    >
                       <Image
                         source={{ uri: img.uri }}
                         style={{ width: 200, height: 200, borderRadius: 8 }}
                         resizeMode="cover"
                       />
                       <TouchableOpacity
-                        onPress={() => setImages(prev => prev.filter((_, i) => i !== idx))}
+                        onPress={() =>
+                          setImages((prev) => prev.filter((_, i) => i !== idx))
+                        }
                         style={{
                           position: "absolute",
                           top: 4,
@@ -591,14 +698,19 @@ export default function ScamReportForm() {
                 ))}
               </View>
             )}
-
           </View>
         </>
       )}
-            
+
       {step === 4 && (
         <>
-          <Text className={`text-xl font-bold mb-4 ${isDark ? "text-white" : "text-black"}`}>Preview</Text>
+          <Text
+            className={`text-xl font-bold mb-4 ${
+              isDark ? "text-white" : "text-black"
+            }`}
+          >
+            Preview
+          </Text>
           <Text className={`mb-2 ${isDark ? "text-white" : "text-black"}`}>
             <Text className="font-semibold">Type of scam: </Text>
             {scamType}
@@ -613,12 +725,19 @@ export default function ScamReportForm() {
               {formData.title}
             </Text>
           )}
-          <Text className={`mb-2 font-semibold ${isDark ? "text-white" : "text-black"}`}>Message:</Text>
           <Text
-            className={`border rounded-md p-3 ${isDark
+            className={`mb-2 font-semibold ${
+              isDark ? "text-white" : "text-black"
+            }`}
+          >
+            Message:
+          </Text>
+          <Text
+            className={`border rounded-md p-3 ${
+              isDark
                 ? "bg-gray-900 text-white border-gray-600"
                 : "bg-white text-black border-gray-300"
-              }`}
+            }`}
           >
             {formData.content}
           </Text>
@@ -626,8 +745,13 @@ export default function ScamReportForm() {
           {images.length > 0 && (
             <View className="flex-row flex-wrap">
               {images.map((img, idx) => (
-                <View key={idx} className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center">
-                  <Text className={`${isDark ? "text-white" : "text-black"}`}>Evidence Image {idx + 1}:</Text>
+                <View
+                  key={idx}
+                  className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center"
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                    Evidence Image {idx + 1}:
+                  </Text>
                   <View style={{ width: 200, height: 200, marginVertical: 8 }}>
                     <Image
                       source={{ uri: img.uri }}
@@ -635,7 +759,9 @@ export default function ScamReportForm() {
                       resizeMode="cover"
                     />
                     <TouchableOpacity
-                      onPress={() => setImages(prev => prev.filter((_, i) => i !== idx))}
+                      onPress={() =>
+                        setImages((prev) => prev.filter((_, i) => i !== idx))
+                      }
                       style={{
                         position: "absolute",
                         top: 4,
@@ -656,7 +782,6 @@ export default function ScamReportForm() {
               ))}
             </View>
           )}
-
         </>
       )}
 
@@ -712,8 +837,6 @@ export default function ScamReportForm() {
           </TouchableOpacity>
         </View>
       )}
-      
     </ScrollView>
-
   );
 }

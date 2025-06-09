@@ -45,7 +45,6 @@ export default function Home() {
     // Subscribes to realtime updates
     // const unsubscribe = getNotifications(setNotifications);
     const unsubscribe = getLiveNotifications((x) => {
-      console.log("Notifications updated:", x);
       setNotifications(x);
     });
     user &&
@@ -87,7 +86,9 @@ export default function Home() {
       </View>
 
       {/* Shortcuts */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
+      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+        Check Scams
+      </Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
           const IconComponent = sc.iconType;
