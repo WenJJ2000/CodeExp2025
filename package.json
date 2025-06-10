@@ -2,6 +2,9 @@
   "name": "ScamBusters-App",
   "main": "index.js",
   "version": "1.0.0",
+  "workspaces": [
+    "./apps/*"
+  ],
   "scripts": {
     "dev": "expo start -c",
     "dev:web": "expo start -c --web",
@@ -13,9 +16,13 @@
     "postinstall": "npx tailwindcss -i ./global.css -o ./node_modules/.cache/nativewind/global.css"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@expo/vector-icons": "^14.1.0",
     "@firebase/firestore": "^4.7.16",
     "@google/generative-ai": "^0.5.0",
+    "@mui/icons-material": "^7.1.1",
+    "@mui/material": "^7.1.1",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -72,6 +79,8 @@
     "react-native": "0.79.3",
     "react-native-fs": "^2.20.0",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-maps": "^1.18.0",
+    "react-native-paper": "^5.14.5",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
@@ -89,6 +98,7 @@
     "@babel/core": "^7.26.0",
     "@gradio/client": "^1.15.1",
     "@types/react": "~19.0.14",
+    "@types/react-native-vector-icons": "^6.4.18",
     "react-native-dotenv": "^3.4.11",
     "typescript": "^5.8.3"
   },

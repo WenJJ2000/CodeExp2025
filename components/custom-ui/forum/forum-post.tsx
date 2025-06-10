@@ -7,10 +7,15 @@ import { useRouter } from "expo-router";
 import { ForumVoteButton } from "./forum-vote-button";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { ForumReplyButton } from "./forum-reply-button";
+import { PressableImage } from "../pressable-image";
+import { ForumPostMap } from "./forum-post-map";
+import ImageTray from "../image-tray";
 export function ForumPost({
   scamReport,
   fulltext = false,
-  onClick = () => {},
+  onClick = () => {
+    console.log("Post clicked");
+  },
   showReplyButton = false,
   onClickReply = () => {},
 }: {
@@ -23,17 +28,34 @@ export function ForumPost({
   if (!scamReport) {
     return null; // Handle the case where scamReport is undefined
   }
-  const lastUpdated = new Date(Date.now() - scamReport.createdAt.getTime());
-  const daysAgo = lastUpdated.getDay();
-  const hoursAgo = lastUpdated.getHours();
-  const minutesAgo = lastUpdated.getMinutes();
-  // console.log(daysAgo, hoursAgo, minutesAgo);
+  const lastUpdated =
+    scamReport.updatedAt.getTime() > scamReport.createdAt.getTime()
+      ? new Date(new Date().getTime() - scamReport.updatedAt.getTime())
+      : new Date(new Date().getTime() - scamReport.createdAt.getTime());
+  const daysAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60 * 24)) - 1;
+  const hoursAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60)) - 1;
+  const minutesAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60));
   const formattedTimeAgo =
     daysAgo > 0
       ? `${daysAgo}d`
       : hoursAgo > 0
       ? ` ${hoursAgo}h`
       : `${minutesAgo}m`;
+
+  const formmatedTitle =
+    !fulltext && scamReport.title.split("\n").length > 2
+      ? scamReport.title.split("\n").slice(0, 2).join(" ").concat("...")
+      : scamReport.title.length > 100
+      ? scamReport.title.substring(0, 97) + "..."
+      : scamReport.title;
+
+  const formmatedContent =
+    !fulltext && scamReport.content.split("\n").length > 2
+      ? scamReport.content.split("\n").slice(0, 2).join(" ").concat("...")
+      : scamReport.content.length > 100
+      ? scamReport.content.substring(0, 97) + "..."
+      : scamReport.content.trimEnd();
+
   return (
     <Pressable
       className="w-full bg-secondary justify-center items-center mb-2 "
@@ -43,14 +65,14 @@ export function ForumPost({
         <View className="flex-row items-center gap-2 ">
           <Image
             src={
-              scamReport?.reporter?.profilePicture ||
+              scamReport?.createdBy?.profilePicture ||
               "~/assets/images/icon2.png"
             }
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"
           />
-          <Text className="text-xl ">{scamReport?.reporter.username}</Text>
+          <Text className="text-xl ">{scamReport?.createdBy.username}</Text>
           <Text className="text-xl text-muted-foreground">
             {formattedTimeAgo}
           </Text>
@@ -68,20 +90,22 @@ export function ForumPost({
               }
             />
           )}
+          {scamReport?.isEducation && (
+            <ForumTag variant={"EDUCATION" as ForumTagVariant} />
+          )}
         </View>
       </View>
       <View className="px-4 pb-2 w-full">
-        <Text className="text-xl font-bold text-start">
-          {scamReport?.title.length > 100 && !fulltext
-            ? scamReport?.title.substring(0, 97) + "..."
-            : scamReport?.title}
-        </Text>
+        <Text className="text-xl font-bold text-start">{formmatedTitle}</Text>
         <Text className="text-start text-muted-foreground">
-          {scamReport?.content.length > 100 && !fulltext
-            ? scamReport?.content.substring(0, 97) + "..."
-            : scamReport?.content}
+          {formmatedContent}
         </Text>
       </View>
+      {scamReport?.images && fulltext && (
+        <View className="px-4 pb-2 w-full">
+          <ImageTray images={scamReport.images} />
+        </View>
+      )}
       <View className="w-full px-4 pb-2">
         <View className="flex-row  bg-secondary justify-between items-center gap-2">
           <View className="flex-row items-center ">

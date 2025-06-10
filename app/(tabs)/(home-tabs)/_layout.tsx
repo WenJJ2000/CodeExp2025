@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,13 +21,15 @@ export default function RootLayout() {
   usePlatformSpecificSetup();
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="index" />
-    </Stack>
+    <NotificationProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+      </Stack>
+    </NotificationProvider>
   );
 }
 

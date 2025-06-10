@@ -106,15 +106,15 @@
 //   );
 // }
 
-import { ScrollView, View, Image, Pressable } from 'react-native';
+import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Image, Pressable, ScrollView, View } from 'react-native';
 import { Text } from '~/components/ui/text';
 import { useAuth } from '~/lib/useContext/useAuthContext';
-import { FontAwesome6 } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 // import { BadgeCard } from "./components/Badge";
 import { Badge } from '~/components/ui/badge';
-import { ReportCard } from './components/Report';
 import { badges } from '../../../components/ui/badges'; // adjust path as needed
+import { ReportCard } from './components/Report';
 
 // const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
 // const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
@@ -243,6 +243,20 @@ export default function ProfileScreen() {
           ))}
         </View>
       </View>
+
+       {/* Logout Button */}
+      <Pressable
+        onPress={() => {
+          setUser(null);
+          setUid(null);
+        }}
+        className="mt-8"
+      >
+        <View className="flex-row items-center space-x-2">
+          <MaterialIcons name="logout" size={24} color="red" />
+          <Text className="text-red-500 font-bold text-sm">Logout</Text>
+        </View>
+      </Pressable>
     </ScrollView>
   );
 }
