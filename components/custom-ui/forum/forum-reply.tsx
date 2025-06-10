@@ -13,6 +13,7 @@ import { PressableImage } from "../pressable-image";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { ForumReplyButton } from "./forum-reply-button";
 import { ForumReplyPopup } from "./forum-reply-popup";
+import ImageTray from "../image-tray";
 
 export function ForumReply({
   reply,
@@ -56,7 +57,7 @@ export function ForumReply({
           <Text className="text-base text-muted-foreground">
             {reply.content}
           </Text>
-          {reply.image && <PressableImage image={reply.image} />}
+          {reply.images && <ImageTray images={reply.images} />}
         </View>
         <View className="px-2   ml-2 border-l-2 border-l-primary items-end gap-2">
           <ForumReplyButton onPress={() => onClickReply(reply)} />

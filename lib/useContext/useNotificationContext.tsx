@@ -30,7 +30,7 @@ export function useNotification() {
 
 export function NotificationProvider({ children }: PropsWithChildren) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
@@ -58,7 +58,9 @@ export function NotificationProvider({ children }: PropsWithChildren) {
   const setNotificationsLocal = async (
     newNotifications: Notification[] = []
   ) => {
-    const storedNotifications = await SecureStore.getItemAsync("notifications");
+    const storedNotifications = isLoading
+      ? "[]"
+      : await SecureStore.getItemAsync("notifications");
     let parsedNotifications = [] as Notification[]; // Initialize as an empty array
     if (storedNotifications) {
       parsedNotifications = JSON.parse(storedNotifications) as Notification[];

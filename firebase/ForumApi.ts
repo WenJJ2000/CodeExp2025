@@ -220,6 +220,7 @@ export const liveUpdateOnASingleScamReport = (
         const reporterDoc = await getDoc(doc(db, "users", result.createdBy));
         if (reporterDoc.exists()) {
           result.createdBy = {
+            id: reporterDoc.id,
             ...reporterDoc.data(),
           };
         }
@@ -260,6 +261,7 @@ export const getLiveNotifications = (
         } `,
         subtitle: changeData.title || changeData.content,
         timestamp: timestamp.toDate(),
+        action: change.type,
       } as Notification;
     });
     callback(

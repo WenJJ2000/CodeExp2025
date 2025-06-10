@@ -1,46 +1,53 @@
-import { View } from "react-native";
-import Axios from "axios";
-import { useEffect } from "react";
-import axios from "axios";
+import { Platform, View } from "react-native";
+import { useEffect, useState } from "react";
+import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
+import { Text } from "~/components/ui/text";
+import { getLongLat, getToken } from "~/firebase/OneMapApi";
 export function ForumPostMap({ location }: { location: string }) {
-  useEffect(() => {
-    const token = getToken();
-  }, []);
-  return <View className="flex-1"></View>;
-}
-const getToken = async () => {
-  const url = "https://www.onemap.gov.sg/api/auth/post/getToken";
-
-  // Prepare the data payload
-  const data = {
-    email: process.env.ONEMAP_EMAIL,
-    password: process.env.ONEMAP_EMAIL_PASSWORD,
+  if (!location) {
+    return <></>; // Handle the case where location is undefined
+  }
+  const [token, setToken] = useState<string>("");
+  const gennerateToken = async () => {
+    const token = await getToken();
+    const tokenData = await token.json();
+    if (!tokenData.access_token) {
+      throw new Error("Failed to retrieve access token");
+    }
+    setToken(tokenData.access_token);
   };
-  await axios
-    .post(url, data)
-    .then((response) => {
-      const token = response.data.access_token; // Extract the token from the response
-      return token; // Return the token for further use
-      // You can store the token in a state or context for later use
-    })
-    .catch((error) => {
-      console.error(
-        "Error fetching token:",
-        error.response?.data || error.message
-      );
-    });
-};
-const getLongLat = async (location: string) => {
-  const url =
-    "https://www.onemap.gov.sg/api/common/elastic/search?searchVal=200640&returnGeom=Y&getAddrDetails=Y&pageNum=1";
-  const authToken = "**********************"; // Replace with your access token
-  Axios.get(url, {
-    headers: {
-      Authorization: `${authToken}`, // API token for authorization
-    },
-  })
-    .then((response) => console.log(response.data))
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-};
+  const [long, setLong] = useState<string>("");
+  const [lat, setLat] = useState<string>("");
+  const gennerateLongLat = async () => {
+    if (!token) return;
+    const longLatData = await getLongLat(location, token);
+    const longLatJson = await longLatData.json();
+
+    if (!longLatJson) {
+      throw new Error("Failed to retrieve longitude and latitude");
+    }
+    setLong(longLatJson.results[0].LONGITUDE);
+    setLat(longLatJson.results[0].LATITUDE);
+  };
+  useEffect(() => {
+    gennerateToken();
+    gennerateLongLat();
+    console.log("Location:", location);
+  }, [location]);
+  return (
+    <View className="">
+      <MapView
+        className="w-full h-64"
+        mapType={Platform.OS == "android" ? "none" : "standard"}
+      >
+        <Marker
+          coordinate={{
+            latitude: parseFloat(lat) || 37.78825, // Fallback to default if lat is not available
+            longitude: parseFloat(long) || -122.4324, // Fallback to default if long is not available
+          }}
+        />
+      </MapView>
+    </View>
+  );
+}

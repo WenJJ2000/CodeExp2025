@@ -1,17 +1,10 @@
 import "~/global.css";
 
-import {
-  Stack,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import * as React from "react";
-import { Appearance, Platform, SafeAreaView } from "react-native";
+import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import ForumHeader, {
-  Filters,
-} from "~/components/custom-ui/forum/forum-header";
+import ForumHeader from "~/components/custom-ui/forum/forum-header";
 import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
 
 export {
@@ -25,6 +18,8 @@ const usePlatformSpecificSetup = Platform.select({
   default: noop,
 });
 import { PortalHost } from "@rn-primitives/portal";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { Filters } from "~/lib/types";
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const router = useRouter();
@@ -48,14 +43,32 @@ export default function RootLayout() {
         initialRouteName="index"
       >
         <Stack.Screen
+          name="index"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumHeader
+                    searchQuery={searchQuery}
+                    filter={filter}
+                    setFilter={setFilter}
+                    setSearchQuery={setSearchQuery}
+                  />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
           name="forumPage"
           options={{
             headerShown: true,
             header: (props) => {
               return (
-                <SafeAreaView>
+                <SafeAreaViewForAndroid>
                   <ForumPageHeader />
-                </SafeAreaView>
+                </SafeAreaViewForAndroid>
               );
             },
           }}
@@ -66,27 +79,9 @@ export default function RootLayout() {
             headerShown: true,
             header: (props) => {
               return (
-                <SafeAreaView>
+                <SafeAreaViewForAndroid>
                   <ForumPageHeader />
-                </SafeAreaView>
-              );
-            },
-          }}
-        />
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: true,
-            header: (props) => {
-              return (
-                <SafeAreaView>
-                  <ForumHeader
-                    searchQuery={searchQuery}
-                    filter={filter}
-                    setFilter={setFilter}
-                    setSearchQuery={setSearchQuery}
-                  />
-                </SafeAreaView>
+                </SafeAreaViewForAndroid>
               );
             },
           }}

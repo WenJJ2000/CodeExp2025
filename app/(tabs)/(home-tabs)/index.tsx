@@ -1,8 +1,8 @@
-import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -11,54 +11,67 @@ import {
   Text,
   View,
   useColorScheme,
-} from "react-native";
-import Notification from "~/components/custom-ui/home/notification";
-import { getLiveNotifications } from "~/firebase/ForumApi";
+} from 'react-native';
+import NotificationUI from '~/components/custom-ui/home/notification';
+import { getLiveNotifications } from '~/firebase/ForumApi';
+import { getNotifications } from '~/firebase/NotiApi';
+import { liveUpdateUserReports } from '~/firebase/UserApi';
+import { Notification, ScamReport } from '~/lib/types';
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
-import { useAuth } from "~/lib/useContext/useAuthContext";
-import { useNotification } from "~/lib/useContext/useNotificationContext";
+import { useAuth } from '~/lib/useContext/useAuthContext';
 dayjs.extend(relativeTime);
 
 const shortcuts = [
-  { key: "text", iconType: MaterialIcons, iconName: "email", label: "Text" },
-  { key: "image", iconType: FontAwesome5, iconName: "camera", label: "Image" },
-  { key: "number", iconType: FontAwesome5, iconName: "phone", label: "Number" },
+  { key: 'text', iconType: MaterialIcons, iconName: 'email', label: 'Text' },
+  { key: 'image', iconType: FontAwesome5, iconName: 'camera', label: 'Image' },
+  { key: 'number', iconType: FontAwesome5, iconName: 'phone', label: 'Number' },
   {
-    key: "app",
+    key: 'app',
     iconType: Ionicons,
-    iconName: "phone-portrait-outline",
-    label: "App",
+    iconName: 'phone-portrait-outline',
+    label: 'App',
   },
   {
-    key: "crypto",
+    key: 'crypto',
     iconType: MaterialIcons,
-    iconName: "security",
-    label: "Crypto",
+    iconName: 'security',
+    label: 'Crypto',
   },
 ];
 export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
-  const { user } = useAuth();
-  const [userName, setUserName] = useState("Lisa");
+  const { user, uid } = useAuth();
+  const [userName, setUserName] = useState('Lisa');
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
-  const { notifications, setNotifications } = useNotification();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   // Helper to toggle icon colors based on theme
-  const iconColor = colorScheme === "dark" ? "#ccc" : "#000";
+  const iconColor = colorScheme === 'dark' ? '#ccc' : '#000';
 
   useEffect(() => {
     // Subscribes to realtime updates
     // const unsubscribe = getNotifications(setNotifications);
-    const unsubscribe = getLiveNotifications((x) => {
-      console.log("Notifications updated:", x);
-      setNotifications(x);
-    });
-    user &&
-      JSON.parse(user)?.username &&
-      setUserName(JSON.parse(user).username);
-    return () => unsubscribe();
+    const unsubscribe = getNotifications(
+      uid,
+      (notifications: Notification[]) => {
+        setNotifications(notifications);
+        setNotificationCount(notifications.length);
+      }
+    );
+    const unsub = liveUpdateUserReports(
+      uid,
+      (total: ScamReport[], verified: ScamReport[]) => {
+        setPostCount(total.length);
+        setVerifiedCount(verified.length);
+      }
+    );
+    user && setUserName(user.username);
+    return () => {
+      unsubscribe();
+      unsub();
+    };
   }, []);
 
   return (
@@ -66,8 +79,8 @@ export default function Home() {
       {/* Header */}
       <View className="flex-row items-center mb-6">
         <Image
-          source={{ uri: "https://randomuser.me/api/portraits/women/65.jpg" }}
-          className="w-12 h-12 rounded-full mr-3"
+          source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
+          className="w-12 h-12 rounded-full mr-3 border-2 border-gray-300"
         />
         <Text className="text-2xl font-bold flex-1 text-black dark:text-white">
           Welcome {userName}!
@@ -79,21 +92,24 @@ export default function Home() {
         <CounterCircleButton
           count={postCount}
           label="Post"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push('/(tabs)/(forum-tabs)')}
         />
         <CounterCircleButton
           count={verifiedCount}
           label="Verified"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push('/(tabs)/(forum-tabs)')}
         />
         <CounterCircleButton
           count={notificationCount}
           label="Notification"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push('/(tabs)/(forum-tabs)')}
         />
       </View>
 
       {/* Shortcuts */}
+      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+        Check Scams
+      </Text>
       {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
@@ -118,51 +134,57 @@ export default function Home() {
         })}
       </View> */}
 
-<View className="mb-6">
-  <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
-    Check Scams
-  </Text>
-  <ScrollView
-    horizontal={true}  // Enable horizontal scrolling
-    showsHorizontalScrollIndicator={false}  // Hide the horizontal scrollbar
-    contentContainerStyle={{ paddingHorizontal: 8 }}  // Optional: Adds padding to the left and right
-  >
-    {/* Use flex-row and justifyContent to manage spacing */}
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10}}>
-      {shortcuts.map((sc) => {
-        const IconComponent = sc.iconType;
-        return (
-          <Pressable
-            key={sc.key}
-            className="shortcut-btn"
-            onPress={() =>
-              router.push(`/(home-tabs)/checkScam?type=${sc.key}` as any)
-            }
-            android_ripple={{ color: "#ccc" }}
+      <View className="mb-6">
+        <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+          Check Scams
+        </Text>
+        <ScrollView
+          horizontal={true} // Enable horizontal scrolling
+          showsHorizontalScrollIndicator={false} // Hide the horizontal scrollbar
+          contentContainerStyle={{ paddingHorizontal: 8 }} // Optional: Adds padding to the left and right
+        >
+          {/* Use flex-row and justifyContent to manage spacing */}
+          <View
             style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: 10,  // Padding for better spacing within the button
-              borderWidth: 1, // Border width for the button
-              borderColor: colorScheme === "dark" ? "#ccc" : "#000", // Border color based on theme
-              borderRadius: 12, // Rounded corners for button
-              backgroundColor: colorScheme === "dark" ? "#333" : "#fff", // Button background color
-              flexShrink: 0, // Prevent button from shrinking if space is tight
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: 10,
             }}
           >
-            <IconComponent
-              name={sc.iconName}
-              size={30}  // Icon size
-              color={colorScheme === "dark" ? "#ccc" : "#000"}
-            />
-            <Text className="shortcut-label text-sm">{sc.label}</Text> {/* Button label */}
-          </Pressable>
-        );
-      })}
-    </View>
-  </ScrollView>
-</View>
-
+            {shortcuts.map((sc) => {
+              const IconComponent = sc.iconType;
+              return (
+                <Pressable
+                  key={sc.key}
+                  className="shortcut-btn"
+                  onPress={() =>
+                    router.push(`/(home-tabs)/checkScam?type=${sc.key}` as any)
+                  }
+                  android_ripple={{ color: '#ccc' }}
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: 10, // Padding for better spacing within the button
+                    borderWidth: 1, // Border width for the button
+                    borderColor: colorScheme === 'dark' ? '#ccc' : '#000', // Border color based on theme
+                    borderRadius: 12, // Rounded corners for button
+                    backgroundColor: colorScheme === 'dark' ? '#333' : '#fff', // Button background color
+                    flexShrink: 0, // Prevent button from shrinking if space is tight
+                  }}
+                >
+                  <IconComponent
+                    name={sc.iconName}
+                    size={30} // Icon size
+                    color={colorScheme === 'dark' ? '#ccc' : '#000'}
+                  />
+                  <Text className="shortcut-label text-sm">{sc.label}</Text>{' '}
+                  {/* Button label */}
+                </Pressable>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
 
       {/* Notifications */}
       <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
@@ -172,7 +194,7 @@ export default function Home() {
         data={notifications}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingBottom: 80 }}
-        renderItem={({ item }) => <Notification item={item} />}
+        renderItem={({ item }) => <NotificationUI item={item} />}
       />
     </View>
   );

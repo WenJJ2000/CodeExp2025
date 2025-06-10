@@ -10,7 +10,35 @@ export type ScamReportType =
   | 'IN_PERSON'
   | 'APP'
   | 'CRYPTO';
-export const scamReportTypes: { value: ScamReportType; label: string }[] = [
+export const scamReportTypes: {
+  value: ScamReportType;
+  label: string;
+}[] = [
+  { value: 'SMS', label: 'SMS' },
+  { value: 'EMAIL', label: 'Email' },
+  { value: 'PHONE', label: 'Phone' },
+  { value: 'SOCIAL_MEDIA', label: 'Social Media' },
+  { value: 'WEBSITE', label: 'Website' },
+  { value: 'IN_PERSON', label: 'In Person' },
+  { value: 'APP', label: 'App' },
+  // { value: "MISINFORMATION", label: "Misinformation" },
+];
+export type Filters =
+  | 'All'
+  | 'SMS'
+  | 'EMAIL'
+  | 'PHONE'
+  | 'SOCIAL_MEDIA'
+  | 'WEBSITE'
+  | 'IN_PERSON'
+  | 'APP'
+  | 'EDUCATION'
+  | 'VERIFIED';
+export const ScamReportFilterTypes: {
+  value: Filters;
+  label: string;
+}[] = [
+  { value: 'All', label: 'All' },
   { value: 'SMS', label: 'SMS' },
   { value: 'EMAIL', label: 'Email' },
   { value: 'PHONE', label: 'Phone' },
@@ -19,6 +47,8 @@ export const scamReportTypes: { value: ScamReportType; label: string }[] = [
   { value: 'IN_PERSON', label: 'In Person' },
   { value: 'APP', label: 'App' },
   { value: 'CRYPTO', label: 'Crypto' },
+  { value: 'EDUCATION', label: 'Education' },
+  { value: 'VERIFIED', label: 'Verified' },
 ];
 export type ForumTagVariant =
   | 'PHONE'
@@ -33,18 +63,17 @@ export type ForumTagVariant =
   | 'EDUCATION'
   | 'CRYPTO';
 export type VoteType = 'UPVOTE' | 'DOWNVOTE';
-export type NotificationSetting = {
-  id: string;
-  scamTest: boolean;
-  email: boolean;
-  sms: boolean;
-  phone: boolean;
-};
 export type Notification = {
   id: string;
   title: string;
   subtitle: string;
   timestamp: Date;
+  action: 'removed' | 'added' | 'modified';
+  scamReportId: string; // Optional, if the notification is related to a scam report
+  replyId?: string; // Optional, if the notification is related to a reply
+  createdBy: string; // Optional, if the notification is related to a user action
+  readBy: string[]; // Array of user IDs who have read the notification
+  onlyFor?: string; // Optional, if the notification is only for a specific user
 };
 export type QuizOption = {
   id: string;
@@ -70,7 +99,12 @@ export type User = {
   username: string;
   profilePicture?: string;
   quizLevelCleared: number;
-  notificationSettings: NotificationSetting;
+  notificationSettings: {
+    scamTest: boolean;
+    email: boolean;
+    sms: boolean;
+    phone: boolean;
+  };
   badgesObtained: Badge[];
 };
 
@@ -89,7 +123,7 @@ export type ScamReport = {
   scamReportStatus: ScamReportStatus;
   votes: { type: VoteType; voterId: string }[];
   replies: Reply[];
-  location?: string;
+  location?: { postalCode: string; latitude: number; longitude: number };
 };
 
 export type Reply = {
@@ -98,7 +132,7 @@ export type Reply = {
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
-  image?: string;
+  images?: string[];
   replies?: Reply[];
   createdBy: User;
 };

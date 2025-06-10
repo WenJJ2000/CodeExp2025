@@ -13,7 +13,9 @@ import ImageTray from "../image-tray";
 export function ForumPost({
   scamReport,
   fulltext = false,
-  onClick = () => {},
+  onClick = () => {
+    console.log("Post clicked");
+  },
   showReplyButton = false,
   onClickReply = () => {},
 }: {
@@ -103,9 +105,6 @@ export function ForumPost({
         <View className="px-4 pb-2 w-full">
           <ImageTray images={scamReport.images} />
         </View>
-      )}
-      {scamReport?.location && fulltext && (
-        <ForumPostMap location={scamReport?.location} />
       )}
       <View className="w-full px-4 pb-2">
         <View className="flex-row  bg-secondary justify-between items-center gap-2">

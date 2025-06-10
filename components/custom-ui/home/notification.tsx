@@ -1,8 +1,10 @@
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { Text } from "~/components/ui/text";
+import { viewNotification } from "~/firebase/NotiApi";
 import { Notification as NotificationType } from "~/lib/types";
-export default function Notification({ item }: { item: NotificationType }) {
+import { useAuth } from "~/lib/useContext/useAuthContext";
+export default function NotificationUI({ item }: { item: NotificationType }) {
   const lastUpdated = new Date(new Date().getTime() - item.timestamp.getTime());
   const daysAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60 * 24)) - 1;
   const hoursAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60)) - 1;
@@ -14,14 +16,18 @@ export default function Notification({ item }: { item: NotificationType }) {
       ? ` ${hoursAgo}h`
       : `${minutesAgo}m`;
   const router = useRouter();
+  const { uid } = useAuth();
   return (
     <Pressable
-      onPress={() =>
-        router.push({
-          pathname: "/forumPage",
-          params: { scamReportId: item.id },
-        })
-      }
+      onPress={() => {
+        viewNotification(uid, item.scamReportId);
+        item.action !== "removed"
+          ? router.push({
+              pathname: "/forumPage",
+              params: { scamReportId: item.scamReportId },
+            })
+          : {};
+      }}
     >
       <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3">
         <Text className="font-bold text-base mb-1 text-black dark:text-white">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   SafeAreaView,
@@ -6,25 +6,25 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import ForumHeader, {
-  Filters,
-} from '~/components/custom-ui/forum/forum-header';
+import ForumHeader from '~/components/custom-ui/forum/forum-header';
 import { ForumPost } from '~/components/custom-ui/forum/forum-post';
-import { ScamReport } from '~/lib/types';
+import { Filters, ScamReport } from '~/lib/types';
 
 import { liveUpdate } from '~/firebase/ForumApi';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useColorScheme } from '~/lib/useColorScheme';
+import SafeAreaViewForAndroid from '~/components/custom-ui/SafeAreaViewForAndriod';
+import MapView, { Marker } from 'react-native-maps';
 
-export default function Screen() {
+export default function Index() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<Filters>('All');
   const [scamReports, setScamReports] = useState<ScamReport[]>([]);
   const [filteredReports, setFilteredReports] = useState<ScamReport[]>([]);
-
+  const [scollToIndex, setScrollToIndex] = useState<number>(0);
   const { _queries, _filters } = useGlobalSearchParams();
   useEffect(() => {
     setSearchQuery(_queries as string);
@@ -33,35 +33,38 @@ export default function Screen() {
     }
   }, [_queries, _filters]);
   function filterScamReports() {
-    if ((searchQuery && searchQuery.length > 0) || filter !== 'All') {
-      const filteredReports = scamReports
-        .filter((report) =>
-          report.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .filter((report) => {
-          if (filter === 'Email') {
-            return report.scamReportType === 'EMAIL';
-          } else if (filter === 'SMS') {
-            return report.scamReportType === 'SMS';
-          } else if (filter === 'Phone') {
-            return report.scamReportType === 'PHONE';
-          } else if (filter === 'Website') {
-            return report.scamReportType === 'WEBSITE';
-          } else if (filter === 'Social Media') {
-            return report.scamReportType === 'SOCIAL_MEDIA';
-          } else if (filter === 'In Person') {
-            return report.scamReportType === 'IN_PERSON';
-          } else if (filter === 'Education') {
-            return report.isEducation;
-          } else if (filter === 'Verified') {
-            return report.scamReportStatus === 'VALID';
-          }
-          return true; // Default case, should not happen
-        });
-      setFilteredReports(filteredReports);
-    } else {
-      setFilteredReports(scamReports);
+    let filteredReports = scamReports;
+    if (filter !== 'All') {
+      filteredReports = filteredReports.filter((report) => {
+        if (filter === 'EMAIL') {
+          return report.scamReportType === 'EMAIL';
+        } else if (filter === 'SMS') {
+          return report.scamReportType === 'SMS';
+        } else if (filter === 'PHONE') {
+          return report.scamReportType === 'PHONE';
+        } else if (filter === 'SOCIAL_MEDIA') {
+          return report.scamReportType === 'SOCIAL_MEDIA';
+        } else if (filter === 'WEBSITE') {
+          return report.scamReportType === 'WEBSITE';
+        } else if (filter === 'IN_PERSON') {
+          return report.scamReportType === 'IN_PERSON';
+        } else if (filter === 'APP') {
+          return report.scamReportType === 'APP';
+        } else if (filter === 'EDUCATION') {
+          return report.isEducation;
+        } else if (filter === 'VERIFIED') {
+          return report.scamReportStatus === 'VALID';
+        }
+        return false; // Default case, should not happen
+      });
     }
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      filteredReports = filteredReports.filter((report) => {
+        return report.title.toLowerCase().includes(searchLower);
+      });
+    }
+    setFilteredReports(filteredReports);
   }
   async function fetchScamReports(reports: ScamReport[] = []) {
     setScamReports(reports);
@@ -76,11 +79,65 @@ export default function Screen() {
   useEffect(() => {
     filterScamReports();
   }, [filter, searchQuery, scamReports]);
+  const ref = useRef(null as FlatList<ScamReport> | null);
 
+  const scrollToIndex = (index: number) => {
+    ref?.current?.scrollToIndex({
+      animated: true,
+      index: index,
+    });
+  };
   return (
-    <SafeAreaView className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
+      {filter == 'IN_PERSON' && (
+        <MapView style={{ width: '100%', height: '40%' }}>
+          {filteredReports.map((report) => {
+            if (report.location !== undefined && report.location !== null) {
+              return (
+                <Marker
+                  key={report.id}
+                  coordinate={{
+                    latitude: report.location.latitude,
+                    longitude: report.location.longitude,
+                  }}
+                  title={report.title}
+                  description={`Posted by ${report.createdBy.username}`}
+                  onPress={() => {
+                    // alert("Marker Pressed");
+                    filteredReports.findIndex(
+                      (item) => item.id === report.id
+                    ) !== -1
+                      ? scrollToIndex(
+                          filteredReports.findIndex(
+                            (item) => item.id === report.id
+                          )
+                        )
+                      : scrollToIndex(0);
+                    // router.push({
+                    //   pathname: "/forumPage",
+                    //   params: { scamReportId: report.id },
+                    // });
+                  }}
+                  pinColor={
+                    report.scamReportStatus === 'VALID'
+                      ? 'green'
+                      : report.scamReportStatus === 'INVALID'
+                      ? 'red'
+                      : 'blue'
+                  }
+                  style={{
+                    width: 50,
+                    height: 50,
+                  }}
+                />
+              );
+            }
+            return null; // Skip markers without location
+          })}
+        </MapView>
+      )}
       <FlatList
-        className=""
+        ref={ref}
         data={filteredReports}
         renderItem={({ item }) => {
           return (
@@ -95,6 +152,7 @@ export default function Screen() {
             />
           );
         }}
+        initialScrollIndex={scollToIndex}
       />
       <Pressable
         className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-secondary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary"
@@ -108,6 +166,6 @@ export default function Screen() {
           color={colorScheme === 'light' ? 'black' : 'white'}
         />
       </Pressable>
-    </SafeAreaView>
+    </SafeAreaViewForAndroid>
   );
 }

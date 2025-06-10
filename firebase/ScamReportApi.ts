@@ -1,14 +1,14 @@
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
-
+import { emitNotification } from "./NotiApi";
 
 export interface ScamReportInput {
   scamReportType: string;
   sender: string;
   title: string;
   content: string;
-  location: string;
+  location: { postalCode: string; latitude: number; longitude: number };
   createdBy: string;
   isEducation?: boolean;
   images?: string[];
@@ -44,6 +44,12 @@ export async function createReport({
   };
 
   await setDoc(doc(db, "scamReports", uuidValue), reportData);
+  const userDoc = await getDoc(doc(db, "users", createdBy));
+  if (!userDoc.exists()) {
+    throw new Error("User not found");
+  }
+  const username = userDoc.data()?.username || "Unknown User";
+  await emitNotification("added", username, createdBy, uuidValue);
 }
 
 export async function getAllScamReports() {
@@ -62,7 +68,7 @@ export async function createScamCheck(
   inputType: string,
   inputData: string,
   postedToForum: boolean
-){
+) {
   const uuidValue = uuid.v4();
 
   const d = {

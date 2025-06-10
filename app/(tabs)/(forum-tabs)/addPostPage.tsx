@@ -27,12 +27,14 @@ import {
 } from "~/components/ui/select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScamReportType, scamReportTypes } from "~/lib/types";
+import ImageTray from "~/components/custom-ui/image-tray";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 
 export default function AddPostPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [scamReportType, setScamReportType] = useState<ScamReportType>();
   const { uid } = useAuth();
   const insets = useSafeAreaInsets();
@@ -63,11 +65,11 @@ export default function AddPostPage() {
       await createReport({
         scamReportType: scamReportType,
         sender: title,
-        title: undefined,
+        title: "",
         content,
         createdBy: uid,
         isEducation: true,
-        image: image || "",
+        images: images,
         location: "",
       });
     } catch (error) {
@@ -78,15 +80,23 @@ export default function AddPostPage() {
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      selectionLimit: 1, // Limit to one image
+
+      allowsMultipleSelection: true, // Allow multiple images
     });
 
     if (!result.canceled) {
-      setImage(await convertImageToBase64(result.assets[0].uri));
+      for (const image of result.assets) {
+        const base64Image = await convertImageToBase64(image.uri);
+        if (base64Image) {
+          setImages((prevImages) => [...prevImages, base64Image]);
+        } else {
+          console.error("Failed to convert image to base64");
+        }
+      }
     }
   };
   const convertImageToBase64 = async (fileUri: string) => {
@@ -99,11 +109,11 @@ export default function AddPostPage() {
     } catch (error) {
       console.error("Error converting image to base64:", error);
 
-      return null;
+      return "";
     }
   };
   return (
-    <SafeAreaView className="flex-1 bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 bg-secondary/30">
       <ScrollView className="ml-4 mr-4 mt-4 mb-2 p-4">
         <KeyboardAvoidingView>
           <View className="flex-row items-center justify-between mb-4">
@@ -140,7 +150,7 @@ export default function AddPostPage() {
             </Label>
             <Input value={title} onChangeText={(text) => setTitle(text)} />
           </View>
-          <View className="mb-2 ">
+          <View className="mb-4 ">
             <Label className="text-lg font-semibold text-muted-foreground mb-2">
               <Text>Content</Text>
             </Label>
@@ -151,8 +161,8 @@ export default function AddPostPage() {
               onChangeText={(text) => setContent(text)}
             />
           </View>
-          <View className="mb-2 ">
-            {image && <PressableImage image={image} />}
+          <View className="mb-4 ">
+            {images && <ImageTray images={images} />}
           </View>
           <View className="mb-2 ">
             <Button
@@ -161,7 +171,7 @@ export default function AddPostPage() {
               onPress={pickImage}
             >
               <Text className="text-lg font-semibold text-muted-foreground">
-                Attach Image
+                Add Images
               </Text>
             </Button>
           </View>
@@ -189,6 +199,6 @@ export default function AddPostPage() {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaViewForAndroid>
   );
 }
