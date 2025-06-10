@@ -1,11 +1,11 @@
-export type ScamReportStatus = "VALID" | "INVALID";
+export type ScamReportStatus = 'VALID' | 'INVALID';
 
 export type ScamReportType =
-  | "PHONE"
-  | "SMS"
-  | "EMAIL"
-  | "SOCIAL_MEDIA"
-  | "WEBSITE"
+  | 'PHONE'
+  | 'SMS'
+  | 'EMAIL'
+  | 'SOCIAL_MEDIA'
+  | 'WEBSITE'
   // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP"
@@ -21,11 +21,11 @@ export const scamReportTypes: { value: ScamReportType; label: string }[] = [
   { value: "CRYPTO", label: "Crypto" },
 ];
 export type ForumTagVariant =
-  | "PHONE"
-  | "SMS"
-  | "EMAIL"
-  | "SOCIAL_MEDIA"
-  | "WEBSITE"
+  | 'PHONE'
+  | 'SMS'
+  | 'EMAIL'
+  | 'SOCIAL_MEDIA'
+  | 'WEBSITE'
   // | "MISINFORMATION"
   | "IN_PERSON"
   | "APP"
@@ -100,3 +100,13 @@ export type Reply = {
   replies?: Reply[];
   createdBy: User;
 };
+
+export interface Question {
+  question: string;
+  options: QuestionOptions[];
+}
+
+interface QuestionOptions {
+  description: string;
+  isCorrect: boolean;
+}
