@@ -1,12 +1,12 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useRouter } from "expo-router";
+import * as SercureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
-import * as SercureStore from "expo-secure-store";
 
 export default function Screen() {
   const navigator = useRouter();
@@ -20,8 +20,8 @@ export default function Screen() {
       }
     };
     checkUser();
-    console.log("User in Index:", !!user);
-    console.log("UID in Index:", !!uid);
+    // console.log("User in Index:", !!user);
+    // console.log("UID in Index:", !!uid);
   }, [user, uid, navigator]);
   return (
     <SafeAreaView className="flex-1 justify-center items-center gap-1 p-6 bg-secondary/30">
@@ -33,7 +33,7 @@ export default function Screen() {
         style={{ aspectRatio: 1 }}
       />
       <View className="flex-1 justify-center items-center gap-5 p-6">
-        <Text className="text-6xl text-center ">ScamBusters</Text>
+        <Text className="text-5xl text-center ">ScamBusters</Text>
         <Text className="text-lg text-center text-muted-foreground">
           Detect, Report, and Defeat Online Threats
         </Text>
@@ -42,7 +42,7 @@ export default function Screen() {
           variant="default"
           size="lg"
           onPress={() => {
-            navigator.replace("../(auth-tabs)/signup");
+            navigator.push("../(auth-tabs)/signup");
           }}
         >
           <Text className="text-lg dark:color-white">Let's get started</Text>

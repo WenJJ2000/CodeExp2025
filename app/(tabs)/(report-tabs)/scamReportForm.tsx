@@ -2,10 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
@@ -15,9 +16,11 @@ import {
 } from "react-native";
 
 import { GOOGLE_VISION_API_KEY } from "@env";
+import { ScamReportType } from "~/lib/types";
 import { createReport } from "../../../firebase/ScamReportApi";
 import { auth } from "../../../firebase/firebase";
-import { ScamReportType } from "~/lib/types";
+import { getLongLat, getToken } from "~/firebase/OneMapApi";
+import MapView, { Marker } from "react-native-maps";
 
 const ScamCategoryMap: Record<ScamReportType, string> = {
   EMAIL: "email",
@@ -27,6 +30,7 @@ const ScamCategoryMap: Record<ScamReportType, string> = {
   WEBSITE: "website",
   IN_PERSON: "inPerson",
   APP: "app",
+  CRYPTO: "crypto",
 };
 
 const SCAM_CONFIG: Record<
@@ -67,6 +71,10 @@ const SCAM_CONFIG: Record<
     senderLabel: "App name or developer",
     contentLabel: "What did the app do?",
   },
+  CRYPTO: { // Add crypto configuration
+    senderLabel: "Crypto Platform / Wallet",
+    contentLabel: "What happened with the crypto transaction?",
+  },
 };
 
 export default function ScamReportForm() {
@@ -76,19 +84,50 @@ export default function ScamReportForm() {
     sender: "",
     title: "",
     content: "",
+    location: "",
   });
   const [errors, setErrors] = useState({
     sender: "",
     title: "",
     content: "",
+    location: "",
   });
-
+  const [locationLongLat, setLocationLongLat] = useState<{
+    longitude: number;
+    latitude: number;
+  }>({
+    longitude: 0,
+    latitude: 0,
+  });
+  const [oneMapToken, setOneMapToken] = useState<string>("");
   const isDark = useColorScheme() === "dark";
   const config = SCAM_CONFIG[scamType];
   const user = auth.currentUser;
   const router = useRouter();
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setFormData({ sender: "", title: "", content: "", location: "" });
+    setErrors({ sender: "", title: "", content: "", location: "" });
+    setExtractedText("");
+    setImages([]);
+    setLocationLongLat({
+      longitude: 0,
+      latitude: 0,
+    });
+    if (oneMapToken === "") {
+      getToken()
+        .then((data) => data.json())
+        .then((tokenData) => {
+          if (tokenData.access_token) {
+            setOneMapToken(tokenData.access_token);
+          } else {
+            Alert.alert("Error", "Failed to retrieve OneMap token.");
+          }
+        });
+    }
+  }, [scamType]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -98,22 +137,49 @@ export default function ScamReportForm() {
     });
   }, []);
 
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null); // for preview
+  const [imageBase64, setImageBase64] = useState<string | null>(null); // for storage
   const [extractedText, setExtractedText] = useState("");
+  // Bottom images for evidence (array)
+  const [images, setImages] = useState<{ uri: string; base64: string }[]>([]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
-      base64: true, // needed for Vision API
+      base64: true,
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      const base64Img = result.assets[0].base64;
-      setImage(result.assets[0].uri); // for preview
-      if (base64Img) {
-        extractTextFromImage(base64Img);
+      const uri = result.assets[0].uri;
+      const base64 = result.assets[0].base64 ?? null;
+
+      setImage(uri);
+      setImageBase64(base64);
+
+      if (base64) {
+        extractTextFromImage(base64); // autofill content
       }
+    }
+  };
+
+  const pickEvidenceImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      base64: true,
+      allowsMultipleSelection: true, // Only works on web, but you can handle manually
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      // Add all selected images to array
+      setImages((prev) => [
+        ...prev,
+        ...result.assets.map((asset) => ({
+          uri: asset.uri,
+          base64: asset.base64 ?? "",
+        })),
+      ]);
     }
   };
 
@@ -178,7 +244,9 @@ export default function ScamReportForm() {
         sender: formData.sender,
         title: formData.title,
         content: formData.content,
-        reporter: user?.uid ?? "anonymous",
+        location: { postalCode: formData.location, ...locationLongLat },
+        createdBy: user?.uid ?? "anonymous",
+        images: images.map((img) => img.base64),
       });
       setStep(5);
     } catch (error) {
@@ -187,7 +255,7 @@ export default function ScamReportForm() {
   };
 
   const validateStep = (): boolean => {
-    const newErrors = { sender: "", title: "", content: "" };
+    const newErrors = { sender: "", title: "", content: "", location: "" };
     let isValid = true;
 
     if (step === 2) {
@@ -199,11 +267,11 @@ export default function ScamReportForm() {
         switch (scamType) {
           case "EMAIL":
             if (
-              !/^[\w.-]+@(?:gmail|hotmail|yahoo)\.com$/.test(
+              !/^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
                 formData.sender.trim()
               )
             ) {
-              newErrors.sender = "Must be a valid email.";
+              newErrors.sender = "Must be a valid email address.";
               isValid = false;
             }
             break;
@@ -215,22 +283,40 @@ export default function ScamReportForm() {
             }
             break;
           case "WEBSITE":
-            try {
-              const url = new URL(formData.sender.trim());
-              if (!/^https?:\/\//.test(url.href)) {
-                throw new Error();
-              }
-            } catch {
-              newErrors.sender = "Invalid URL format.";
+            if (
+              !/^((https?:\/\/)?www\.[\w.-]+\.[a-zA-Z]{2,})(\/\S*)?$/i.test(
+                formData.sender.trim()
+              )
+            ) {
+              newErrors.sender = "Enter a valid website (must start with www.)";
               isValid = false;
             }
             break;
           // Optionally add more:
           case "SOCIAL_MEDIA":
           case "APP":
+            if (formData.sender.trim().length < 3) {
+              newErrors.sender = "Too short.";
+              isValid = false;
+            }
+            break;
           case "IN_PERSON":
             if (formData.sender.trim().length < 3) {
               newErrors.sender = "Too short.";
+              isValid = false;
+            }
+            // Singapore postal code validation (6 digits)
+            if (!/^\d{6}$/.test(formData.location)) {
+              newErrors.location = "Please enter a valid 6-digit postal code.";
+              isValid = false;
+            }
+            break;
+          case "CRYPTO":
+            // Updated regex: allows both 'http://', 'https://', and 'www.' URLs
+            if (
+              !/^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(formData.sender.trim())
+            ) {
+              newErrors.sender = "Must be a valid crypto platform URL (with or without 'http(s)://').";
               isValid = false;
             }
             break;
@@ -256,12 +342,36 @@ export default function ScamReportForm() {
     setErrors(newErrors);
     return isValid;
   };
-
+  const handleLocation = (text: string) => {
+    getLongLat(text, oneMapToken)
+      .then((data) => data.json())
+      .then((longLatData) => {
+        if (longLatData.results && longLatData.results.length > 0) {
+          const result = longLatData.results[0];
+          setLocationLongLat({
+            longitude: parseFloat(result.LONGITUDE),
+            latitude: parseFloat(result.LATITUDE),
+          });
+        } else {
+          setLocationLongLat({ longitude: 0, latitude: 0 });
+        }
+      });
+  };
   return (
     <ScrollView
       className={`flex-1 px-5 pt-10 ${isDark ? "bg-black" : "bg-white"}`}
       contentContainerStyle={{ paddingBottom: 100 }}
     >
+
+      {/* Back Button with Arrow */}
+      <Pressable onPress={() => navigation.goBack()} className="mb-4">
+        <Ionicons
+          name="arrow-back"
+          size={30}
+          color={isDark ? "white" : "black"}
+        />
+      </Pressable>
+            
       {/* Step indicator */}
       <View className="flex-row justify-between mb-6">
         {[1, 2, 3, 4].map((s) => (
@@ -368,12 +478,90 @@ export default function ScamReportForm() {
                                 : "text-black bg-white"
                             }
                         `}
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
             placeholder={config.senderLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
           />
           {errors.sender ? (
             <Text className="text-red-500 text-sm mb-3">{errors.sender}</Text>
           ) : null}
+
+          {scamType === "IN_PERSON" && (
+            <>
+              <Text
+                className={`text-base mb-2 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                Postal code where it happened
+              </Text>
+              <TextInput
+                value={formData.location}
+                onChangeText={(text) => {
+                  const filtered = text.replace(/[^0-9]/g, "").slice(0, 6);
+                  updateField("location", filtered);
+                  handleLocation(filtered);
+                  setErrors((prev) => ({ ...prev, location: "" }));
+                }}
+                keyboardType="numeric"
+                maxLength={6}
+                className={`border rounded-lg p-3 mb-1
+                  ${
+                    errors.location
+                      ? "border-red-500"
+                      : isDark
+                      ? "border-gray-600"
+                      : "border-gray-400"
+                  }
+                  ${isDark ? "text-white bg-gray-900" : "text-black bg-white"}
+                mb-4`}
+                placeholder="Enter postal code"
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+                placeholder={config.senderLabel}
+                placeholderTextColor={isDark ? "#999" : "#666"}
+              />
+              <MapView
+                className="w-full h-64 mb-4"
+                style={{ borderRadius: 12, width: "100%", height: 250 }}
+                mapType="standard"
+                showsMyLocationButton={true}
+                showsCompass={true}
+                showsScale={true}
+                showsPointsOfInterest={true}
+                showsTraffic={true}
+                showsIndoors={true}
+                showsBuildings={true}
+                showsUserLocation={true}
+                initialRegion={{
+                  latitude: 1.3521, // Default to Singapore
+                  longitude: 103.8198,
+                  latitudeDelta: 0.15,
+                  longitudeDelta: 0.15,
+                }}
+                followsUserLocation={true}
+              >
+                {locationLongLat.latitude !== 0 &&
+                  locationLongLat.longitude !== 0 && (
+                    <Marker
+                      coordinate={{
+                        latitude: locationLongLat.latitude,
+                        longitude: locationLongLat.longitude,
+                      }}
+                      title="Scam Location"
+                    />
+                  )}
+              </MapView>
+              {errors.location ? (
+                <Text className="text-red-500 text-sm mb-3">
+                  {errors.location}
+                </Text>
+              ) : null}
+            </>
+          )}
 
           {config.titleLabel && (
             <>
@@ -390,14 +578,11 @@ export default function ScamReportForm() {
                   updateField("title", text);
                   setErrors((prev) => ({ ...prev, title: "" }));
                 }}
-                className={`border rounded-lg p-3 mb-1 ${
-                  errors.title
-                    ? "border-red-500"
-                    : isDark
-                    ? "bg-gray-900 text-white border-gray-600"
-                    : "bg-white text-black border-gray-400"
-                }`}
-                placeholder={config.titleLabel}
+                className={`border rounded-lg p-3 mb-1
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+                placeholder={config.senderLabel}
                 placeholderTextColor={isDark ? "#999" : "#666"}
               />
               {errors.title ? (
@@ -429,7 +614,7 @@ export default function ScamReportForm() {
             </Text>
           </TouchableOpacity>
 
-          {extractedText ? (
+          {/* {extractedText ? (
             <View className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
               <Text className={`${isDark ? "text-white" : "text-black"}`}>
                 Extracted Text:
@@ -438,7 +623,7 @@ export default function ScamReportForm() {
                 {extractedText}
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
 
           <Text
             className={`text-center text-lg mb-2 ${
@@ -462,23 +647,87 @@ export default function ScamReportForm() {
               updateField("content", text);
               setErrors((prev) => ({ ...prev, content: "" }));
             }}
-            className={`border rounded-lg p-3 mb-1 ${
-              errors.content
-                ? "border-red-500"
-                : isDark
-                ? "bg-gray-900 text-white border-gray-600"
-                : "bg-white text-black border-gray-400"
-            }`}
-            placeholder={config.contentLabel}
+            className={`border rounded-lg p-3 mb-1
+              ${errors.sender ? "border-red-500" : isDark ? "border-gray-600" : "border-gray-400"}
+              ${errors.sender || isDark ? "text-white" : "text-black"}
+              ${isDark ? "bg-gray-900" : "bg-white"}`}
+            placeholder={config.senderLabel}
             placeholderTextColor={isDark ? "#999" : "#666"}
           />
           {errors.content ? (
             <Text className="text-red-500 text-sm mb-3">{errors.content}</Text>
           ) : null}
+
+          <View className="mt-6">
+            <Text
+              className={`text-base font-semibold mb-2 ${
+                isDark ? "text-white" : "text-black"
+              }`}
+            >
+              Upload Additional Images (optional)
+            </Text>
+            <TouchableOpacity
+              onPress={pickEvidenceImage}
+              className={`border rounded-lg p-4 mb-3 items-center ${
+                isDark ? "border-gray-500 bg-gray-900" : "border-black bg-white"
+              }`}
+            >
+              <Ionicons
+                name="camera"
+                size={24}
+                color={isDark ? "white" : "black"}
+              />
+              <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                Upload Evidence Image
+              </Text>
+            </TouchableOpacity>
+
+            {images.length > 0 && (
+              <View className="flex-row flex-wrap">
+                {images.map((img, idx) => (
+                  <View
+                    key={idx}
+                    className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center"
+                  >
+                    <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                      Evidence Image {idx + 1}:
+                    </Text>
+                    <View
+                      style={{ width: 200, height: 200, marginVertical: 8 }}
+                    >
+                      <Image
+                        source={{ uri: img.uri }}
+                        style={{ width: 200, height: 200, borderRadius: 8 }}
+                        resizeMode="cover"
+                      />
+                      <TouchableOpacity
+                        onPress={() =>
+                          setImages((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          zIndex: 2,
+                          backgroundColor: "rgba(255,0,0,0.8)",
+                          borderRadius: 12,
+                          width: 16,
+                          height: 16,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Ionicons name="close" size={12} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
         </>
       )}
 
-      {/* Step 4: Preview */}
       {step === 4 && (
         <>
           <Text
@@ -518,6 +767,47 @@ export default function ScamReportForm() {
           >
             {formData.content}
           </Text>
+
+          {images.length > 0 && (
+            <View className="flex-row flex-wrap">
+              {images.map((img, idx) => (
+                <View
+                  key={idx}
+                  className="mt-2 p-3 border rounded bg-gray-100 dark:bg-gray-800 items-center"
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>
+                    Evidence Image {idx + 1}:
+                  </Text>
+                  <View style={{ width: 200, height: 200, marginVertical: 8 }}>
+                    <Image
+                      source={{ uri: img.uri }}
+                      style={{ width: 200, height: 200, borderRadius: 8 }}
+                      resizeMode="cover"
+                    />
+                    <TouchableOpacity
+                      onPress={() =>
+                        setImages((prev) => prev.filter((_, i) => i !== idx))
+                      }
+                      style={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        zIndex: 2,
+                        backgroundColor: "rgba(255,0,0,0.8)",
+                        borderRadius: 12,
+                        width: 16,
+                        height: 16,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Ionicons name="close" size={12} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
         </>
       )}
 

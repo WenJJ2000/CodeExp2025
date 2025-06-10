@@ -3,17 +3,16 @@ const { db } = require("./firebase");
 
 async function getAllUser() {
   try {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const users = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log("Fetched users:", users);
-    if (users.length === 0) {
-      console.log("No users found in the database.");
-    } else {
-      console.log(`Total users fetched: ${users.length}`);
-    }
+    const snapshot = await db
+      .collection("users")
+      .where("notificationSettings.email", "==", true)
+      .get();
+    const users = [];
+    snapshot.forEach((doc) => {
+      const userData = doc.data();
+      userData.id = doc.id; // Add the document ID to the user data
+      users.push(userData);
+    });
     return users;
   } catch (error) {
     console.error("Error initializing Firebase:", error.toString());

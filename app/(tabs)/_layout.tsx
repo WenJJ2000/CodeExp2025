@@ -2,15 +2,18 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router, Tabs, useGlobalSearchParams } from "expo-router";
 import { Pressable, SafeAreaView, TouchableOpacity, View } from "react-native";
 import { ThemeToggle } from "~/components/ThemeToggle";
-import ForumHeader, {
-  Filters,
-} from "~/components/custom-ui/forum/forum-header";
+import ForumHeader from "~/components/custom-ui/forum/forum-header";
 import { SettingsButton } from "~/components/settingsButton";
+import { useAuth } from "~/lib/useContext/useAuthContext";
+import { UserProvider } from "~/lib/useContext/useUserContext";
 
 export default function TabLayout() {
+  const { setUid, setUser } = useAuth();
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
-    console.log("Settings pressed");
+    // console.log("Settings pressed");
+    setUid("");
+    setUser("");
   }
 
   return (
@@ -33,7 +36,6 @@ export default function TabLayout() {
           </View>
         ),
       }}
-      initialRouteName="(forum-tabs)"
     >
       <Tabs.Screen
         name="(quiz-tabs)"
