@@ -1,27 +1,40 @@
-import { db } from './firebase';
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import uuid from "react-native-uuid";
+import { db } from "./firebase";
 
-export async function createReport(description, reporterId, scamType) {
-  const uuid = uuidv4();
-  // Store extra user info in Firestore
-  await setDoc(doc(db, 'scamReports', uuid), {
-    comments: [],
-    description,
-    reporterId,
-    scamType,
-    evidence: {
-      type: 'image/text',
-      url: '',
-    },
-    timestamp: Date.now(),
-    status: 'pending',
-    votes: [0, 0], // [upvotes,downvotes]
-  });
+export async function createReport({
+  scamReportType,
+  sender,
+  title,
+  content,
+  reporter,
+}) {
+  const uuidValue = uuid.v4();
+
+  const reportData = {
+    reporter,
+    scamReportType,
+    // sender,
+    title: sender,
+    content: `${title ? `${title || "No title"}\n${content}` : content}`, // content is required
+    // evidence: {
+    //   type: 'text',
+    //   url: '',
+    // },
+    numOfReplies:0,
+    createdAt: new Date(),
+    scamReportStatus: "INVALID",
+    votes: [],
+    replies: [],
+  };
+
+  await setDoc(doc(db, "scamReports", uuidValue), reportData);
 }
 
 export async function getAllScamReports() {
-  const querySnapshot = await getDocs(collection(db, 'scamReports'));
+  const uuidValue = uuid.v4();
+
+  const querySnapshot = await getDocs(collection(db, "scamReports"));
   const reports = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -35,16 +48,15 @@ export async function createScamCheck(
   inputData,
   postedToForum
 ) {
-  const uuid = uuidv4();
   const d = {
     userId,
     inputType,
     inputData,
-    result: 'pending',
+    result: "pending",
     confidence: 0,
     timestamp: Date.now(),
-    forumPostId: '', // optional — only if user posts it
+    forumPostId: "", // optional — only if user posts it
     postedToForum,
   };
-  await setDoc(doc(db, 'scamChecks', uuid), d);
+  await setDoc(doc(db, "scamChecks", uuidValue), d);
 }

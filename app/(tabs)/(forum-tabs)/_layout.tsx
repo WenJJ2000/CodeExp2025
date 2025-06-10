@@ -1,33 +1,18 @@
 import "~/global.css";
 
 import {
-  DarkTheme,
-  DefaultTheme,
-  Theme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { Stack, Tabs } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+  Stack,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import * as React from "react";
-import { Appearance, Platform, View } from "react-native";
-import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { Appearance, Platform, SafeAreaView } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import { ThemeToggle } from "~/components/ThemeToggle";
-import { Text } from "~/components/ui/text";
-
-// icons
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-
-const LIGHT_THEME: Theme = {
-  ...DefaultTheme,
-  colors: NAV_THEME.light,
-};
-const DARK_THEME: Theme = {
-  ...DarkTheme,
-  colors: NAV_THEME.dark,
-};
+import ForumHeader, {
+  Filters,
+} from "~/components/custom-ui/forum/forum-header";
+import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -42,13 +27,55 @@ const usePlatformSpecificSetup = Platform.select({
 
 export default function RootLayout() {
   usePlatformSpecificSetup();
-  const { isDarkColorScheme } = useColorScheme();
-
+  const router = useRouter();
+  const { _queries, _filters } = useGlobalSearchParams();
+  const searchQuery = _queries ? (_queries as string) : "";
+  const filter = _filters ? (_filters as Filters) : "All";
+  const setSearchQuery = (query: string) => {
+    router.setParams({ _queries: query, _filters: filter });
+  };
+  const setFilter = (newFilter: Filters) => {
+    router.setParams({ _queries: searchQuery, _filters: newFilter });
+  };
   return (
-    <Stack screenOptions={{ gestureEnabled: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_bottom",
+        animationDuration: 200,
+      }}
+      initialRouteName="index"
+    >
+      <Stack.Screen
+        name="forumPage"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaView>
+                <ForumPageHeader />
+              </SafeAreaView>
+            );
+          },
+        }}
+      />
       <Stack.Screen
         name="index"
-        options={{ headerShown: false, animation: "slide_from_left" }}
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaView>
+                <ForumHeader
+                  searchQuery={searchQuery}
+                  filter={filter}
+                  setFilter={setFilter}
+                  setSearchQuery={setSearchQuery}
+                />
+              </SafeAreaView>
+            );
+          },
+        }}
       />
     </Stack>
   );
