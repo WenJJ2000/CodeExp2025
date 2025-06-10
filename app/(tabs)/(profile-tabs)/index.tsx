@@ -160,13 +160,13 @@ export default function ProfileScreen() {
           className="w-14 h-14 rounded-full"
         />
 
-        {/* My Activity Button */}
+        {/* My Activity Button
         <Pressable className="bg-blue-500 px-4 py-2 rounded-full">
           <Text className="text-white font-bold text-sm">My Activity</Text>
-        </Pressable>
+        </Pressable> */}
 
         {/* Settings Icon */}
-        <Pressable>
+        <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}>
           <FontAwesome6 name="gear" size={24} />
         </Pressable>
       </View>

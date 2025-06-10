@@ -16,6 +16,10 @@ import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { Text } from "~/components/ui/text";
 
+// Scam notifs
+
+
+
 // icons
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -43,6 +47,42 @@ const usePlatformSpecificSetup = Platform.select({
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
+
+//   useEffect(() => {
+//   async function registerForPushNotifications() {
+//     if (Device.isDevice) {
+//       const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//       let finalStatus = existingStatus;
+
+//       if (existingStatus !== 'granted') {
+//         const { status } = await Notifications.requestPermissionsAsync();
+//         finalStatus = status;
+//       }
+
+//       if (finalStatus !== 'granted') {
+//         Alert.alert("Permission required", "Push notification permissions were not granted.");
+//         return;
+//       }
+
+//       const token = (await Notifications.getExpoPushTokenAsync()).data;
+//       console.log("Expo Push Token:", token); // Save to backend if needed
+//     } else {
+//       Alert.alert("Error", "Push notifications only work on physical devices.");
+//     }
+
+//     if (Platform.OS === 'android') {
+//       Notifications.setNotificationChannelAsync("default", {
+//         name: "default",
+//         importance: Notifications.AndroidImportance.MAX,
+//         vibrationPattern: [0, 250, 250, 250],
+//         lightColor: "#FF231F7C",
+//       });
+//     }
+//   }
+
+//   registerForPushNotifications();
+// }, []);
+
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
