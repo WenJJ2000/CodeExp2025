@@ -66,6 +66,10 @@ export type Notification = {
   subtitle: string;
   timestamp: Date;
   action: "removed" | "added" | "modified";
+  scamReportId?: string; // Optional, if the notification is related to a scam report
+  replyId?: string; // Optional, if the notification is related to a reply
+  userId?: string; // Optional, if the notification is related to a user action
+  readBy: string[]; // Array of user IDs who have read the notification
 };
 export type QuizOption = {
   id: string;

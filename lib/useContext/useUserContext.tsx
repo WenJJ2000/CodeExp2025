@@ -29,13 +29,23 @@ export function useUser() {
 
 export function UserProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>();
-  const { uid } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [uid, setUid] = useState("");
+  const fetchUid = async () => {
+    const storedUid = await SecureStore.getItemAsync("uid");
+    if (storedUid) {
+      setUid(storedUid);
+      setIsLoading(false);
+    } else {
+      console.error("No UID found in SecureStore");
+    }
+  };
   useEffect(() => {
-    console.log("UserProvider useEffect", uid);
+    !isLoading && fetchUid();
     uid &&
-      liveUpdateUser("JycJ3zEWtYa8Zn2qltqvFmYnZeH3", (doc: User) => {
+      liveUpdateUser(uid, (doc: User) => {
         setUser(doc);
       });
-  }, [uid]);
+  }, [uid, isLoading, user]);
   return <UserContext value={{ user }}>{children}</UserContext>;
 }

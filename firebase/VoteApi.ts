@@ -35,5 +35,9 @@ export async function vote(userId: string, voteType: VoteType, postId: string) {
     votes.push({ type: voteType, voterId: userId });
   }
   // Update the scam report with the new votes array
-  await setDoc(scamReportRef, { votes }, { merge: true });
+  await setDoc(
+    scamReportRef,
+    { votes, updatedAt: new Date() },
+    { merge: true }
+  );
 }

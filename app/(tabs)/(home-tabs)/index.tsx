@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import Notification from "~/components/custom-ui/home/notification";
 import { getLiveNotifications } from "~/firebase/ForumApi";
+import { liveUpdateUserReports } from "~/firebase/UserApi";
+import { ScamReport } from "~/lib/types";
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useNotification } from "~/lib/useContext/useNotificationContext";
@@ -33,7 +35,7 @@ const shortcuts = [
 export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
-  const { user } = useUser();
+  const { user, uid } = useAuth();
   const [userName, setUserName] = useState("Lisa");
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
@@ -48,9 +50,18 @@ export default function Home() {
     const unsubscribe = getLiveNotifications((x) => {
       setNotifications(x);
     });
-    console.log("user:", user);
+    const unsub = liveUpdateUserReports(
+      uid,
+      (total: ScamReport[], verified: ScamReport[]) => {
+        setPostCount(total.length);
+        setVerifiedCount(verified.length);
+      }
+    );
     user && setUserName(user.username);
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsub();
+    };
   }, []);
 
   return (
@@ -58,8 +69,8 @@ export default function Home() {
       {/* Header */}
       <View className="flex-row items-center mb-6">
         <Image
-          source={{ uri: "https://randomuser.me/api/portraits/women/65.jpg" }}
-          className="w-12 h-12 rounded-full mr-3"
+          source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
+          className="w-12 h-12 rounded-full mr-3 border-2 border-gray-300"
         />
         <Text className="text-2xl font-bold flex-1 text-black dark:text-white">
           Welcome {userName}!
@@ -71,17 +82,17 @@ export default function Home() {
         <CounterCircleButton
           count={postCount}
           label="Post"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
         <CounterCircleButton
           count={verifiedCount}
           label="Verified"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
         <CounterCircleButton
           count={notificationCount}
           label="Notification"
-          onPress={() => router.push("/(tabs)/(report-tabs)")}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
       </View>
 

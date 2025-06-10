@@ -9,21 +9,23 @@ import {
 } from "react";
 import * as SecureStore from "expo-secure-store";
 import React from "react";
+import { User } from "../types";
+import { liveUpdateUser } from "~/firebase/UserApi";
 
 const AuthContext = createContext<{
-  setUser: (newUser: string | null) => void;
-  setUid: (newUid: string | null) => void;
-  user?: string | null;
-  uid?: string | null;
+  setUser: (newUser: string) => void;
+  setUid: (newUid: string) => void;
+  user?: User | null;
+  uid?: string;
 }>({
-  setUser: (newUser: string | null) => {
+  setUser: (newUser: string) => {
     console.warn("setUser function is not initialized");
   },
-  setUid: (newUser: string | null) => {
+  setUid: (newUser: string) => {
     console.warn("setUid function is not initialized");
   },
   user: null,
-  uid: null,
+  uid: "",
 });
 
 // This hook can be used to access the user info.
@@ -37,8 +39,8 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<string | null>();
-  const [uid, setUid] = useState<string | null>();
+  const [user, setUser] = useState<User | null>();
+  const [uid, setUid] = useState<string>("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,7 +49,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const storedUid = await SecureStore.getItemAsync("uid");
         if (storedUser) {
           // console.log("AuthContext storedUser:", !!storedUser);
-          setUser(storedUser);
+          setUser(JSON.parse(storedUser) as User);
         }
         if (storedUid) {
           // console.log("AuthContext storedUid:", !!storedUid);
@@ -59,8 +61,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
     };
     fetchUserData();
   }, [user, uid]);
+  useEffect(() => {
+    uid &&
+      liveUpdateUser(uid, (doc: User) => {
+        setuser(JSON.stringify(doc));
+      });
+  }, [uid]);
   const setuser = async (newUser: string | null) => {
-    setUser(newUser);
+    setUser(JSON.parse(newUser || "null") as User | null);
     if (newUser) {
       try {
         await SecureStore.setItemAsync("user", newUser);
@@ -71,7 +79,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       await SecureStore.deleteItemAsync("user");
     }
   };
-  const setuid = async (newUid: string | null) => {
+  const setuid = async (newUid: string) => {
     setUid(newUid);
     if (newUid) {
       try {
