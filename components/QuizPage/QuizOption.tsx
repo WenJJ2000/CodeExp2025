@@ -44,7 +44,7 @@
 // }
 
 
-import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TextStyle, View, ViewStyle, useColorScheme } from 'react-native';
 import { Button } from '../ui/button'; // Assuming you have a custom Button component
 
 interface QuizOptionProps {
@@ -56,10 +56,17 @@ interface QuizOptionProps {
 }
 
 const QuizOption = ({ description, selected, onPress, isCorrect, answerRevealed }: QuizOptionProps) => {
-  // Start with the base button style
+  const colorScheme = useColorScheme();
+  
   let buttonStyle = [styles.button]; // Include all necessary styles
   let textStyle = styles.text; // Default text style
 
+  // Start with the base button style
+  if (colorScheme === 'dark') {
+    buttonStyle = [styles.darkModeButton]; // Include all necessary styles
+    textStyle = styles.darkModeText; // Default text style
+  }
+  
   // Apply conditional background color if answer is revealed
   if (answerRevealed) {
     if (isCorrect) {
@@ -74,6 +81,7 @@ const QuizOption = ({ description, selected, onPress, isCorrect, answerRevealed 
     if (!selected && !isCorrect) {
       buttonStyle.push(styles.incorrectReducedOpacity); // Reduce opacity for unselected incorrect options
     }
+    
   }
 
   return (
@@ -132,6 +140,15 @@ const styles = StyleSheet.create({
     ...baseTextStyle,
     color: 'white', // White text when answer is revealed
   },
+  darkModeButton: {
+    ...baseButtonStyle,
+    backgroundColor: '#333', // Dark background for dark mode
+    borderColor: '#555', // Lighter border in dark mode
+  },
+  darkModeText: {
+    ...baseTextStyle,
+    color: 'white', // White text in dark mode
+  }
 });
 
 export default QuizOption;

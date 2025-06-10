@@ -35,7 +35,7 @@ export default function reportMainScreen() {
       {/* Submit a scam report */}
       <TouchableOpacity
         className={`border rounded-xl py-5 px-4 mb-4 items-center ${
-          isDark ? "border-white" : "border-black"
+          isDark ? "border-white bg-gray-800" : "border-black"
         }`}
         onPress={() => router.push("/scamReportForm")}
       >
@@ -47,7 +47,7 @@ export default function reportMainScreen() {
       {/* File an official police report */}
       <TouchableOpacity
         className={`border rounded-xl py-5 px-4 items-center ${
-          isDark ? "border-white" : "border-black"
+          isDark ? "border-white bg-gray-800" : "border-black"
         }`}
         onPress={() =>   Linking.openURL("https://eservices1.police.gov.sg/phub/eservices/landingpage/police-report")}
       >
