@@ -220,6 +220,7 @@ export const liveUpdateOnASingleScamReport = (
         const reporterDoc = await getDoc(doc(db, "users", result.createdBy));
         if (reporterDoc.exists()) {
           result.createdBy = {
+            id: reporterDoc.id,
             ...reporterDoc.data(),
           };
         }

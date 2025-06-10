@@ -23,7 +23,7 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
       return;
     }
     if (cantVote) {
-      console.error(scamReport.createdBy.id, userId);
+      console.log(scamReport.createdBy, userId);
       console.error("User cannot vote on their own report");
       return;
     }

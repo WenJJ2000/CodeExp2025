@@ -90,6 +90,7 @@ export function ForumReplyPopup({
       console.log("Scam report or reply ID is undefined");
       return;
     }
+    console.log("Reply submitted successfully");
     await reply(
       uid,
       scamReportOrReply.id,

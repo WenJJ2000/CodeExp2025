@@ -46,9 +46,13 @@ export default function Home() {
   useEffect(() => {
     // Subscribes to realtime updates
     // const unsubscribe = getNotifications(setNotifications);
-    const unsubscribe = getNotifications((notifications: Notification[]) => {
-      setNotifications(notifications);
-    });
+    const unsubscribe = getNotifications(
+      uid,
+      (notifications: Notification[]) => {
+        setNotifications(notifications);
+        setNotificationCount(notifications.length);
+      }
+    );
     const unsub = liveUpdateUserReports(
       uid,
       (total: ScamReport[], verified: ScamReport[]) => {

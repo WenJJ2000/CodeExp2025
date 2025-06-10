@@ -11,6 +11,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { emitNotification } from "./NotiApi";
 export async function reply(
   userId: string,
   postId: string,
@@ -20,6 +21,9 @@ export async function reply(
   isReply: boolean = false
 ) {
   try {
+    console.log(
+      `Replying to postId: ${postId}, scamReportId: ${scamReportId}, userId: ${userId}, content: ${content}, images: ${images}, isReply: ${isReply}`
+    );
     if (!userId) {
       throw new Error("User is not authenticated");
     }
@@ -67,6 +71,31 @@ export async function reply(
       },
       { merge: true }
     );
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (!userDoc.exists()) {
+      throw new Error("User not found");
+    }
+    const username = userDoc.data()?.username || "Unknown User";
+    if (!isReply) {
+      if (userId !== scamReport.data()?.createdBy) {
+        await emitNotification(
+          "replied",
+          username, // Placeholder for username, you can fetch it from user collection if needed
+          userId,
+          scamReportId,
+          scamReport.data()?.createdBy || ""
+        );
+      }
+    } else {
+      await emitNotification(
+        "repliedReply",
+        username, // Placeholder for username, you can fetch it from user collection if needed
+        userId,
+        scamReportId,
+        scamReport.data()?.createdBy || "",
+        postId
+      );
+    }
   } catch (error) {
     console.error("Error in reply function:", error);
     throw new Error("Failed to reply to the post");

@@ -22,11 +22,13 @@ export async function vote(userId: string, voteType: VoteType, postId: string) {
   const existingVoteIndex = votes.findIndex(
     (vote: any) => vote.voterId === userId
   );
+  const voteExistsnUnchanged =
+    existingVoteIndex !== -1 && votes[existingVoteIndex].type === voteType;
   if (existingVoteIndex !== -1) {
     // User has already voted, update the vote type
     if (votes[existingVoteIndex].type === voteType) {
-      // If the user is trying to vote the same type, do nothing
-      votes.splice(existingVoteIndex, 1); // Remove the vote
+      // If the user is trying to vote the same type, Remove the vote
+      votes.splice(existingVoteIndex, 1);
     } else {
       // If the user is changing their vote type, update it
       votes[existingVoteIndex].type = voteType;
@@ -41,14 +43,22 @@ export async function vote(userId: string, voteType: VoteType, postId: string) {
     { votes, updatedAt: new Date() },
     { merge: true }
   );
-  const action = voteType === "UPVOTE" ? "upvoted" : "downvoted";
-  const userDoc = await getDoc(doc(db, "users", userId));
-  if (!userDoc.exists()) {
-    throw new Error("User not found");
+
+  if (!voteExistsnUnchanged) {
+    console.log(
+      `User ${userId} has ${
+        voteType === "UPVOTE" ? "upvoted" : "downvoted"
+      } the scam report ${postId}`
+    );
+    const action = voteType === "UPVOTE" ? "upvoted" : "downvoted";
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (!userDoc.exists()) {
+      throw new Error("User not found");
+    }
+    const username = userDoc.data()?.username || "Unknown User";
+    const createdBy = scamReport.data()?.createdBy || "Unknown Creator";
+    const scamReportId = scamReport.id;
+    // Emit notification for the vote action
+    await emitNotification(action, username, userId, scamReportId, createdBy);
   }
-  const username = userDoc.data()?.username || "Unknown User";
-  const createdBy = scamReport.data()?.createdBy || "Unknown Creator";
-  const scamReportId = scamReport.id;
-  // Emit notification for the vote action
-  await emitNotification(action, username, createdBy, scamReportId, createdBy);
 }

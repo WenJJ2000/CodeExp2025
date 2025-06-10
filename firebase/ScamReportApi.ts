@@ -1,6 +1,7 @@
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { db } from "./firebase";
+import { emitNotification } from "./NotiApi";
 
 export interface ScamReportInput {
   scamReportType: string;
@@ -43,6 +44,12 @@ export async function createReport({
   };
 
   await setDoc(doc(db, "scamReports", uuidValue), reportData);
+  const userDoc = await getDoc(doc(db, "users", createdBy));
+  if (!userDoc.exists()) {
+    throw new Error("User not found");
+  }
+  const username = userDoc.data()?.username || "Unknown User";
+  await emitNotification("added", username, createdBy, uuidValue);
 }
 
 export async function getAllScamReports() {
