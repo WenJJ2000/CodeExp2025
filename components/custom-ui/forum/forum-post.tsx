@@ -13,7 +13,9 @@ import ImageTray from "../image-tray";
 export function ForumPost({
   scamReport,
   fulltext = false,
-  onClick = () => {},
+  onClick = () => {
+    console.log("Post clicked");
+  },
   showReplyButton = false,
   onClickReply = () => {},
 }: {

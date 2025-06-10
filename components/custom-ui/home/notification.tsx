@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Notification as NotificationType } from "~/lib/types";
-export default function Notification({ item }: { item: NotificationType }) {
+export default function NotificationUI({ item }: { item: NotificationType }) {
   const lastUpdated = new Date(new Date().getTime() - item.timestamp.getTime());
   const daysAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60 * 24)) - 1;
   const hoursAgo = Math.ceil(lastUpdated.getTime() / (1000 * 60 * 60)) - 1;

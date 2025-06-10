@@ -9,7 +9,7 @@ import { useAuth } from "~/lib/useContext/useAuthContext";
 export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
   const { uid: userId, user } = useAuth();
   const { colorScheme } = useColorScheme();
-
+  const cantVote = userId === scamReport.createdBy.id;
   const hasUpVoted = scamReport?.votes.some((vote) => {
     return vote.type === "UPVOTE" && vote.voterId === userId;
   });
@@ -22,6 +22,11 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
       console.error("User is not authenticated");
       return;
     }
+    if (cantVote) {
+      console.error(scamReport.createdBy.id, userId);
+      console.error("User cannot vote on their own report");
+      return;
+    }
     vote(userId, "UPVOTE", scamReport.id).catch((error) => {
       console.error("Error upvoting:", error);
     });
@@ -31,6 +36,10 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
       console.error("User is not authenticated");
       return;
     }
+    if (cantVote) {
+      console.error("User cannot vote on their own report");
+      return;
+    }
     vote(userId, "DOWNVOTE", scamReport.id).catch((error) => {
       console.error("Error downvoting:", error);
     });
@@ -38,10 +47,11 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
   return (
     <>
       <Pressable
-        className={`px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg ${
+        className={`px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-l-lg z-10 ${
           hasUpVoted ? "bg-green-200" : ""
         }`}
         onPress={onClickUpVote}
+        disabled={cantVote}
       >
         <Text className="text-muted-foreground text-lg">
           <FontAwesome6
@@ -57,6 +67,7 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
           hasDownVoted ? "bg-red-200" : ""
         }`}
         onPress={onClickDownVote}
+        disabled={cantVote}
       >
         <Text className="text-muted-foreground text-lg">
           {scamReport?.votes.filter((vote) => vote.type == "DOWNVOTE").length}{" "}

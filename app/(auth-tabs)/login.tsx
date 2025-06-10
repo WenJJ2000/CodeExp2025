@@ -41,61 +41,63 @@ export default function Screen() {
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  console.log("Login screen rendered");
   return (
-    <SafeAreaViewForAndroid className="flex-1 bg-secondary/30">
+    <>
       <Image
         source={require("~/assets/images/login-background.png")}
         resizeMethod="resize"
         resizeMode="cover"
         className="w-full h-full  absolute top-0 left-0 opacity-50"
-        style={{ aspectRatio: 1 }}
+        style={{ aspectRatio: 1, height: "100%", width: "100%" }}
       />
-      <View className="flex-1 w-full justify-end items-start gap-3 p-6 mb-60">
-        <Text className="text-6xl text-center font-bold">Login</Text>
-        <Text className="text-xl text-center">Good to see you back!</Text>
-        <Input
-          className="w-full"
-          placeholder="Email"
-          autoCapitalize="none"
-          autoComplete="email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          returnKeyType="next"
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-        />
-        <Input
-          className="w-full"
-          placeholder="Password"
-          autoCapitalize="none"
-          autoComplete="password"
-          secureTextEntry
-          textContentType="password"
-          returnKeyType="done"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-        />
-        <Button
-          className="w-full"
-          variant="default"
-          size="lg"
-          onPress={() => handleLogin()}
-        >
-          <Text className="text-lg dark:color-white">Login</Text>
-        </Button>
-        <Button
-          variant="secondary"
-          className="w-full"
-          size="lg"
-          // onPress={() => handleCancel()}
-          onPress={() => navigator.back()}
-        >
-          <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
-            Cancel
-          </Text>
-        </Button>
-      </View>
-    </SafeAreaViewForAndroid>
+      <SafeAreaViewForAndroid className="w-full h-full bg-secondary/30">
+        <View className=" w-full justify-end items-start gap-3 p-6 mt-40">
+          <Text className="text-6xl text-center font-bold">Login</Text>
+          <Text className="text-xl text-center">Good to see you back!</Text>
+          <Input
+            className="w-full"
+            placeholder="Email"
+            autoCapitalize="none"
+            autoComplete="email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            returnKeyType="next"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+          <Input
+            className="w-full"
+            placeholder="Password"
+            autoCapitalize="none"
+            autoComplete="password"
+            secureTextEntry
+            textContentType="password"
+            returnKeyType="done"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+          />
+          <Button
+            className="w-full"
+            variant="default"
+            size="lg"
+            onPress={() => handleLogin()}
+          >
+            <Text className="text-lg dark:color-white">Login</Text>
+          </Button>
+          <Button
+            variant="secondary"
+            className="w-full"
+            size="lg"
+            // onPress={() => handleCancel()}
+            onPress={() => navigator.back()}
+          >
+            <Text className="text-xl text-muted-foreground shadow-black shadow-md ">
+              Cancel
+            </Text>
+          </Button>
+        </View>
+      </SafeAreaViewForAndroid>
+    </>
   );
 }

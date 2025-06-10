@@ -11,14 +11,13 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import Notification from "~/components/custom-ui/home/notification";
+import NotificationUI from "~/components/custom-ui/home/notification";
 import { getLiveNotifications } from "~/firebase/ForumApi";
+import { getNotifications } from "~/firebase/NotiApi";
 import { liveUpdateUserReports } from "~/firebase/UserApi";
-import { ScamReport } from "~/lib/types";
+import { Notification, ScamReport } from "~/lib/types";
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
 import { useAuth } from "~/lib/useContext/useAuthContext";
-import { useNotification } from "~/lib/useContext/useNotificationContext";
-import { useUser } from "~/lib/useContext/useUserContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
@@ -40,15 +39,15 @@ export default function Home() {
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
-  const { notifications, setNotifications } = useNotification();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   // Helper to toggle icon colors based on theme
   const iconColor = colorScheme === "dark" ? "#ccc" : "#000";
 
   useEffect(() => {
     // Subscribes to realtime updates
     // const unsubscribe = getNotifications(setNotifications);
-    const unsubscribe = getLiveNotifications((x) => {
-      setNotifications(x);
+    const unsubscribe = getNotifications((notifications: Notification[]) => {
+      setNotifications(notifications);
     });
     const unsub = liveUpdateUserReports(
       uid,
@@ -131,7 +130,7 @@ export default function Home() {
         data={notifications}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingBottom: 80 }}
-        renderItem={({ item }) => <Notification item={item} />}
+        renderItem={({ item }) => <NotificationUI item={item} />}
       />
     </View>
   );

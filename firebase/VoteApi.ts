@@ -1,6 +1,7 @@
 import { db } from "./firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { VoteType } from "../lib/types";
+import { emitNotification } from "./NotiApi";
 
 export async function vote(userId: string, voteType: VoteType, postId: string) {
   if (!userId) {
@@ -40,4 +41,14 @@ export async function vote(userId: string, voteType: VoteType, postId: string) {
     { votes, updatedAt: new Date() },
     { merge: true }
   );
+  const action = voteType === "UPVOTE" ? "upvoted" : "downvoted";
+  const userDoc = await getDoc(doc(db, "users", userId));
+  if (!userDoc.exists()) {
+    throw new Error("User not found");
+  }
+  const username = userDoc.data()?.username || "Unknown User";
+  const createdBy = scamReport.data()?.createdBy || "Unknown Creator";
+  const scamReportId = scamReport.id;
+  // Emit notification for the vote action
+  await emitNotification(action, username, createdBy, scamReportId, createdBy);
 }
