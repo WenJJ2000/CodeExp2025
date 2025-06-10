@@ -33,7 +33,8 @@ export type Filters =
   | 'IN_PERSON'
   | 'APP'
   | 'EDUCATION'
-  | 'VERIFIED';
+  | 'VERIFIED'
+  | 'CRYPTO';
 export const ScamReportFilterTypes: {
   value: Filters;
   label: string;

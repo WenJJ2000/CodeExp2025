@@ -50,7 +50,6 @@ import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { useAuth } from '~/lib/useContext/useAuthContext';
 
-
 const UserHeader = () => {
   const colorScheme = useColorScheme();
   const [userName, setUserName] = useState<string | null>(null);
@@ -59,17 +58,31 @@ const UserHeader = () => {
 
   useEffect(() => {
     if (user) {
-      const userData = JSON.parse(user);
+      const userData = user;
       setUserName(userData.username);
-      setAvatar(userData.avatar);
+      userData.profilePicture ? setAvatar(userData.profilePicture) : null;
     }
   }, [user]);
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={[styles.greeting, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>WELCOME BACK</Text>
-        <Text style={[styles.name, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>{userName}</Text>
+        <Text
+          style={[
+            styles.greeting,
+            { color: colorScheme === 'dark' ? '#fff' : '#000' },
+          ]}
+        >
+          WELCOME BACK
+        </Text>
+        <Text
+          style={[
+            styles.name,
+            { color: colorScheme === 'dark' ? '#fff' : '#000' },
+          ]}
+        >
+          {userName}
+        </Text>
       </View>
       <View style={styles.avatarWrapper}>
         <Image
@@ -77,7 +90,6 @@ const UserHeader = () => {
           style={styles.avatar}
         />
       </View>
-      
     </View>
   );
 };
@@ -118,4 +130,3 @@ const styles = StyleSheet.create({
 });
 
 export default UserHeader;
-
