@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ReportCard } from "./components/Report"; // Adjust path as needed
+import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 
 const reportsVerified = [
   { title: "Verified scam 1", date: "15 Mar 2025" },

@@ -19,6 +19,10 @@ import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "~/lib/useContext/useAuthContext";
 import { ShowTabProvider } from "~/lib/useContext/useShowTabContext";
 
+// Scam notifs
+
+
+
 // icons
 
 const LIGHT_THEME: Theme = {
@@ -44,27 +48,64 @@ const usePlatformSpecificSetup = Platform.select({
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
-  const { user, uid } = useAuth();
-  useEffect(() => {
-    // console.log("User in RootLayout:", user);
-    // console.log("UID in RootLayout:", uid);
-  }, [user, uid]);
-  // const [isSignIn, setIsSignIn] = useState(false);
-  // useEffect(() => {
-  //   const checkSignInStatus = async () => {
-  //     try {
-  //       const user = await SecureStore.getItemAsync("user");
-  //       const uid = await SecureStore.getItemAsync("uid");
-  //       console.log("User data from SecureStore:", user);
-  //       console.log("User data from SecureStore:", user);
-  //       setIsSignIn(!!user);
-  //     } catch (error) {
-  //       console.error("Error checking sign-in status:", error);
-  //       setIsSignIn(false);
+  
+  //   useEffect(() => {
+  //   async function registerForPushNotifications() {
+  //     if (Device.isDevice) {
+  //       const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  //       let finalStatus = existingStatus;
+
+  //       if (existingStatus !== 'granted') {
+  //         const { status } = await Notifications.requestPermissionsAsync();
+  //         finalStatus = status;
+  //       }
+
+  //       if (finalStatus !== 'granted') {
+  //         Alert.alert("Permission required", "Push notification permissions were not granted.");
+  //         return;
+  //       }
+
+  //       const token = (await Notifications.getExpoPushTokenAsync()).data;
+  //       console.log("Expo Push Token:", token); // Save to backend if needed
+  //     } else {
+  //       Alert.alert("Error", "Push notifications only work on physical devices.");
   //     }
-  //   };
-  //   checkSignInStatus();
+
+  //     if (Platform.OS === 'android') {
+  //       Notifications.setNotificationChannelAsync("default", {
+  //         name: "default",
+  //         importance: Notifications.AndroidImportance.MAX,
+  //         vibrationPattern: [0, 250, 250, 250],
+  //         lightColor: "#FF231F7C",
+  //       });
+  //     }
+  //   }
+
+  //   registerForPushNotifications();
   // }, []);
+
+    const { user, uid } = useAuth();
+    useEffect(() => {
+      // console.log("User in RootLayout:", user);
+      // console.log("UID in RootLayout:", uid);
+    }, [user, uid]);
+    // const [isSignIn, setIsSignIn] = useState(false);
+    // useEffect(() => {
+    //   const checkSignInStatus = async () => {
+    //     try {
+    //       const user = await SecureStore.getItemAsync("user");
+    //       const uid = await SecureStore.getItemAsync("uid");
+    //       console.log("User data from SecureStore:", user);
+    //       console.log("User data from SecureStore:", user);
+    //       setIsSignIn(!!user);
+    //     } catch (error) {
+    //       console.error("Error checking sign-in status:", error);
+    //       setIsSignIn(false);
+    //     }
+    //   };
+    //   checkSignInStatus();
+    // }, []);
+
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <AuthProvider>
