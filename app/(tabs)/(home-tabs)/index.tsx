@@ -1,8 +1,8 @@
-import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,44 +11,44 @@ import {
   Text,
   View,
   useColorScheme,
-} from 'react-native';
-import NotificationUI from '~/components/custom-ui/home/notification';
-import { getLiveNotifications } from '~/firebase/ForumApi';
-import { getNotifications } from '~/firebase/NotiApi';
-import { liveUpdateUserReports } from '~/firebase/UserApi';
-import { Notification, ScamReport } from '~/lib/types';
+} from "react-native";
+import NotificationUI from "~/components/custom-ui/home/notification";
+import { getLiveNotifications } from "~/firebase/ForumApi";
+import { getNotifications } from "~/firebase/NotiApi";
+import { liveUpdateUserReports } from "~/firebase/UserApi";
+import { Notification, ScamReport } from "~/lib/types";
 // import { NotificationType, getNotifications } from "~/firebase/NotiApi"; // update path as needed
-import { useAuth } from '~/lib/useContext/useAuthContext';
+import { useAuth } from "~/lib/useContext/useAuthContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
-  { key: 'text', iconType: MaterialIcons, iconName: 'email', label: 'Text' },
-  { key: 'image', iconType: FontAwesome5, iconName: 'camera', label: 'Image' },
-  { key: 'number', iconType: FontAwesome5, iconName: 'phone', label: 'Number' },
+  { key: "text", iconType: MaterialIcons, iconName: "email", label: "Text" },
+  { key: "image", iconType: FontAwesome5, iconName: "camera", label: "Image" },
+  { key: "number", iconType: FontAwesome5, iconName: "phone", label: "Number" },
   {
-    key: 'app',
+    key: "app",
     iconType: Ionicons,
-    iconName: 'phone-portrait-outline',
-    label: 'App',
+    iconName: "phone-portrait-outline",
+    label: "App",
   },
   {
-    key: 'crypto',
+    key: "crypto",
     iconType: MaterialIcons,
-    iconName: 'security',
-    label: 'Crypto',
+    iconName: "security",
+    label: "Crypto",
   },
 ];
 export default function Home() {
   const router = useRouter();
   const colorScheme = useColorScheme(); // 'light' or 'dark'
   const { user, uid } = useAuth();
-  const [userName, setUserName] = useState('Lisa');
+  const [userName, setUserName] = useState("Lisa");
   const [postCount, setPostCount] = useState(2);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // Helper to toggle icon colors based on theme
-  const iconColor = colorScheme === 'dark' ? '#ccc' : '#000';
+  const iconColor = colorScheme === "dark" ? "#ccc" : "#000";
 
   useEffect(() => {
     // Subscribes to realtime updates
@@ -92,24 +92,24 @@ export default function Home() {
         <CounterCircleButton
           count={postCount}
           label="Post"
-          onPress={() => router.push('/(tabs)/(forum-tabs)')}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
         <CounterCircleButton
           count={verifiedCount}
           label="Verified"
-          onPress={() => router.push('/(tabs)/(forum-tabs)')}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
         <CounterCircleButton
           count={notificationCount}
           label="Notification"
-          onPress={() => router.push('/(tabs)/(forum-tabs)')}
+          onPress={() => router.push("/(tabs)/(forum-tabs)")}
         />
       </View>
 
       {/* Shortcuts */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+      {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
         Check Scams
-      </Text>
+      </Text> */}
       {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">Check Scams</Text>
       <View className="flex-row justify-between mb-6">
         {shortcuts.map((sc) => {
@@ -146,8 +146,8 @@ export default function Home() {
           {/* Use flex-row and justifyContent to manage spacing */}
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              flexDirection: "row",
+              justifyContent: "space-between",
               gap: 10,
             }}
           >
@@ -160,24 +160,24 @@ export default function Home() {
                   onPress={() =>
                     router.push(`/(home-tabs)/checkScam?type=${sc.key}` as any)
                   }
-                  android_ripple={{ color: '#ccc' }}
+                  android_ripple={{ color: "#ccc" }}
                   style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    flexDirection: "column",
+                    alignItems: "center",
                     padding: 10, // Padding for better spacing within the button
                     borderWidth: 1, // Border width for the button
-                    borderColor: colorScheme === 'dark' ? '#ccc' : '#000', // Border color based on theme
+                    borderColor: colorScheme === "dark" ? "#ccc" : "#000", // Border color based on theme
                     borderRadius: 12, // Rounded corners for button
-                    backgroundColor: colorScheme === 'dark' ? '#333' : '#fff', // Button background color
+                    backgroundColor: colorScheme === "dark" ? "#333" : "#fff", // Button background color
                     flexShrink: 0, // Prevent button from shrinking if space is tight
                   }}
                 >
                   <IconComponent
                     name={sc.iconName}
                     size={30} // Icon size
-                    color={colorScheme === 'dark' ? '#ccc' : '#000'}
+                    color={colorScheme === "dark" ? "#ccc" : "#000"}
                   />
-                  <Text className="shortcut-label text-sm">{sc.label}</Text>{' '}
+                  <Text className="shortcut-label text-sm">{sc.label}</Text>{" "}
                   {/* Button label */}
                 </Pressable>
               );
