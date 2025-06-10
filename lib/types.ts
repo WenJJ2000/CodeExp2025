@@ -1,36 +1,38 @@
-export type ScamReportStatus = "VALID" | "INVALID";
+export type ScamReportStatus = 'VALID' | 'INVALID';
 
 export type ScamReportType =
-  | "PHONE"
-  | "SMS"
-  | "EMAIL"
-  | "SOCIAL_MEDIA"
-  | "WEBSITE"
+  | 'PHONE'
+  | 'SMS'
+  | 'EMAIL'
+  | 'SOCIAL_MEDIA'
+  | 'WEBSITE'
   // | "MISINFORMATION"
-  | "IN_PERSON"
-  | "APP"
-  | "CRYPTO";
+  | 'IN_PERSON'
+  | 'APP'
+  | 'CRYPTO';
 export const scamReportTypes: { value: ScamReportType; label: string }[] = [
-  { value: "SMS", label: "SMS" },
-  { value: "EMAIL", label: "Email" },
-  { value: "PHONE", label: "Phone" },
-  { value: "SOCIAL_MEDIA", label: "Social Media" },
-  { value: "WEBSITE", label: "Website" },
-  { value: "IN_PERSON", label: "In Person" },
-  { value: "APP", label: "App" },
-  { value: "CRYPTO", label: "Crypto" },
+  { value: 'SMS', label: 'SMS' },
+  { value: 'EMAIL', label: 'Email' },
+  { value: 'PHONE', label: 'Phone' },
+  { value: 'SOCIAL_MEDIA', label: 'Social Media' },
+  { value: 'WEBSITE', label: 'Website' },
+  { value: 'IN_PERSON', label: 'In Person' },
+  { value: 'APP', label: 'App' },
+  { value: 'CRYPTO', label: 'Crypto' },
 ];
 export type ForumTagVariant =
-  | "PHONE"
-  | "SMS"
-  | "EMAIL"
-  | "SOCIAL_MEDIA"
-  | "WEBSITE"
+  | 'PHONE'
+  | 'SMS'
+  | 'EMAIL'
+  | 'SOCIAL_MEDIA'
+  | 'WEBSITE'
   // | "MISINFORMATION"
-  | "IN_PERSON"
-  | "APP"
-  | "CRYPTO";
-export type VoteType = "UPVOTE" | "DOWNVOTE";
+  | 'IN_PERSON'
+  | 'APP'
+  | 'VERIFIED'
+  | 'EDUCATION'
+  | 'CRYPTO';
+export type VoteType = 'UPVOTE' | 'DOWNVOTE';
 export type NotificationSetting = {
   id: string;
   scamTest: boolean;
@@ -100,3 +102,13 @@ export type Reply = {
   replies?: Reply[];
   createdBy: User;
 };
+
+export interface Question {
+  question: string;
+  options: QuestionOptions[];
+}
+
+interface QuestionOptions {
+  description: string;
+  isCorrect: boolean;
+}
