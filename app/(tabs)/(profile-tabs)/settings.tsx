@@ -2,13 +2,24 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Switch } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import ScamTestModal from "./components/ScamTestModal";
 import BlockingSetupModal from "./components/BlockingSetupModal";
 import BlockingInfoModal from "./components/BlockingInfoModal";
 import BlockedScreen from "./components/BlockedScreen";
+import { useNavigation } from "expo-router";
+const router = useRouter();
 
-function SettingsItem({ icon, label, onPress }: { icon: string; label: string; onPress?: () => void }) {
+function SettingsItem({
+  icon,
+  label,
+  onPress,
+}: {
+  icon: string;
+  label: string;
+  onPress?: () => void;
+}) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -16,23 +27,23 @@ function SettingsItem({ icon, label, onPress }: { icon: string; label: string; o
     >
       <View className="flex-row items-center space-x-4">
         <FontAwesome name={icon as any} size={20} />
-        <Text className="text-base">{label}</Text>
+        <Text className="text-base"> {label}</Text>
       </View>
-      <FontAwesome name="chevron-right" size={16} color="#ccc" />
+      <FontAwesome name="angle-right" size={20} />
     </TouchableOpacity>
   );
 }
 
-function SetupButton({ 
-  icon, 
-  label, 
-  onPress, 
-  isSetup, 
-  onInfoPress 
-}: { 
-  icon: string; 
-  label: string; 
-  onPress?: () => void; 
+function SetupButton({
+  icon,
+  label,
+  onPress,
+  isSetup,
+  onInfoPress,
+}: {
+  icon: string;
+  label: string;
+  onPress?: () => void;
   isSetup?: boolean;
   onInfoPress?: () => void;
 }) {
@@ -47,7 +58,7 @@ function SetupButton({
       </View>
       <View className="flex-row items-center space-x-2">
         {isSetup && (
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={onInfoPress}
             className="bg-blue-500 rounded-full w-8 h-8 items-center justify-center"
           >
@@ -72,34 +83,58 @@ export default function SettingsScreen() {
   const [scamCallActive, setScamCallActive] = useState(false);
   const [scamSMSActive, setScamSMSActive] = useState(false);
   const [showBlockedScreen, setShowBlockedScreen] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const loadToggles = async () => {
+      useEffect(() => {
+        navigation.setOptions({ headerShown: true, title: "Settings" });
+      }, [navigation]);
+
       const scamTestSaved = await AsyncStorage.getItem("scamTestToggle");
-      const locationSaved = await AsyncStorage.getItem("locationServicesToggle");
+      const locationSaved = await AsyncStorage.getItem(
+        "locationServicesToggle"
+      );
       const scamCallSaved = await AsyncStorage.getItem("scamCallSetup");
       const scamSMSSaved = await AsyncStorage.getItem("scamSMSSetup");
       const scamCallActiveSaved = await AsyncStorage.getItem("scamCallActive");
       const scamSMSActiveSaved = await AsyncStorage.getItem("scamSMSActive");
       // AsyncStorage.clear();
+      // navigation.setOptions({ headerShown: false });
 
       if (scamTestSaved !== null) setScamTest(JSON.parse(scamTestSaved));
-      if (locationSaved !== null) setLocationServices(JSON.parse(locationSaved));
+      if (locationSaved !== null)
+        setLocationServices(JSON.parse(locationSaved));
       if (scamCallSaved !== null) setScamCallSetup(JSON.parse(scamCallSaved));
       if (scamSMSSaved !== null) setScamSMSSetup(JSON.parse(scamSMSSaved));
-      if (scamCallActiveSaved !== null) setScamCallActive(JSON.parse(scamCallActiveSaved));
-      if (scamSMSActiveSaved !== null) setScamSMSActive(JSON.parse(scamSMSActiveSaved));
+      if (scamCallActiveSaved !== null)
+        setScamCallActive(JSON.parse(scamCallActiveSaved));
+      if (scamSMSActiveSaved !== null)
+        setScamSMSActive(JSON.parse(scamSMSActiveSaved));
     };
     loadToggles();
   }, []);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: "Settings", // 👈 Hide the arrow-only back button
+    });
+  }, [navigation]);
+
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<"on" | "off">("on");
-  const [blockingSetupModalVisible, setBlockingSetupModalVisible] = useState(false);
-  const [blockingSetupType, setBlockingSetupType] = useState<'call' | 'sms'>('call');
-  const [blockingInfoModalVisible, setBlockingInfoModalVisible] = useState(false);
-  const [blockingInfoType, setBlockingInfoType] = useState<'call' | 'sms'>('call');
+  const [blockingSetupModalVisible, setBlockingSetupModalVisible] =
+    useState(false);
+  const [blockingSetupType, setBlockingSetupType] = useState<"call" | "sms">(
+    "call"
+  );
+  const [blockingInfoModalVisible, setBlockingInfoModalVisible] =
+    useState(false);
+  const [blockingInfoType, setBlockingInfoType] = useState<"call" | "sms">(
+    "call"
+  );
 
   const toggleScamTest = async () => {
     const newValue = !scamTestEnabled;
@@ -107,77 +142,84 @@ export default function SettingsScreen() {
     await AsyncStorage.setItem("scamTestToggle", JSON.stringify(newValue));
     setModalType(newValue ? "on" : "off");
     setModalVisible(true);
-  }
+  };
 
   const toggleLocationServices = async () => {
     const newValue = !locationServicesEnabled;
     setLocationServices(newValue);
-    await AsyncStorage.setItem("locationServicesToggle", JSON.stringify(newValue));
-  }
+    await AsyncStorage.setItem(
+      "locationServicesToggle",
+      JSON.stringify(newValue)
+    );
+  };
 
   const handleSMSSetupComplete = async () => {
     setScamSMSSetup(true);
     setScamSMSActive(true);
     await AsyncStorage.setItem("scamSMSSetup", JSON.stringify(true));
     await AsyncStorage.setItem("scamSMSActive", JSON.stringify(true));
-  }
+  };
 
   const handleCallSetupComplete = async () => {
     setScamCallSetup(true);
     setScamCallActive(true);
     await AsyncStorage.setItem("scamCallSetup", JSON.stringify(true));
     await AsyncStorage.setItem("scamCallActive", JSON.stringify(true));
-  }
+  };
 
   const showSMSSetup = () => {
-    setBlockingSetupType('sms');
+    setBlockingSetupType("sms");
     setBlockingSetupModalVisible(true);
-  }
+  };
 
   const showCallSetup = () => {
-    setBlockingSetupType('call');
+    setBlockingSetupType("call");
     setBlockingSetupModalVisible(true);
-  }
+  };
 
   const handleBlockingSetupComplete = () => {
-    if (blockingSetupType === 'sms') {
+    if (blockingSetupType === "sms") {
       handleSMSSetupComplete();
     } else {
       handleCallSetupComplete();
     }
-  }
+  };
 
   const toggleScamCallActive = async () => {
     const newValue = !scamCallActive;
     setScamCallActive(newValue);
     await AsyncStorage.setItem("scamCallActive", JSON.stringify(newValue));
-  }
+  };
 
   const toggleScamSMSActive = async () => {
     const newValue = !scamSMSActive;
     setScamSMSActive(newValue);
     await AsyncStorage.setItem("scamSMSActive", JSON.stringify(newValue));
-  }
+  };
 
   const showCallInfo = () => {
-    setBlockingInfoType('call');
+    setBlockingInfoType("call");
     setBlockingInfoModalVisible(true);
-  }
+  };
 
   const showSMSInfo = () => {
-    setBlockingInfoType('sms');
+    setBlockingInfoType("sms");
     setBlockingInfoModalVisible(true);
-  }
+  };
 
   const getCallLabel = () => {
     if (!scamCallSetup) return "Scam call blocking not set up";
-    return scamCallActive ? "Scam call blocking is active" : "Scam call blocking is NOT active";
-  }
+    return scamCallActive
+      ? "Scam call blocking is active"
+      : "Scam call blocking is NOT active";
+  };
 
   const getSMSLabel = () => {
     if (!scamSMSSetup) return "Scam SMS blocking not set up";
-    return scamSMSActive ? "Scam SMS blocking is active" : "Scam SMS blocking is NOT active";
-  }
+    return scamSMSActive
+      ? "Scam SMS blocking is active"
+      : "Scam SMS blocking is NOT active";
+  };
 
   if (showBlockedScreen) {
     return <BlockedScreen onBack={() => setShowBlockedScreen(false)} />;
@@ -185,6 +227,11 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView className="flex-1 bg-gray-100 px-4 pt-4">
+      {/* <TouchableOpacity onPress={() => navigation.goBack()} className="mb-4">
+
+        <FontAwesome name="arrow-left" size={24} />
+      </TouchableOpacity> */}
+
       <Text className="text-2xl font-bold mb-4">Settings</Text>
 
       <Text className="text-sm text-gray-500 mb-2">Account Settings</Text>
@@ -215,7 +262,8 @@ export default function SettingsScreen() {
           />
         </View>
         <Text className="text-xs text-gray-500 mt-1">
-          Enabling this will allow us to send you non-malicious scams to test your awareness.
+          Enabling this will allow us to send you non-malicious scams to test
+          your awareness.
         </Text>
       </View>
 
@@ -234,25 +282,25 @@ export default function SettingsScreen() {
         </Text>
       </View>
 
-      <SettingsItem 
-        icon="ban" 
-        label="Blocked" 
+      <SettingsItem
+        icon="ban"
+        label="Blocked"
         onPress={() => setShowBlockedScreen(true)}
       />
       <Text className="text-xs text-gray-500 mb-4 px-1">
         View all the numbers, email, and websites you've blocked
       </Text>
 
-      <SetupButton 
-        icon="phone" 
+      <SetupButton
+        icon="phone"
         label={getCallLabel()}
         isSetup={scamCallSetup}
         onPress={scamCallSetup ? undefined : showCallSetup}
         onInfoPress={showCallInfo}
       />
 
-      <SetupButton 
-        icon="comment" 
+      <SetupButton
+        icon="comment"
         label={getSMSLabel()}
         isSetup={scamSMSSetup}
         onPress={scamSMSSetup ? undefined : showSMSSetup}
@@ -276,8 +324,12 @@ export default function SettingsScreen() {
         visible={blockingInfoModalVisible}
         onClose={() => setBlockingInfoModalVisible(false)}
         type={blockingInfoType}
-        isEnabled={blockingInfoType === 'call' ? scamCallActive : scamSMSActive}
-        onToggle={blockingInfoType === 'call' ? toggleScamCallActive : toggleScamSMSActive}
+        isEnabled={blockingInfoType === "call" ? scamCallActive : scamSMSActive}
+        onToggle={
+          blockingInfoType === "call"
+            ? toggleScamCallActive
+            : toggleScamSMSActive
+        }
       />
     </ScrollView>
   );

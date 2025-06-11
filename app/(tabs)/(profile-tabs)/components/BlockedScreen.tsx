@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { Animated, Easing } from 'react-native';
+
 
 type BlockedType = 'email' | 'number' | 'website';
 
@@ -82,12 +84,59 @@ function BlockedItemComponent({
 export default function BlockedScreen({ onBack }: { onBack: () => void }) {
   const [activeTab, setActiveTab] = useState<BlockedType>('number');
   const [blockedItems, setBlockedItems] = useState<BlockedItem[]>(mockBlockedItems);
+  const [lastUnblocked, setLastUnblocked] = useState<BlockedItem | null>(null);
+  const [undoVisible, setUndoVisible] = useState(false);
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+useEffect(() => {
+  if (undoVisible) {
+    Animated.loop(
+      Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  } else {
+    spinValue.setValue(0); // Reset when hidden
+  }
+}, [undoVisible]);
+
+const spin = spinValue.interpolate({
+  inputRange: [0, 1],
+  outputRange: ['0deg', '360deg'],
+});
+
+
 
   const filteredItems = blockedItems.filter(item => item.type === activeTab);
 
+  // const handleUnblock = (id: string) => {
+  //   setBlockedItems(prev => prev.filter(item => item.id !== id));
+  // };
+
   const handleUnblock = (id: string) => {
-    setBlockedItems(prev => prev.filter(item => item.id !== id));
+    const item = blockedItems.find(b => b.id === id);
+    if (!item) return;
+
+    setBlockedItems(prev => prev.filter(i => i.id !== id));
+    setLastUnblocked(item);
+    setUndoVisible(true);
+
+    setTimeout(() => {
+      setUndoVisible(false);
+      setLastUnblocked(null);
+    }, 3000);
   };
+
+  const handleUndo = () => {
+  if (!lastUnblocked) return;
+
+  setBlockedItems(prev => [lastUnblocked!, ...prev]);
+  setUndoVisible(false);
+  setLastUnblocked(null);
+};
 
   const getTabLabel = (type: BlockedType) => {
     switch (type) {
@@ -158,6 +207,21 @@ export default function BlockedScreen({ onBack }: { onBack: () => void }) {
           )}
         </View>
       </ScrollView>
+      {undoVisible && (
+        <View className="absolute bottom-5 left-0 right-0 px-4">
+          <View className="flex-row items-center justify-between bg-blue-100 border border-blue-400 px-4 py-3 rounded-md">
+            <Text className="text-blue-800 font-medium">Undo unblock?</Text>
+            <View className="flex-row items-center space-x-3">
+              <TouchableOpacity onPress={handleUndo} className="bg-blue-500 px-3 py-1 rounded-md">
+                <Text className="text-white text-sm font-medium">Undo</Text>
+              </TouchableOpacity>
+              <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                <FontAwesome name="spinner" size={20} color="#007AFF" />
+              </Animated.View>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 }

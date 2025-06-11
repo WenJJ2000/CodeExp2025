@@ -112,13 +112,14 @@ import { Image, Pressable, ScrollView, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 // import { BadgeCard } from "./components/Badge";
+import { useEffect, useState } from "react";
+import { User } from "lucide-react-native";
+import { ScamReport } from "~/lib/types";
+import { liveUpdateUserReports } from "~/firebase/UserApi";
 import { Badge } from "~/components/ui/badge";
 import { badges } from "../../../components/ui/badges"; // adjust path as needed
 import { ReportCard } from "./components/Report";
-
-// const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
-// const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
-// const badgeReddit = require("../../../assets/images/twitter_thumb_201604_EHA-Shield.png");
+import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
 
 const router = useRouter();
 
@@ -143,18 +144,35 @@ const reportsPending = [
   { title: "Pending scam 3", date: "14 Nov 2024" },
   { title: "Pending scam 4", date: "5 Sep 2024" },
 ];
-
 export default function ProfileScreen() {
-  const { setUser, setUid } = useAuth();
+  const { user, setUser, setUid, uid } = useAuth();
+  const [verifiedReports, setVerifiedReports] = useState<ScamReport[]>([]);
+  const [pendingReports, setPendingReports] = useState<ScamReport[]>([]);
+  useEffect(() => {
+    const unsub = liveUpdateUserReports(
+      uid,
+      (total: ScamReport[], verified: ScamReport[]) => {
+        setVerifiedReports(verified);
+        setPendingReports(
+          total.filter((report) => report.scamReportStatus === "INVALID")
+        );
+      }
+    );
+  }, []);
   return (
     <ScrollView className="flex-1 bg-secondary/30 p-4 space-y-6">
       {/* Header */}
       <View className="flex-row justify-between items-center">
         {/* Avatar */}
-        <Image
+        {/* <Image
           source={{ uri: "https://i.pravatar.cc/100" }}
           className="w-14 h-14 rounded-full"
+        /> */}
+        <Image
+          source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
+          className="w-14 h-14 rounded-full mr-3 border-2 border-gray-300"
         />
+        <ProfileWaveHighlight />
 
         {/* My Activity Button
         <Pressable className="bg-blue-500 px-4 py-2 rounded-full">
@@ -162,16 +180,14 @@ export default function ProfileScreen() {
         </Pressable> */}
 
         {/* Settings Icon */}
-        <Pressable
-          onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}
-        >
+        <Pressable onPress={() => router.push("/settings")}>
           <FontAwesome6 name="gear" size={24} />
         </Pressable>
       </View>
 
       {/* Greeting with Custom Character */}
       <View className="flex-row items-center justify-between">
-        <Text className="text-xl font-semibold">Hello, Hacker123!</Text>
+        <Text className="text-xl font-semibold">Hello, {user?.username}!</Text>
         <Image
           source={{
             uri: "https://styles.redditmedia.com/t5_2qh1i/styles/profileIcon_snoo-nft.png",
@@ -222,27 +238,37 @@ export default function ProfileScreen() {
         {/* Verified */}
         <View className="mb-4">
           <Text className="text-base font-medium mb-2">✅ Verified scams</Text>
-          {reportsVerified.map((item, index) => (
-            <ReportCard
-              key={index}
-              title={item.title}
-              date={item.date}
-              variant="verified"
-            />
-          ))}
+          {verifiedReports
+            .reduce((acc, curr, index) => {
+              if (index < 5) acc.push(curr);
+              return acc;
+            }, [] as ScamReport[])
+            .map((item, index) => (
+              <ReportCard
+                key={index}
+                title={item.title}
+                date={item.createdAt.toISOString().split("T")[0]}
+                variant="verified"
+              />
+            ))}
         </View>
 
         {/* Pending */}
         <View>
           <Text className="text-base font-medium mb-2">🕓 Pending scams</Text>
-          {reportsPending.map((item, index) => (
-            <ReportCard
-              key={index}
-              title={item.title}
-              date={item.date}
-              variant="pending"
-            />
-          ))}
+          {pendingReports
+            .reduce((acc, curr, index) => {
+              if (index < 5) acc.push(curr);
+              return acc;
+            }, [] as ScamReport[])
+            .map((item, index) => (
+              <ReportCard
+                key={index}
+                title={item.title}
+                date={item.createdAt.toISOString().split("T")[0]}
+                variant="pending"
+              />
+            ))}
         </View>
       </View>
 

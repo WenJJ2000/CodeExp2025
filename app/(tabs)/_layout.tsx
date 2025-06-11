@@ -9,7 +9,8 @@ export default function TabLayout() {
   const { setUid, setUser } = useAuth();
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
-    // console.log("Settings pressed");
+    console.log("Settings pressed");
+    router.push("/settings");
     setUid("");
     setUser("");
   }
