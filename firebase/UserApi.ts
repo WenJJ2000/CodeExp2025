@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db } from './firebase';
 import {
   collection,
   doc,
@@ -8,13 +8,13 @@ import {
   query,
   updateDoc,
   where,
-} from "firebase/firestore";
-import { ScamReport, User } from "../lib/types";
+} from 'firebase/firestore';
+import { ScamReport, User } from '../lib/types';
 
 export const liveUpdateUser = (uid: string, callback: (doc: User) => void) => {
-  const q = doc(db, "users", uid);
+  const q = doc(db, 'users', uid);
   if (!uid) {
-    console.error("User ID is required for live updates.");
+    console.error('User ID is required for live updates.');
     return;
   }
   const observer = onSnapshot(
@@ -23,14 +23,14 @@ export const liveUpdateUser = (uid: string, callback: (doc: User) => void) => {
       try {
         const data = querySnapshot.data();
         if (!data) {
-          console.error("No data found for user:", uid);
+          console.error('No data found for user:', uid);
           return;
         }
         const result: User = {
           id: querySnapshot.id,
-          email: data.email || "",
-          username: data.username || "Unknown",
-          profilePicture: data.profilePicture || "",
+          email: data.email || '',
+          username: data.username || 'Unknown',
+          profilePicture: data.profilePicture || '',
           quizLevelCleared: data.quizLevelCleared || 0,
           notificationSettings: {
             scamTest: data.notificationSettings?.scamTest || false,
@@ -43,24 +43,24 @@ export const liveUpdateUser = (uid: string, callback: (doc: User) => void) => {
 
         callback(result);
       } catch (error) {
-        console.error("Error processing live update for user:", error);
+        console.error('Error processing live update for user:', error);
       }
     },
-    async (err) => console.error("Error in live update userr:", err)
+    async (err) => console.error('Error in live update userr:', err)
   );
 
   return observer;
 };
 
 export const liveUpdateUserReports = (
-  uid: string = "",
+  uid: string = '',
   callback: (total: ScamReport[], verified: ScamReport[]) => void
 ) => {
-  if (!uid || uid.trim() === "") {
-    console.error("User ID is required for live updates.");
-    throw new Error("User ID is required for live updates.");
+  if (!uid || uid.trim() === '') {
+    console.error('User ID is required for live updates.');
+    throw new Error('User ID is required for live updates.');
   }
-  const q = query(collection(db, "scamReports"), where("createdBy", "==", uid));
+  const q = query(collection(db, 'scamReports'), where('createdBy', '==', uid));
   const observer = onSnapshot(
     q,
     async (querySnapshot) => {
@@ -76,35 +76,35 @@ export const liveUpdateUserReports = (
             scamReportStatus: data.scamReportStatus,
             votes: data.votes || [],
             replies: data.replies || [],
-            content: data.content || "",
-            title: data.title || "",
+            content: data.content || '',
+            title: data.title || '',
             images: data.images || [],
-            createdBy: data.createdBy || "",
-            location: data.location || "",
+            createdBy: data.createdBy || '',
+            location: data.location || '',
             updatedAt: data.updatedAt.toDate(),
             numOfReplies: 0,
             isEducation: data.isEducation || false,
             isDeleted: data.isDeleted || false,
           };
           total.push(report);
-          if (report.scamReportStatus === "VALID") {
+          if (report.scamReportStatus === 'VALID') {
             verified.push(report);
           }
         });
         callback(total, verified);
       } catch (error) {
-        console.error("Error processing live update for user posts:", error);
+        console.error('Error processing live update for user posts:', error);
       }
     },
-    async (err) => console.error("Error in live update user posts:", err)
+    async (err) => console.error('Error in live update user posts:', err)
   );
 
   return observer;
 };
 
 export async function getCurrentUserData(id: string): Promise<any | null> {
-  const querySnapshot = await getDocs(collection(db, "users", id));
-  console.log("calling api to get user data");
+  const querySnapshot = await getDocs(collection(db, 'users', id));
+  console.log('calling api to get user data');
   console.log(querySnapshot);
 
   if (querySnapshot.empty) {
@@ -116,17 +116,17 @@ export async function getCurrentUserData(id: string): Promise<any | null> {
   return userData;
 }
 export async function updateUserData(
-  uid: string = "",
+  uid: string = '',
   data: Partial<User>
 ): Promise<User> {
-  if (!uid || uid.trim() === "") {
-    throw new Error("User ID is required to update user data.");
+  if (!uid || uid.trim() === '') {
+    throw new Error('User ID is required to update user data.');
   }
-  const userRef = doc(db, "users", uid);
+  const userRef = doc(db, 'users', uid);
   if (!userRef) {
     throw new Error(`User with ID ${uid} does not exist.`);
   }
-  console.log("Updating user data:", uid, data);
+  console.log('Updating user data:', uid, data);
   await updateDoc(userRef, data);
   return (await getDoc(userRef)).data() as User;
 }
