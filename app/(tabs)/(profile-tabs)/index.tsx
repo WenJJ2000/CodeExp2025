@@ -194,10 +194,6 @@ export default function ProfileScreen() {
           }}
           className="w-10 h-10"
         />
-        <Image
-          source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
-          className="w-10 h-10 rounded-full mr-3 border-2 border-gray-300"
-        />
       </View>
 
       {/* Badges */}
