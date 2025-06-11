@@ -1,6 +1,6 @@
 import "~/global.css";
 
-import { Stack } from "expo-router";
+import { Href, Stack } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
@@ -33,7 +33,7 @@ export default function RootLayout() {
           header: (props) => {
             return (
               <SafeAreaViewForAndroid>
-                <ForumPageHeader />
+                <ForumPageHeader href={"/(tabs)/(home-tabs)"} />
               </SafeAreaViewForAndroid>
             );
           },
@@ -46,7 +46,7 @@ export default function RootLayout() {
           header: (props) => {
             return (
               <SafeAreaViewForAndroid>
-                <ForumPageHeader />
+                <ForumPageHeader href={"/(tabs)/(home-tabs)"} />
               </SafeAreaViewForAndroid>
             );
           },
@@ -55,10 +55,40 @@ export default function RootLayout() {
       <Stack.Screen
         name="allReportsPage"
         options={{
-          title: "All Reports",
-          headerBackTitle: "Back",
-          headerTitleAlign: "center",
           headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaViewForAndroid>
+                <ForumPageHeader href={"/(tabs)/(home-tabs)"} />
+              </SafeAreaViewForAndroid>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="allBadgePage"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaViewForAndroid>
+                <ForumPageHeader href={"/(tabs)/(home-tabs)"} />
+              </SafeAreaViewForAndroid>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="updateUserPage"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaViewForAndroid>
+                <ForumPageHeader href={"/(tabs)/(home-tabs)"} />
+              </SafeAreaViewForAndroid>
+            );
+          },
         }}
       />
     </Stack>
