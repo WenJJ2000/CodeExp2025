@@ -82,7 +82,6 @@ import { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import RecentQuiz from '~/components/QuizPage/RecentQuiz';
 import ShieldBadge from '~/components/QuizPage/ShieldBadge';
-import UserHeader from '~/components/QuizPage/UserHeader';
 import { Text } from '~/components/ui/text';
 import { getCurrentUserData } from '~/firebase/UserApi';
 import { useAuth } from '~/lib/useContext/useAuthContext';
@@ -117,9 +116,9 @@ export default function Screen() {
   return (
     <View className="flex-1 px-6 pt-4">
       {/* Top-left User Header */}
-      <View className="mt-4 z-10">
+      {/* <View className="mt-4 z-10">
         <UserHeader/>
-      </View>
+      </View> */}
 
       {/* Recent quiz */}
       <View className="flex-1 justify-center items-center gap-6 mt-5">

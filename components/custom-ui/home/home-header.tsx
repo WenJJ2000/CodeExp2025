@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { Image, Pressable } from "react-native";
 import { SettingsButton } from "~/components/settingsButton";
-import { ThemeToggle } from "~/components/ThemeToggle";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useNotification } from "~/lib/useContext/useNotificationContext";
@@ -32,7 +31,7 @@ export default function HomeHeader() {
             onPress={() => {
               router.push("/(tabs)/(profile-tabs)/settings");
             }}
-            style={{ marginRight: 10, marginLeft: 10 }}
+            style={{ marginRight: 10, marginLeft: 5 }}
           />
         </>
       }

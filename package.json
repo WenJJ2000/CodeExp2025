@@ -63,6 +63,7 @@
     "expo-image-picker": "~16.1.4",
     "expo-linear-gradient": "^14.1.4",
     "expo-linking": "~7.1.5",
+    "expo-location": "~18.1.5",
     "expo-navigation-bar": "~4.2.5",
     "expo-notifications": "~0.31.3",
     "expo-router": "~5.0.7",
@@ -72,6 +73,7 @@
     "expo-system-ui": "~5.0.8",
     "firebase": "^11.8.1",
     "firebase-admin": "^13.4.0",
+    "lightningcss": "^1.30.1",
     "lucide-react-native": "^0.511.0",
     "nativewind": "^4.1.23",
     "openai": "^5.3.0",
@@ -93,8 +95,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "3.3.5",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^11.1.0",
-    "expo-location": "~18.1.5"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
