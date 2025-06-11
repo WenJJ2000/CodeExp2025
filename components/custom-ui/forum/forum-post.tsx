@@ -1,5 +1,5 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, useColorScheme, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { ForumTagVariant, ScamReport } from "~/lib/types";
 import ImageTray from "../image-tray";
@@ -25,6 +25,8 @@ export function ForumPost({
   if (!scamReport) {
     return null; // Handle the case where scamReport is undefined
   }
+
+  const colorScheme = useColorScheme();
 
   const lastUpdated =
     scamReport.updatedAt.getTime() > scamReport.createdAt.getTime()
@@ -110,7 +112,7 @@ export function ForumPost({
         <View className="flex-row items-center gap-3">
           <ForumVoteButton scamReport={scamReport} />
           <View className="flex-row items-center border-2 border-gray-300 rounded-lg p-1">
-            <FontAwesome6 name="comment" size={16} />
+            <FontAwesome6 name="comment" size={16} color={colorScheme === "dark" ? "white" : "black"} />
             <Text className="text-lg ml-1">
               {scamReport?.numOfReplies || 0}
             </Text>
