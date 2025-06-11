@@ -146,20 +146,6 @@ export default function ProfileScreen() {
             ))}
         </View>
       </View>
-
-      {/* Logout Button */}
-      <Pressable
-        onPress={() => {
-          setUser("");
-          setUid("");
-        }}
-        className="mt-8"
-      >
-        <View className="flex-row items-center space-x-2">
-          <MaterialIcons name="logout" size={24} color="red" />
-          <Text className="text-red-500 font-bold text-sm">Logout</Text>
-        </View>
-      </Pressable>
     </ScrollView>
   );
 }

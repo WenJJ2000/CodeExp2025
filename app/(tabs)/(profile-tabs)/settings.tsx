@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { View, ScrollView, Switch } from "react-native";
+import { View, ScrollView, Switch, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import ScamTestModal from "./components/ScamTestModal";
@@ -12,6 +12,7 @@ import { useNavigation } from "expo-router";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { Text } from "~/components/ui/text";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 const router = useRouter();
 
 function SettingsItem({
@@ -246,6 +247,7 @@ export default function SettingsScreen() {
     return <BlockedScreen onBack={() => setShowBlockedScreen(false)} />;
   }
   const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { setUser, setUid } = useAuth();
   const backgroundColor = isDarkColorScheme ? "#2f2f2f" : "#FFFFFF"; // dark vs light grey
 
   function toggleColorScheme() {
@@ -406,6 +408,19 @@ export default function SettingsScreen() {
             : toggleScamSMSActive
         }
       />
+      {/* Logout Button */}
+      <Pressable
+        onPress={() => {
+          setUser("");
+          setUid("");
+        }}
+        className="mt-8"
+      >
+        <View className="flex-row items-center space-x-2 mb-8">
+          <MaterialIcons name="logout" size={24} color="red" />
+          <Text className="text-red-500 font-bold text-sm">Logout</Text>
+        </View>
+      </Pressable>
     </ScrollView>
   );
 }
