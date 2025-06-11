@@ -41,7 +41,7 @@ const openai = new OpenAI({
   apiKey:
     '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',
 });
-export async function checkImageForScam(image) {
+export async function checkImageForScam(image, description) {
   const completion = await openai.chat.completions.create({
     model: 'meta-llama/llama-3.3-8b-instruct:free',
     messages: [
@@ -59,6 +59,10 @@ export async function checkImageForScam(image) {
           {
             type: 'image_url',
             url: image,
+          },
+          {
+            type: 'text',
+            text: `Here is a description of the image as well to help aid in your detection : ${description}`,
           },
         ],
       },

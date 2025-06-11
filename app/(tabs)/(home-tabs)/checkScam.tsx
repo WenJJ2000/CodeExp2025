@@ -120,6 +120,8 @@ export default function CheckTypePage() {
     setIsChecking(true); // start spinner
     try {
       if (selectedImageUri != '') {
+        const data = await checkImageForScam(selectedImageUri, description);
+        console.log(data);
       }
       switch (type) {
         case 'sms':
@@ -169,8 +171,6 @@ export default function CheckTypePage() {
 
         case 'social':
           // console.log('Image input triggered – open file picker or camera logic here.');
-          const data = await checkImageForScam(selectedImageUri);
-          console.log(data);
 
           break;
         case 'website':
