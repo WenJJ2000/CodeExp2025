@@ -85,13 +85,13 @@ export default function ProfileScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="space-x-3"
+          className="space-x-3 pt-2 pb-2"
         >
           {badges.map((badge, index) => (
             <Badge
               key={index}
               variant="default"
-              className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-md mx-2"
+              className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-sm mx-2"
             >
               <Text className="text-2xl">{badge.emoji}</Text>
             </Badge>
