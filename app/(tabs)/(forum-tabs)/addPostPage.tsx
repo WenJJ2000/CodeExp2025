@@ -70,7 +70,7 @@ export default function AddPostPage() {
         createdBy: uid,
         isEducation: true,
         images: images,
-        location: "",
+        location: { postalCode: "00000", latitude: 0, longitude: 0 },
       });
     } catch (error) {
       console.error("Error creating report:", error);
