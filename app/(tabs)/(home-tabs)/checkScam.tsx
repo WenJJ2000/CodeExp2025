@@ -26,6 +26,7 @@ import { Checkbox } from '~/components/ui/checkbox';
 import { Label } from '~/components/ui/label';
 import { Input } from '~/components/ui/input';
 import { checkImageForScam } from '~/backend/app/ai/llama';
+import CheckScamForm from './checkScamForm';
 
 const tabs = ['Text', 'Image', 'Number', 'App', 'Crypto'];
 
@@ -276,82 +277,83 @@ export default function CheckTypePage() {
           </View>
         );
       case 'image':
-        return (
-          <View
-            className={`border rounded-2xl p-4 mb-2 ${
-              colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
-            }`}
-          >
-            <Pressable onPress={pickImageForImage}>
-              <View
-                className={`justify-center items-center h-36 rounded-xl mb-2 ${
-                  colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
-                } border`}
-              >
-                <Text className="text-3xl mb-2">⬆️</Text>
-                <Text
-                  className={`text-center ${
-                    colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                >
-                  Upload an image
-                </Text>
-              </View>
-            </Pressable>
+        return <CheckScamForm />;
+      // (
+      //   <View
+      //     className={`border rounded-2xl p-4 mb-2 ${
+      //       colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
+      //     }`}
+      //   >
+      //     <Pressable onPress={pickImageForImage}>
+      //       <View
+      //         className={`justify-center items-center h-36 rounded-xl mb-2 ${
+      //           colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
+      //         } border`}
+      //       >
+      //         <Text className="text-3xl mb-2">⬆️</Text>
+      //         <Text
+      //           className={`text-center ${
+      //             colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+      //           }`}
+      //         >
+      //           Upload an image
+      //         </Text>
+      //       </View>
+      //     </Pressable>
 
-            <Text
-              className={`text-center my-2 ${
-                colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              }`}
-            >
-              OR
-            </Text>
-            <View
-              className={`justify-center items-center h-36 rounded-xl ${
-                colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
-              } border`}
-            >
-              <Text className="text-2xl mb-2">📷</Text>
-              <Text
-                className={`text-center ${
-                  colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                }`}
-              >
-                Take an image or video
-              </Text>
-            </View>
+      //     <Text
+      //       className={`text-center my-2 ${
+      //         colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+      //       }`}
+      //     >
+      //       OR
+      //     </Text>
+      //     <View
+      //       className={`justify-center items-center h-36 rounded-xl ${
+      //         colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
+      //       } border`}
+      //     >
+      //       <Text className="text-2xl mb-2">📷</Text>
+      //       <Text
+      //         className={`text-center ${
+      //           colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+      //         }`}
+      //       >
+      //         Take an image or video
+      //       </Text>
+      //     </View>
 
-            {/* Image preview shown below the buttons */}
-            {selectedImageUri && (
-              <View style={{ marginTop: 24, alignItems: 'center' }}>
-                <Text
-                  className={`mb-2 text-center ${
-                    colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                >
-                  Preview
-                </Text>
-                <Image
-                  source={{ uri: selectedImageUri }}
-                  style={{
-                    width: 330,
-                    height: 220,
-                    borderRadius: 12,
-                    borderWidth: 1,
-                    borderColor: colorScheme === 'dark' ? '#444' : '#ccc',
-                  }}
-                  resizeMode="contain"
-                />
-                <Pressable
-                  onPress={() => setSelectedImageUri(null)}
-                  style={{ marginTop: 8 }}
-                >
-                  <Text style={{ color: 'red' }}>Remove image</Text>
-                </Pressable>
-              </View>
-            )}
-          </View>
-        );
+      //     {/* Image preview shown below the buttons */}
+      //     {selectedImageUri && (
+      //       <View style={{ marginTop: 24, alignItems: 'center' }}>
+      //         <Text
+      //           className={`mb-2 text-center ${
+      //             colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+      //           }`}
+      //         >
+      //           Preview
+      //         </Text>
+      //         <Image
+      //           source={{ uri: selectedImageUri }}
+      //           style={{
+      //             width: 330,
+      //             height: 220,
+      //             borderRadius: 12,
+      //             borderWidth: 1,
+      //             borderColor: colorScheme === 'dark' ? '#444' : '#ccc',
+      //           }}
+      //           resizeMode="contain"
+      //         />
+      //         <Pressable
+      //           onPress={() => setSelectedImageUri(null)}
+      //           style={{ marginTop: 8 }}
+      //         >
+      //           <Text style={{ color: 'red' }}>Remove image</Text>
+      //         </Pressable>
+      //       </View>
+      //     )}
+      //   </View>
+      // );
       case 'number':
         return (
           <View
@@ -457,14 +459,14 @@ export default function CheckTypePage() {
             </Pressable>
 
             {/* Header */}
-            <View className="flex-row justify-between items-center mb-5">
+            {/* <View className="flex-row justify-between items-center mb-5">
               <Text className="text-3xl font-bold text-black dark:text-white">
                 Check for Scams
               </Text>
             </View>
             <Text className="text-gray-600 dark:text-gray-300 mb-6">
               Spot something suspicious? Verify if it's a scam here!
-            </Text>
+            </Text> */}
 
             {/* Tabs */}
             {/* <View className="flex-row p-1 rounded-full self-start mb-4 bg-[#eaf0ff] dark:bg-slate-800">
@@ -492,7 +494,7 @@ export default function CheckTypePage() {
             </View> */}
 
             {/* Tabs */}
-            <View
+            {/* <View
               style={{
                 flex: 1,
                 justifyContent: 'center',
@@ -532,7 +534,7 @@ export default function CheckTypePage() {
                   ))}
                 </View>
               </ScrollView>
-            </View>
+            </View> */}
 
             {/* Animated Input Section */}
             <Animated.View style={{ opacity: fadeAnim }}>
