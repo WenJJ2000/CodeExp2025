@@ -16,7 +16,9 @@ import {
 } from "~/components/ui/select";
 import { Filters, ScamReportFilterTypes } from "~/lib/types";
 import { BellNotification } from "./bell-notification"; // Adjust the import path as necessary
+import { useNotification } from "~/lib/useContext/useNotificationContext";
 export default function HomeHeader() {
+  const { notifications } = useNotification();
   return (
     <AppHeader
       leftChildren={<Text className="text-2xl font-bold ">Home</Text>}

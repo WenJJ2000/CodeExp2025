@@ -2,11 +2,15 @@ import "~/global.css";
 
 import { Stack } from "expo-router";
 import * as React from "react";
+import { useEffect } from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
 import HomeHeader from "~/components/custom-ui/home/home-header";
 import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
+import { getNotifications } from "~/firebase/NotiApi";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -42,6 +46,19 @@ export default function RootLayout() {
             },
           }}
         />
+        <Stack.Screen
+          name="notificationPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumPageHeader />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />{" "}
       </Stack>
     </NotificationProvider>
   );
