@@ -28,6 +28,9 @@ export default function ProfileScreen() {
         );
       }
     );
+    return () => {
+      unsub();
+    };
   }, []);
   return (
     <ScrollView className="flex-1 bg-secondary/30 p-4 space-y-6">
