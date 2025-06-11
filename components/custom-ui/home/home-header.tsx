@@ -1,29 +1,39 @@
-import { Image, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Image, Pressable } from "react-native";
+import { SettingsButton } from "~/components/settingsButton";
+import { ThemeToggle } from "~/components/ThemeToggle";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
+import { useNotification } from "~/lib/useContext/useNotificationContext";
 import AppHeader from "../app-header";
 import { BellNotification } from "./bell-notification"; // Adjust the import path as necessary
-
 export default function HomeHeader() {
-    const { user, uid } = useAuth();
-  
+  const { notifications } = useNotification();
+  const { user } = useAuth();
+  const router = useRouter();
   return (
     <AppHeader
       leftChildren={
-        <View className="flex-row items-center mb-6">
-                <Image
-                  source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
-                  className="w-8 h-8 rounded-full mr-3 border-2 border-gray-300"
-                />
-                <Text className="text-2xl font-bold flex-1 text-black dark:text-white">
-                  Welcome {user?.username}
-                </Text>
-              </View>
-      // <Text className="text-2xl font-bold ">Welcome</Text>
-    }
+        <>
+          <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)")}>
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
+              className="w-12 h-12 rounded-full mr-3 border-2 border-gray-300 ml-4"
+            />
+          </Pressable>
+          <Text className="text-2xl font-bold ">Welcome {user?.username}!</Text>
+        </>
+      }
       rightChildren={
         <>
+          <ThemeToggle />
           <BellNotification />
+          <SettingsButton
+            onPress={() => {
+              router.push("/(tabs)/(profile-tabs)/settings");
+            }}
+            style={{ marginLeft: 10 }}
+          />
         </>
       }
     />
