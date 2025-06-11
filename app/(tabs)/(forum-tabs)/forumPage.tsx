@@ -1,12 +1,7 @@
 import { Redirect } from "expo-router";
 import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import { useEffect, useState } from "react";
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  View
-} from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, View } from "react-native";
 import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { ForumReply } from "~/components/custom-ui/forum/forum-reply";
 import { ForumReplyPopup } from "~/components/custom-ui/forum/forum-reply-popup";
@@ -62,22 +57,24 @@ export default function ForumPage() {
           }}
         />
         {/* Replies Header */}
-        <View className="px-4 py-2">
-          <Text className="text-lg font-bold mb-2">Replies</Text>
+        <View className=" py-2">
+          <Text className="text-lg font-bold mb-2 px-4">Replies</Text>
           {/* Conditional Message for No Replies */}
           {scamReport.replies.length === 0 ? (
-            <Text className="text-sm text-muted-foreground">There are no replies yet.</Text>
+            <Text className="text-sm text-muted-foreground">
+              There are no replies yet.
+            </Text>
           ) : (
-        <FlatList
-          data={scamReport.replies}
-          renderItem={({ item }) => (
-            <ForumReply reply={item} onClickReply={onClickReplyButton} />
+            <FlatList
+              data={scamReport.replies}
+              renderItem={({ item }) => (
+                <ForumReply reply={item} onClickReply={onClickReplyButton} />
+              )}
+              contentContainerClassName="gap-2 bg-transparent"
+              className="py-2 bg-secondary px-2"
+              keyExtractor={(item) => item.id}
+            />
           )}
-          contentContainerClassName="gap-2 bg-transparent"
-          className="py-2 bg-secondary px-2"
-          keyExtractor={(item) => item.id}
-        />
-        )}
         </View>
       </View>
       {showReplyPopup && scamReportOrReply && (
