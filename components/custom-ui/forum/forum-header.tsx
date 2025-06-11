@@ -1,20 +1,18 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { ScrollView } from "react-native";
 import { Input } from "~/components/ui/input";
-import { Text } from "~/components/ui/text";
-import { Pressable, View } from "react-native";
-import { useState } from "react";
-import { useColorScheme } from "~/lib/useColorScheme";
-import AppHeader from "../app-header";
 import {
   Option,
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectTrigger
 } from "~/components/ui/select";
+import { Text } from "~/components/ui/text";
 import { Filters, ScamReportFilterTypes } from "~/lib/types";
+import { useColorScheme } from "~/lib/useColorScheme";
+import AppHeader from "../app-header";
 
 export default function ForumHeader({
   searchQuery,
@@ -73,7 +71,7 @@ export function Filter({ filter, setFilter }: FilterProps) {
     top: 12,
     bottom: 0,
     left: 0,
-    right: 8,
+    right: 4,
   };
   return (
     <Select
@@ -91,14 +89,16 @@ export function Filter({ filter, setFilter }: FilterProps) {
           color={isDarkColorScheme ? "white" : "black"}
         />
       </SelectTrigger>
-      <SelectContent insets={contentInsets} className="px-4">
-        <SelectGroup>
-          {ScamReportFilterTypes.map((x, i) => (
-            <SelectItem label={x.label} value={x.value} key={i}>
-              {x.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
+      <SelectContent insets={contentInsets} className="p-4">
+        <ScrollView style={{ maxHeight: 300 }}> {/* Add a ScrollView with a max height */}
+          <SelectGroup>
+            {ScamReportFilterTypes.map((x, i) => (
+              <SelectItem label={x.label} value={x.value} key={i}>
+                {x.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </ScrollView>
       </SelectContent>
     </Select>
   );
