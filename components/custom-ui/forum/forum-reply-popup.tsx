@@ -113,7 +113,7 @@ export function ForumReplyPopup({
   }, [inputRef.current?.isFocused(), tempRef.current?.isFocused(), isFocused]);
   return (
     <>
-      <View className=" w-full h-fit flex-col justify-start items-start px-4 py-2  rounded-t-3xl  bg-secondary/50 border-2 border-b-0 border-secondary shadow-sm shadow-slate-300">
+      <View className=" w-full h-fit flex-col justify-start items-start px-4 py-2  rounded-t-3xl  bg-secondary border-2 border-b-0 border-secondary shadow-sm shadow-slate-300">
         <Text className="text-base mb-2">
           Commenting on <Text className="font-bold">{user.username}</Text>
         </Text>

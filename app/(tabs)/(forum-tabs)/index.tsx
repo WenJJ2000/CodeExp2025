@@ -1,22 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  ScrollView,
-  SafeAreaView,
-  View,
-  FlatList,
-  Pressable,
-} from "react-native";
-import ForumHeader from "~/components/custom-ui/forum/forum-header";
+import { FlatList, Pressable, View } from "react-native";
 import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { Filters, ScamReport } from "~/lib/types";
 
-import { liveUpdate } from "~/firebase/ForumApi";
-import { useGlobalSearchParams, useRouter } from "expo-router";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useColorScheme } from "~/lib/useColorScheme";
-import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
-
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { liveUpdate } from "~/firebase/ForumApi";
+import { useColorScheme } from "~/lib/useColorScheme";
+import { Text } from "~/components/ui/text";
 export default function Index() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
@@ -87,7 +80,7 @@ export default function Index() {
     });
   };
   return (
-    <SafeAreaViewForAndroid className="flex-1 pt-10 justify-start items-start gap-5  bg-secondary/30">
+    <SafeAreaViewForAndroid className="flex-1 pt-10 justify-start items-center gap-5  bg-secondary/30">
       {filter == "IN_PERSON" && (
         <MapView style={{ width: "100%", height: "40%" }}>
           {filteredReports.map((report) => {
@@ -135,38 +128,44 @@ export default function Index() {
           })}
         </MapView>
       )}
-      <FlatList
-        ref={ref}
-        data={filteredReports}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
-            <ForumPost
-              scamReport={item}
-              onClick={() => {
-                router.push({
-                  pathname: "/forumPage",
-                  params: { scamReportId: item.id },
-                });
-              }}
-            />
-          );
-        }}
-        initialNumToRender={1000}
-        maxToRenderPerBatch={1000}
-        windowSize={1000}
-      />
+      {filteredReports.length === 0 && (
+        <View className=" flex-1 justify-center items-center gap-2">
+          <FontAwesome6 name="exclamation-triangle" size={24} color="red" />
+          <Text className="text-lg text-muted-foreground">
+            No scam reports found.
+          </Text>
+        </View>
+      )}
+      {filteredReports.length > 0 && (
+        <FlatList
+          ref={ref}
+          data={filteredReports}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <ForumPost
+                scamReport={item}
+                onClick={() => {
+                  router.push({
+                    pathname: "/forumPage",
+                    params: { scamReportId: item.id },
+                  });
+                }}
+              />
+            );
+          }}
+          initialNumToRender={1000}
+          maxToRenderPerBatch={1000}
+          windowSize={1000}
+        />
+      )}
       <Pressable
         className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-primary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary"
         onPress={() => {
           router.push("/addPostPage");
         }}
       >
-        <FontAwesome6
-          name="plus"
-          size={24}
-          color={colorScheme === "light" ? "black" : "white"}
-        />
+        <FontAwesome6 name="plus" size={24} color="white" />
       </Pressable>
     </SafeAreaViewForAndroid>
   );

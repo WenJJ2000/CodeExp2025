@@ -12,7 +12,7 @@ export default function AppHeader({
       <View className="flex-row justify-between items-center gap-2">
         {leftChildren}
       </View>
-      <View className="flex-row items-center justify-end gap-2 w-[200px]">
+      <View className="flex-row items-center justify-end gap-2">
         {rightChildren}
       </View>
     </View>

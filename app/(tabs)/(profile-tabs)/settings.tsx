@@ -1,18 +1,16 @@
-import { useState, useEffect } from "react";
-import { View, ScrollView, Switch, Pressable } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
-import ScamTestModal from "./components/ScamTestModal";
-import BlockingSetupModal from "./components/BlockingSetupModal";
-import BlockingInfoModal from "./components/BlockingInfoModal";
-import BlockedScreen from "./components/BlockedScreen";
-import { useNavigation } from "expo-router";
-import { useColorScheme } from "~/lib/useColorScheme";
-import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Pressable, ScrollView, Switch, TouchableOpacity, View } from "react-native";
 import { Text } from "~/components/ui/text";
+import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { useColorScheme } from "~/lib/useColorScheme";
 import { useAuth } from "~/lib/useContext/useAuthContext";
+import BlockedScreen from "./components/BlockedScreen";
+import BlockingInfoModal from "./components/BlockingInfoModal";
+import BlockingSetupModal from "./components/BlockingSetupModal";
+import ScamTestModal from "./components/ScamTestModal";
 const router = useRouter();
 
 function SettingsItem({
@@ -88,7 +86,7 @@ function SetupButton({
           </TouchableOpacity>
         )}
         {!isSetup && (
-          <View className="bg-red-500 px-3 py-1 rounded-md">
+          <View className="bg-blue-500 px-3 py-1 rounded-md">
             <Text className="text-white text-sm font-medium">Set up</Text>
           </View>
         )}
@@ -409,7 +407,7 @@ export default function SettingsScreen() {
         }
       />
       {/* Logout Button */}
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           setUser("");
           setUid("");
@@ -419,6 +417,19 @@ export default function SettingsScreen() {
         <View className="flex-row items-center space-x-2 mb-8">
           <MaterialIcons name="logout" size={24} color="red" />
           <Text className="text-red-500 font-bold text-sm">Logout</Text>
+        </View>
+      </Pressable> */}
+      <Pressable
+        onPress={() => {
+          setUser("");
+          setUid("");
+        }}
+        className={`${!isDarkColorScheme ? "bg-red-700" : "bg-red-700"
+          } rounded-xl px-4 py-4 flex-row justify-between items-center mb-2 mt-8`}
+      >
+        <View className="flex-row items-center space-x-4">
+          <MaterialIcons name="logout" size={24} color="white"  style={{paddingRight: 2}}/>
+          <Text className="text-white font-bold text-sm ">Logout</Text>
         </View>
       </Pressable>
     </ScrollView>
