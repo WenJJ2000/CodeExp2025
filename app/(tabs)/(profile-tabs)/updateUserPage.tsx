@@ -49,10 +49,15 @@ export default function UpdateUserPage() {
         email,
         username,
         profilePicture,
-      }).then((x) => {
-        setUser(JSON.stringify(x));
-        // console.log("User updated successfully", x);
-      });
+      })
+        .then((x) => {
+          console.log("User updated successfully", JSON.stringify(x));
+          setUser(JSON.stringify(x));
+        })
+        .catch((error) => {
+          console.error("Error updating user:", error);
+          // Handle error (e.g., show a toast or alert)
+        });
     } catch (error) {
       console.error("Error updating user:", error);
       // Handle error (e.g., show a toast or alert)
@@ -81,11 +86,25 @@ export default function UpdateUserPage() {
         </View>
         <View className="space-y-2 mb-4">
           <Text className="text-sm font-semibol mb-2d">Email</Text>
-          <Input value={email} onChangeText={(e) => setEmail(e)} />
+          <Input
+            value={email}
+            onChangeText={(e) => setEmail(e)}
+            autoComplete="email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            placeholder="Enter your email"
+          />
         </View>
         <View className="space-y-2 mb-4">
           <Text className="text-sm font-semibold mb-2">Username</Text>
-          <Input value={username} onChangeText={(e) => setUsername(e)} />
+          <Input
+            value={username}
+            onChangeText={(e) => setUsername(e)}
+            maxLength={12}
+            autoComplete="username"
+            textContentType="username"
+            placeholder="Enter your username"
+          />
         </View>
 
         <View className="flex-row justify-end">
