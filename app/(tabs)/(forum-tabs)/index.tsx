@@ -67,14 +67,11 @@ export default function Index() {
   }
   async function fetchScamReports(reports: ScamReport[] = []) {
     setScamReports(reports);
-    console.log("Live update received2");
     filterScamReports();
-    console.log("Live update received3");
   }
 
   useEffect(() => {
     liveUpdate((data) => {
-      console.log("Live update received1");
       fetchScamReports(data);
     });
   }, []);
