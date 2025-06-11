@@ -112,17 +112,14 @@ import { Image, Pressable, ScrollView, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/useContext/useAuthContext";
 // import { BadgeCard } from "./components/Badge";
-import { Badge } from "~/components/ui/badge";
-import { badges } from "../../../components/ui/badges"; // adjust path as needed
-import { ReportCard } from "./components/Report";
 import { useEffect, useState } from "react";
 import { User } from "lucide-react-native";
 import { ScamReport } from "~/lib/types";
 import { liveUpdateUserReports } from "~/firebase/UserApi";
-
-// const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
-// const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
-// const badgeReddit = require("../../../assets/images/twitter_thumb_201604_EHA-Shield.png");
+import { Badge } from "~/components/ui/badge";
+import { badges } from "../../../components/ui/badges"; // adjust path as needed
+import { ReportCard } from "./components/Report";
+import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
 
 const router = useRouter();
 
@@ -175,15 +172,15 @@ export default function ProfileScreen() {
           source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
           className="w-14 h-14 rounded-full mr-3 border-2 border-gray-300"
         />
+        <ProfileWaveHighlight />
+
         {/* My Activity Button
         <Pressable className="bg-blue-500 px-4 py-2 rounded-full">
           <Text className="text-white font-bold text-sm">My Activity</Text>
         </Pressable> */}
 
         {/* Settings Icon */}
-        <Pressable
-          onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}
-        >
+        <Pressable onPress={() => router.push("/settings")}>
           <FontAwesome6 name="gear" size={24} />
         </Pressable>
       </View>
