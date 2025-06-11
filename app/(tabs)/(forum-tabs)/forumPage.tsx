@@ -61,7 +61,7 @@ export default function ForumPage() {
           <Text className="text-lg font-bold mb-2 px-4">Replies</Text>
           {/* Conditional Message for No Replies */}
           {scamReport.replies.length === 0 ? (
-            <Text className="text-sm text-muted-foreground">
+            <Text className="text-sm text-muted-foreground  px-4">
               There are no replies yet.
             </Text>
           ) : (
