@@ -1,14 +1,15 @@
 import '~/global.css';
 
-import { Href, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as React from 'react';
 import { Appearance, Platform } from 'react-native';
-import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
 import ForumPageHeader from '~/components/custom-ui/forum/forumpage-header';
+import ProfileHeader from '~/components/custom-ui/profileHeader';
 import SafeAreaViewForAndroid from '~/components/custom-ui/SafeAreaViewForAndriod';
+import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 const usePlatformSpecificSetup = Platform.select({
@@ -34,7 +35,7 @@ export default function RootLayout() {
           header: (props) => {
             return (
               <SafeAreaViewForAndroid>
-                <ForumPageHeader href={'/(tabs)/(home-tabs)'} />
+                <ProfileHeader href={'/(tabs)/(home-tabs)'} />
               </SafeAreaViewForAndroid>
             );
           },
@@ -87,6 +88,8 @@ export default function RootLayout() {
             return (
               <SafeAreaViewForAndroid>
                 <ForumPageHeader href={'/(tabs)/(home-tabs)'} />
+
+
               </SafeAreaViewForAndroid>
             );
           },
