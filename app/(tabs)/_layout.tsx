@@ -40,7 +40,17 @@ export default function TabLayout() {
         options={{
           title: "Quiz",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="book" size={size} color={color} />
+            <FontAwesome6
+              name="book"
+              size={size}
+              color={color}
+              style={{
+                marginBottom: -3,
+                justifyConent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+              }}
+            />
           ),
           tabBarButton: (props) => (
             <>
@@ -63,38 +73,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(report-tabs)"
-        options={{
-          title: "Report",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome6
-              name="triangle-exclamation"
-              size={size}
-              color={color}
-              style={{ marginBottom: -3 }}
-            />
-          ),
-          tabBarButton: (props) => (
-            <>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor: "transparent",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  router.navigate("/(tabs)/(report-tabs)");
-                }}
-              >
-                {props.children}
-              </TouchableOpacity>
-            </>
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
         name="(home-tabs)"
         options={{
           title: "Home",
@@ -103,7 +81,12 @@ export default function TabLayout() {
               name="house"
               size={size}
               color={color}
-              style={{ marginBottom: -3 }}
+              style={{
+                marginBottom: -3,
+                justifyConent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+              }}
             />
           ),
           tabBarButton: (props) => (
@@ -123,7 +106,41 @@ export default function TabLayout() {
               </TouchableOpacity>
             </>
           ),
+          tabBarLabelPosition: "below-icon",
           headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="(report-tabs)"
+        options={{
+          title: "Report",
+          // tabBarIcon: ({ color, size }) => (
+          //   <FontAwesome6
+          //     name="triangle-exclamation"
+          //     size={size}
+          //     color={color}
+          //     style={{ marginBottom: -3 }}
+          //   />
+          // ),
+          // tabBarButton: (props) => (
+          //   <>
+          //     <TouchableOpacity
+          //       style={{
+          //         flex: 1,
+          //         backgroundColor: "transparent",
+          //         justifyContent: "center",
+          //         alignItems: "center",
+          //       }}
+          //       onPress={() => {
+          //         router.navigate("/(tabs)/(report-tabs)");
+          //       }}
+          //     >
+          //       {props.children}
+          //     </TouchableOpacity>
+          //   </>
+          // ),
+          headerShown: false,
+          href: null,
         }}
       />
 
@@ -163,31 +180,32 @@ export default function TabLayout() {
         name="(profile-tabs)"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome6
-              name="user"
-              size={size}
-              color={color}
-              style={{ marginBottom: -3 }}
-            />
-          ),
-          tabBarButton: (props) => (
-            <>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor: "transparent",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  router.navigate("/(tabs)/(profile-tabs)");
-                }}
-              >
-                {props.children}
-              </TouchableOpacity>
-            </>
-          ),
+          // tabBarIcon: ({ color, size }) => (
+          //   <FontAwesome6
+          //     name="user"
+          //     size={size}
+          //     color={color}
+          //     style={{ marginBottom: -3 }}
+          //   />
+          // ),
+          // tabBarButton: (props) => (
+          //   <>
+          //     <TouchableOpacity
+          //       style={{
+          //         flex: 1,
+          //         backgroundColor: "transparent",
+          //         justifyContent: "center",
+          //         alignItems: "center",
+          //       }}
+          //       onPress={() => {
+          //         router.navigate("/(tabs)/(profile-tabs)");
+          //       }}
+          //     >
+          //       {props.children}
+          //     </TouchableOpacity>
+          //   </>
+          // ),
+          href: null,
         }}
       />
     </Tabs>
