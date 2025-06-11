@@ -25,6 +25,7 @@ import { addNumberScam, checkNumberScam } from '~/firebase/numberScamApi';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Label } from '~/components/ui/label';
 import { Input } from '~/components/ui/input';
+import { checkImageForScam } from '~/backend/app/ai/llama';
 
 const tabs = ['Text', 'Image', 'Number', 'App', 'Crypto'];
 
@@ -186,6 +187,8 @@ export default function CheckTypePage() {
 
         case 'image':
           // console.log('Image input triggered – open file picker or camera logic here.');
+          const data = await checkImageForScam(selectedImageUri);
+          console.log(data);
           break;
 
         case 'crypto':
