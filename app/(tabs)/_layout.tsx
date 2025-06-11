@@ -70,6 +70,7 @@ export default function TabLayout() {
             </>
           ),
           headerShown: false,
+          tabBarLabelPosition: "below-icon",
         }}
       />
       <Tabs.Screen
@@ -141,6 +142,7 @@ export default function TabLayout() {
           // ),
           headerShown: false,
           href: null,
+          tabBarLabelPosition: "below-icon",
         }}
       />
 
@@ -174,6 +176,7 @@ export default function TabLayout() {
             </>
           ),
           headerShown: false,
+          tabBarLabelPosition: "below-icon",
         }}
       />
       <Tabs.Screen
@@ -206,6 +209,7 @@ export default function TabLayout() {
           //   </>
           // ),
           href: null,
+          tabBarLabelPosition: "below-icon",
         }}
       />
     </Tabs>
