@@ -15,10 +15,13 @@ function SettingsItem({ icon, label, onPress }: { icon: string; label: string; o
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-white rounded-xl px-4 py-4 flex-row items-center space-x-4 mb-2"
+      className="bg-white rounded-xl px-4 py-4 flex-row justify-between items-center mb-2"
     >
-      <FontAwesome name={icon as any} size={20} />
-      <Text className="text-base">{label}</Text>
+      <View className="flex-row items-center space-x-4">
+        <FontAwesome name={icon as any} size={20} />
+        <Text className="text-base">{label}</Text>
+      </View>
+      <FontAwesome name="angle-right" size={20} />
     </TouchableOpacity>
   );
 }
@@ -77,6 +80,10 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     const loadToggles = async () => {
+      useEffect(() => {
+        navigation.setOptions({ headerShown: true, title: "Settings" });
+      }, [navigation]);
+
       const scamTestSaved = await AsyncStorage.getItem("scamTestToggle");
       const locationSaved = await AsyncStorage.getItem("locationServicesToggle");
       const scamCallSaved = await AsyncStorage.getItem("scamCallSetup");
@@ -85,8 +92,6 @@ export default function SettingsScreen() {
       const scamSMSActiveSaved = await AsyncStorage.getItem("scamSMSActive");
       // AsyncStorage.clear();
       // navigation.setOptions({ headerShown: false });
-
-
 
       if (scamTestSaved !== null) setScamTest(JSON.parse(scamTestSaved));
       if (locationSaved !== null) setLocationServices(JSON.parse(locationSaved));
@@ -97,6 +102,13 @@ export default function SettingsScreen() {
     };
     loadToggles();
   }, []);
+
+  useEffect(() => {
+  navigation.setOptions({
+    headerShown: true,
+    title: 'Settings' // 👈 Hide the arrow-only back button
+  });
+}, [navigation]);
 
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
@@ -190,9 +202,10 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView className="flex-1 bg-gray-100 px-4 pt-4">
-      <TouchableOpacity onPress={() => navigation.goBack()} className="mb-4">
-  <FontAwesome name="arrow-left" size={24} />
-</TouchableOpacity>
+      {/* <TouchableOpacity onPress={() => navigation.goBack()} className="mb-4">
+
+        <FontAwesome name="arrow-left" size={24} />
+      </TouchableOpacity> */}
 
       <Text className="text-2xl font-bold mb-4">Settings</Text>
 
