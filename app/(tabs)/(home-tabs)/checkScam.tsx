@@ -93,6 +93,7 @@ export default function CheckTypePage() {
       const text =
         result.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
       setExtractedText(text);
+      setDescription(text);
       return text;
     } catch (err) {
       console.error('Failed to extract text:', err);
