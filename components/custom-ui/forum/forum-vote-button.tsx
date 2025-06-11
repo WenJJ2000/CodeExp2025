@@ -49,12 +49,16 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
       <View className="flex-row gap-2">
         <Pressable
           className={`px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg z-10 ${
-            hasUpVoted ? "bg-green-200" : ""
+            hasUpVoted
+              ? colorScheme == "light"
+                ? "bg-green-200"
+                : "bg-green-500"
+              : ""
           }`}
           onPress={onClickUpVote}
           disabled={cantVote}
         >
-          <Text className="text-muted-foreground text-lg">
+          <Text className="text-lg">
             <FontAwesome6
               name="thumbs-up"
               size={16}
@@ -65,12 +69,16 @@ export function ForumVoteButton({ scamReport }: { scamReport: ScamReport }) {
         </Pressable>
         <Pressable
           className={`px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg ${
-            hasDownVoted ? "bg-red-200" : ""
+            hasDownVoted
+              ? colorScheme == "light"
+                ? "bg-red-200"
+                : "bg-red-500"
+              : ""
           }`}
           onPress={onClickDownVote}
           disabled={cantVote}
         >
-          <Text className="text-muted-foreground text-lg">
+          <Text className="text-lg">
             {scamReport?.votes.filter((vote) => vote.type == "DOWNVOTE").length}{" "}
             <FontAwesome6
               name="thumbs-down"

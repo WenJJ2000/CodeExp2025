@@ -182,7 +182,7 @@ export default function Home() {
       </View>
 
       <Text className="text-xl font-bold text-black dark:text-white pb-2">
-        Map View
+        Scam near me
       </Text>
       <HomeMap />
     </View>
