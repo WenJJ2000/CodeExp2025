@@ -9,10 +9,10 @@ export default function AppHeader({
 }) {
   return (
     <View className="w-full flex-row justify-between items-center h-20 border-b-secondary px-4 py-4">
-      <View className="flex-row justify-between items-center gap-2 w-[180px]">
+      <View className="flex-row justify-between items-center gap-2">
         {leftChildren}
       </View>
-      <View className="flex-row items-center justify-end gap-2 w-[200px]">
+      <View className="flex-row items-center justify-end gap-2">
         {rightChildren}
       </View>
     </View>
