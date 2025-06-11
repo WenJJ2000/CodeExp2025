@@ -1,10 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const schedule = require("node-schedule");
-const {
-  explainImage,
-  generateEmail,
-} = require("./app/generators/email.generator");
+// const {
+//   explainImage,
+//   generateEmail,
+// } = require("./app/generators/email.generator");
 const { getAllUser } = require("./app/firebase/UserApi");
 const app = express();
 app.listen(process.env.PORT, () => {
