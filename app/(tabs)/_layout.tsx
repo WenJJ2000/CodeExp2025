@@ -38,6 +38,38 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="(home-tabs)"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome6
+              name="house"
+              size={size}
+              color={color}
+              style={{ marginBottom: -3 }}
+            />
+          ),
+          tabBarButton: (props) => (
+            <>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  router.navigate("/(tabs)/(home-tabs)");
+                }}
+              >
+                {props.children}
+              </TouchableOpacity>
+            </>
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="(quiz-tabs)"
         options={{
           title: "Quiz",
@@ -92,38 +124,6 @@ export default function TabLayout() {
               </TouchableOpacity>
             </>
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="(home-tabs)"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome6
-              name="house"
-              size={size}
-              color={color}
-              style={{ marginBottom: -3 }}
-            />
-          ),
-          tabBarButton: (props) => (
-            <>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  backgroundColor: "transparent",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  router.navigate("/(tabs)/(home-tabs)");
-                }}
-              >
-                {props.children}
-              </TouchableOpacity>
-            </>
-          ),
-          headerShown: false,
         }}
       />
       <Tabs.Screen
