@@ -56,10 +56,15 @@ export default function CheckTypePage() {
       setImage(result.assets[0].uri);
       setSelectedImageUri(result.assets[0].uri);
       if (base64Img) {
-        extractTextFromImage(base64Img);
+        const textData = await extractTextFromImage(base64Img);
+        setDescription(textData);
       }
     }
   };
+
+  //   useEffect(() => {
+  //     console.log(description);
+  //   }, [description]);
 
   const pickImageForImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -93,7 +98,7 @@ export default function CheckTypePage() {
       const text =
         result.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
       setExtractedText(text);
-      setDescription(text);
+      //   setDescription(text);
       return text;
     } catch (err) {
       console.error('Failed to extract text:', err);

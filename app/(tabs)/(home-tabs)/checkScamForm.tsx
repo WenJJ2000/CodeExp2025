@@ -143,7 +143,10 @@ export default function CheckScamForm(props: CheckScamForm) {
         <Label className="pb-1">
           <Text>Description</Text>
         </Label>
-        <Textarea onChange={handleUpdateDescription} />
+        <Textarea
+          value={props.description}
+          onChange={handleUpdateDescription}
+        />
         {/* </Input> */}
       </View>
       <Pressable
