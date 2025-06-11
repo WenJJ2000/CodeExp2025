@@ -16,8 +16,8 @@ import {
   TouchableWithoutFeedback,
   View,
   useColorScheme,
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import {
   Dispatch,
   SetStateAction,
@@ -25,10 +25,10 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from 'react';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
-import { Textarea } from '~/components/ui/textarea';
+} from "react";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -38,8 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
   Option,
-} from '~/components/ui/select';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "~/components/ui/select";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface CheckScamForm {
   selectedImageUri: string | null;
@@ -50,6 +50,18 @@ interface CheckScamForm {
   setType: Dispatch<SetStateAction<string>>;
   pickImageForImage: (event: GestureResponderEvent) => void;
   pickImageForText: (event: GestureResponderEvent) => void;
+  location?: {
+    postalCode: string;
+    latitude: number;
+    longitude: number;
+  };
+  setLocation?: Dispatch<
+    SetStateAction<{
+      postalCode: string;
+      latitude: number;
+      longitude: number;
+    }>
+  >;
 }
 
 export default function CheckScamForm(props: CheckScamForm) {
@@ -90,7 +102,7 @@ export default function CheckScamForm(props: CheckScamForm) {
   return (
     <View
       className={`border rounded-2xl p-4 mb-2${
-        colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
+        colorScheme === "dark" ? "border-gray-600" : "border-gray-300"
       }`}
     >
       <View className="pb-5">
@@ -99,7 +111,7 @@ export default function CheckScamForm(props: CheckScamForm) {
           <Text>Scam Type</Text>
         </Label>
         <Select
-          defaultValue={{ value: 'null', label: 'Select a Type' }}
+          defaultValue={{ value: "null", label: "Select a Type" }}
           onValueChange={handleSelectChange}
         >
           <SelectTrigger className="w-300">
@@ -149,25 +161,46 @@ export default function CheckScamForm(props: CheckScamForm) {
         />
         {/* </Input> */}
       </View>
+      {props.type === "inPerson" && (
+        <View className="pb-5">
+          <Label className="pb-1">
+            <Text>Location</Text>
+          </Label>
+          <Input
+            placeholder="Enter postal code"
+            value={props?.location?.postalCode || ""}
+            onChangeText={(text) => {
+              if (text.length <= 6 && props.setLocation) {
+                props.setLocation({
+                  postalCode: text,
+                  longitude: props?.location?.longitude || 0,
+                  latitude: props?.location?.latitude || 0,
+                });
+              }
+            }}
+            className="text-sm native:text-lg"
+          />
+        </View>
+      )}
       <Pressable
         onPress={
-          props.type == 'email' ||
-          props.type == 'sms' ||
-          props.type == 'social' ||
-          props.type == 'website'
+          props.type == "email" ||
+          props.type == "sms" ||
+          props.type == "social" ||
+          props.type == "website"
             ? props.pickImageForText
             : props.pickImageForImage
         }
       >
         <View
           className={`justify-center items-center h-36 rounded-xl mb-2 ${
-            colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'
+            colorScheme === "dark" ? "border-gray-600" : "border-gray-300"
           } border`}
         >
           <Text className="text-3xl mb-2">⬆️</Text>
           <Text
             className={`text-center ${
-              colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              colorScheme === "dark" ? "text-gray-400" : "text-gray-500"
             }`}
           >
             Upload an image
@@ -177,10 +210,10 @@ export default function CheckScamForm(props: CheckScamForm) {
 
       {/* Image preview shown below the buttons */}
       {props.selectedImageUri && (
-        <View style={{ marginTop: 24, alignItems: 'center' }}>
+        <View style={{ marginTop: 24, alignItems: "center" }}>
           <Text
             className={`mb-2 text-center ${
-              colorScheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              colorScheme === "dark" ? "text-gray-400" : "text-gray-500"
             }`}
           >
             Preview
@@ -192,7 +225,7 @@ export default function CheckScamForm(props: CheckScamForm) {
               height: 220,
               borderRadius: 12,
               borderWidth: 1,
-              borderColor: colorScheme === 'dark' ? '#444' : '#ccc',
+              borderColor: colorScheme === "dark" ? "#444" : "#ccc",
             }}
             resizeMode="contain"
           />
@@ -200,7 +233,7 @@ export default function CheckScamForm(props: CheckScamForm) {
             onPress={() => props.setSelectedImageUri(null)}
             style={{ marginTop: 8 }}
           >
-            <Text style={{ color: 'red' }}>Remove image</Text>
+            <Text style={{ color: "red" }}>Remove image</Text>
           </Pressable>
         </View>
       )}
