@@ -1,18 +1,20 @@
-import { Text, View } from "react-native";
-
-
+import { Text, View, useColorScheme } from "react-native";
 
 export default function HomeStatsPanel({
     scamsChecked = 0,
     dollarsSaved = 0,
-} : {
+}: {
     scamsChecked?: number;
     dollarsSaved?: number;
 }) {
+    const colorScheme = useColorScheme();
+    
     // Format the dollar value with commas and two decimal places
     function formatDollars(amount: number) {
         return "$" + amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
     }
+
+    const isDarkMode = colorScheme === "dark";
 
     return (
         <View
@@ -20,7 +22,7 @@ export default function HomeStatsPanel({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 marginBottom: 24,
-                backgroundColor: "#1d2129",
+                backgroundColor: isDarkMode ? "#333" : "#fff",
                 borderRadius: 16,
                 paddingVertical: 16,
                 paddingHorizontal: 10,
@@ -33,20 +35,44 @@ export default function HomeStatsPanel({
         >
             {/* Scams Checked */}
             <View style={{ alignItems: "center", flex: 1 }}>
-                <Text style={{ color: "#F44336", fontSize: 26, fontWeight: "bold" }}>
+                <Text
+                    style={{
+                        color: "#4CAF50",
+                        fontSize: 30,
+                        fontWeight: "bold",
+                    }}
+                >
                     {scamsChecked}
                 </Text>
-                <Text style={{ color: "#fff", fontSize: 12, textAlign: "center" }}>
+                <Text
+                    style={{
+                        color: isDarkMode ? "#ddd" : "#333", // Adjust text color based on theme
+                        fontSize: 12,
+                        textAlign: "center",
+                    }}
+                >
                     Number of{"\n"}Scams Checked
                 </Text>
             </View>
             {/* Dollars Saved */}
             <View style={{ alignItems: "center", flex: 1 }}>
-                <Text style={{ color: "#2196F3", fontSize: 26, fontWeight: "bold" }}>
+                <Text
+                    style={{
+                        color: "#F44336",
+                        fontSize: 30,
+                        fontWeight: "bold",
+                    }}
+                >
                     {formatDollars(dollarsSaved)}
                 </Text>
-                <Text style={{ color: "#fff", fontSize: 12, textAlign: "center" }}>
-                    Dollars{"\n"}Saved
+                <Text
+                    style={{
+                        color: isDarkMode ? "#ddd" : "#333", // Adjust text color based on theme
+                        fontSize: 12,
+                        textAlign: "center",
+                    }}
+                >
+                    Potential losses{"\n"}Prevented
                 </Text>
             </View>
         </View>
