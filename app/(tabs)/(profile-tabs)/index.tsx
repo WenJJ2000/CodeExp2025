@@ -106,15 +106,15 @@
 //   );
 // }
 
-import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Image, Pressable, ScrollView, View } from 'react-native';
-import { Text } from '~/components/ui/text';
-import { useAuth } from '~/lib/useContext/useAuthContext';
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Image, Pressable, ScrollView, View } from "react-native";
+import { Text } from "~/components/ui/text";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 // import { BadgeCard } from "./components/Badge";
-import { Badge } from '~/components/ui/badge';
-import { badges } from '../../../components/ui/badges'; // adjust path as needed
-import { ReportCard } from './components/Report';
+import { Badge } from "~/components/ui/badge";
+import { badges } from "../../../components/ui/badges"; // adjust path as needed
+import { ReportCard } from "./components/Report";
 
 // const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
 // const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
@@ -132,16 +132,16 @@ const router = useRouter();
 // ];
 
 const reportsVerified = [
-  { title: 'Verified scam 1', date: '15 Mar 2025' },
-  { title: 'Verified scam 2', date: '16 Feb 2025' },
-  { title: 'Verified scam 3', date: '4 Dec 2024' },
+  { title: "Verified scam 1", date: "15 Mar 2025" },
+  { title: "Verified scam 2", date: "16 Feb 2025" },
+  { title: "Verified scam 3", date: "4 Dec 2024" },
 ];
 
 const reportsPending = [
-  { title: 'Pending scam 1', date: '30 Nov 2024' },
-  { title: 'Pending scam 2', date: '15 Nov 2024' },
-  { title: 'Pending scam 3', date: '14 Nov 2024' },
-  { title: 'Pending scam 4', date: '5 Sep 2024' },
+  { title: "Pending scam 1", date: "30 Nov 2024" },
+  { title: "Pending scam 2", date: "15 Nov 2024" },
+  { title: "Pending scam 3", date: "14 Nov 2024" },
+  { title: "Pending scam 4", date: "5 Sep 2024" },
 ];
 
 export default function ProfileScreen() {
@@ -152,7 +152,7 @@ export default function ProfileScreen() {
       <View className="flex-row justify-between items-center">
         {/* Avatar */}
         <Image
-          source={{ uri: 'https://i.pravatar.cc/100' }}
+          source={{ uri: "https://i.pravatar.cc/100" }}
           className="w-14 h-14 rounded-full"
         />
 
@@ -162,7 +162,9 @@ export default function ProfileScreen() {
         </Pressable> */}
 
         {/* Settings Icon */}
-        <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}>
+        <Pressable
+          onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}
+        >
           <FontAwesome6 name="gear" size={24} />
         </Pressable>
       </View>
@@ -172,7 +174,7 @@ export default function ProfileScreen() {
         <Text className="text-xl font-semibold">Hello, Hacker123!</Text>
         <Image
           source={{
-            uri: 'https://styles.redditmedia.com/t5_2qh1i/styles/profileIcon_snoo-nft.png',
+            uri: "https://styles.redditmedia.com/t5_2qh1i/styles/profileIcon_snoo-nft.png",
           }}
           className="w-10 h-10"
         />
@@ -183,7 +185,7 @@ export default function ProfileScreen() {
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-semibold">Badges</Text>
           <Pressable
-            onPress={() => router.push('/(tabs)/(profile-tabs)/allBadgePage')}
+            onPress={() => router.push("/(tabs)/(profile-tabs)/allBadgePage")}
           >
             <Text className="text-sm text-blue-500">View all</Text>
           </Pressable>
@@ -211,7 +213,7 @@ export default function ProfileScreen() {
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-semibold">Reports history</Text>
           <Pressable
-            onPress={() => router.push('/(tabs)/(profile-tabs)/allReportsPage')}
+            onPress={() => router.push("/(tabs)/(profile-tabs)/allReportsPage")}
           >
             <Text className="text-sm text-blue-500">View all</Text>
           </Pressable>
@@ -244,11 +246,11 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-       {/* Logout Button */}
+      {/* Logout Button */}
       <Pressable
         onPress={() => {
-          setUser(null);
-          setUid(null);
+          setUser("");
+          setUid("");
         }}
         className="mt-8"
       >
