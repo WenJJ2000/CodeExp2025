@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  ScrollView,
-  SafeAreaView,
-  View,
   FlatList,
-  Pressable,
+  Pressable
 } from "react-native";
-import ForumHeader from "~/components/custom-ui/forum/forum-header";
 import { ForumPost } from "~/components/custom-ui/forum/forum-post";
 import { Filters, ScamReport } from "~/lib/types";
 
-import { liveUpdate } from "~/firebase/ForumApi";
-import { useGlobalSearchParams, useRouter } from "expo-router";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useColorScheme } from "~/lib/useColorScheme";
-import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { liveUpdate } from "~/firebase/ForumApi";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 export default function Index() {
   const router = useRouter();
@@ -165,7 +161,7 @@ export default function Index() {
         <FontAwesome6
           name="plus"
           size={24}
-          color={colorScheme === "light" ? "black" : "white"}
+          color= "white"
         />
       </Pressable>
     </SafeAreaViewForAndroid>
