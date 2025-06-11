@@ -1,8 +1,8 @@
 import {
+  FontAwesome,
   FontAwesome5,
-  FontAwesome6,
   Ionicons,
-  MaterialIcons,
+  MaterialIcons
 } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -90,12 +90,11 @@ export default function Home() {
         </Text>
       </View> */}
 
-      <Text className="text-xl font-semibold text-black dark:text-white pb-2 mt-2">
-        Your Scam Stats
-      </Text>
+      {/* Scam Stats */}
+
       <HomeStatsPanel
-        scamsChecked={9}
-        dollarsSaved={9 * 40} // example: $40 saved per scam checked
+        scamsChecked={135}
+        dollarsSaved={26 * 1235} // example: $40 saved per scam checked
       />
 
       {/* Shortcuts */}
@@ -188,27 +187,48 @@ export default function Home() {
           onPress={() => router.push("/(tabs)/(home-tabs)/checkScam")}
         >
           <View className="flex-1 p-2">
-            <View className="flex flex-row justify-between items-center">
+            <View className="flex flex-row items-center">
+              <View
+                style={{
+                  backgroundColor: colorScheme === "dark" ? "bg-gray-800" : "#ffffff", // Box color based on the color scheme
+                  borderRadius: 8, // Rounded corners for the box
+                  padding: 10, // Padding inside the box
+                  marginRight: 10,
+                }}
+              >
+                <FontAwesome name="shield" size={50}
+                  color={colorScheme === "dark" ? "white" : "black"}
+                />
+              </View>
+              
               <Text className="text-xl font-semibold text-black dark:text-white">
-                Check for scams
+                Spot something suspicious?{"\n"}Verify if it's a scam here!
               </Text>
-              <FontAwesome6
-                name="arrow-right"
-                size={15}
-                color={colorScheme === "light" ? "black" : "white"}
-              />
             </View>
-            <View className="flex flex-row items-center mt-2">
-              <Text className="text-sm font-semibold text-blue-500">
-                Spot something suspicious? Verify if it's a scam here!
-              </Text>
+            <View className="flex flex-row items-center mt-4">
+              <Pressable
+                onPress={() => router.push("/(tabs)/(home-tabs)/checkScam")}
+                style={{
+                  backgroundColor: '#007BFF', // You can customize the background color
+                  borderRadius: 10, // This will make the button oval-shaped
+                  paddingVertical: 10, // Vertical padding to give the button height
+                  paddingHorizontal: 20, // Horizontal padding for a wider button
+                  justifyContent: 'center', // Center the text inside the button
+                  alignItems: 'center', // Ensure text is centered
+                  width: '100%',
+                }}
+              >
+                <Text className="text-xl font-bold text-white dark:text-white">
+                  Check here!
+                </Text>
+              </Pressable>
             </View>
           </View>
         </Pressable>
       </View>
 
       <Text className="text-xl font-semibold text-black dark:text-white pb-2">
-        In-person scams near me
+        Nearby In-person scams
       </Text>
       <HomeMap />
     </View>
