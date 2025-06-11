@@ -138,6 +138,7 @@ export default function Index() {
       <FlatList
         ref={ref}
         data={filteredReports}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           return (
             <ForumPost
@@ -151,6 +152,9 @@ export default function Index() {
             />
           );
         }}
+        initialNumToRender={1000}
+        maxToRenderPerBatch={1000}
+        windowSize={1000}
       />
       <Pressable
         className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-secondary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary"
