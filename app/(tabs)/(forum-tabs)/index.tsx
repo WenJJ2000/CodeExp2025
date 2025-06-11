@@ -157,7 +157,7 @@ export default function Index() {
         windowSize={1000}
       />
       <Pressable
-        className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-secondary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary"
+        className=" w-[50px] h-[50px] absolute bottom-5 right-5 z-10 bg-primary p-4 rounded-2xl justify-center items-center shadow-lg shadow-secondary"
         onPress={() => {
           router.push("/addPostPage");
         }}
