@@ -11,6 +11,7 @@ import { Badge } from "~/components/ui/badge";
 import { badges } from "../../../components/ui/badges"; // adjust path as needed
 import { ReportCard } from "./components/Report";
 import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const router = useRouter();
 
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
       unsub();
     };
   }, []);
+  const { isDarkColorScheme } = useColorScheme();
   return (
     <ScrollView className="flex-1 bg-secondary/30 p-4 space-y-6">
       {/* Header */}
@@ -50,7 +52,11 @@ export default function ProfileScreen() {
 
         {/* Settings Icon */}
         <Pressable onPress={() => router.push("/settings")}>
-          <FontAwesome6 name="gear" size={24} />
+          <FontAwesome6
+            name="gear"
+            size={24}
+            color={isDarkColorScheme ? "white" : "black"}
+          />
         </Pressable>
       </View>
 
@@ -79,13 +85,13 @@ export default function ProfileScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="space-x-3"
+          className="space-x-3 pt-2 pb-2"
         >
           {badges.map((badge, index) => (
             <Badge
               key={index}
               variant="default"
-              className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-md mx-2"
+              className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-sm mx-2"
             >
               <Text className="text-2xl">{badge.emoji}</Text>
             </Badge>
@@ -140,20 +146,6 @@ export default function ProfileScreen() {
             ))}
         </View>
       </View>
-
-      {/* Logout Button */}
-      <Pressable
-        onPress={() => {
-          setUser("");
-          setUid("");
-        }}
-        className="mt-8"
-      >
-        <View className="flex-row items-center space-x-2">
-          <MaterialIcons name="logout" size={24} color="red" />
-          <Text className="text-red-500 font-bold text-sm">Logout</Text>
-        </View>
-      </Pressable>
     </ScrollView>
   );
 }

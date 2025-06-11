@@ -1,31 +1,31 @@
-import "~/global.css";
+import '~/global.css';
 
-import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
-import * as React from "react";
-import { Appearance, Platform } from "react-native";
-import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import ForumHeader from "~/components/custom-ui/forum/forum-header";
-import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
+import { Stack, useGlobalSearchParams, useRouter } from 'expo-router';
+import * as React from 'react';
+import { Appearance, Platform } from 'react-native';
+import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
+import ForumHeader from '~/components/custom-ui/forum/forum-header';
+import ForumPageHeader from '~/components/custom-ui/forum/forumpage-header';
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from "expo-router";
+} from 'expo-router';
 
 const usePlatformSpecificSetup = Platform.select({
   web: useSetWebBackgroundClassName,
   android: useSetAndroidNavigationBar,
   default: noop,
 });
-import { PortalHost } from "@rn-primitives/portal";
-import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
-import { Filters } from "~/lib/types";
+import { PortalHost } from '@rn-primitives/portal';
+import SafeAreaViewForAndroid from '~/components/custom-ui/SafeAreaViewForAndriod';
+import { Filters } from '~/lib/types';
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const router = useRouter();
   const { _queries, _filters } = useGlobalSearchParams();
-  const searchQuery = _queries ? (_queries as string) : "";
-  const filter = _filters ? (_filters as Filters) : "All";
+  const searchQuery = _queries ? (_queries as string) : '';
+  const filter = _filters ? (_filters as Filters) : 'All';
   const setSearchQuery = (query: string) => {
     router.setParams({ _queries: query, _filters: filter });
   };
@@ -37,7 +37,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          animation: "slide_from_bottom",
+          animation: 'slide_from_bottom',
           animationDuration: 200,
         }}
         initialRouteName="index"
@@ -46,6 +46,7 @@ export default function RootLayout() {
           name="index"
           options={{
             headerShown: true,
+            animation: 'slide_from_left',
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
@@ -67,7 +68,7 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader />
+                  <ForumPageHeader href={'/(tabs)/(forum-tabs)'} />
                 </SafeAreaViewForAndroid>
               );
             },
@@ -80,7 +81,7 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader />
+                  <ForumPageHeader href={'/(tabs)/(forum-tabs)'} />
                 </SafeAreaViewForAndroid>
               );
             },
@@ -93,20 +94,20 @@ export default function RootLayout() {
 }
 
 const useIsomorphicLayoutEffect =
-  Platform.OS === "web" && typeof window === "undefined"
+  Platform.OS === 'web' && typeof window === 'undefined'
     ? React.useEffect
     : React.useLayoutEffect;
 
 function useSetWebBackgroundClassName() {
   useIsomorphicLayoutEffect(() => {
     // Adds the background color to the html element to prevent white background on overscroll.
-    document.documentElement.classList.add("bg-background");
+    document.documentElement.classList.add('bg-background');
   }, []);
 }
 
 function useSetAndroidNavigationBar() {
   React.useLayoutEffect(() => {
-    setAndroidNavigationBar(Appearance.getColorScheme() ?? "light");
+    setAndroidNavigationBar(Appearance.getColorScheme() ?? 'light');
   }, []);
 }
 

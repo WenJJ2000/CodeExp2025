@@ -34,6 +34,9 @@ export default function TabLayout() {
             />
           </View>
         ),
+        tabBarStyle: {
+      paddingTop: 15, // Add padding to the top of the tab bar
+    },
       }}
     >
       <Tabs.Screen
@@ -46,7 +49,7 @@ export default function TabLayout() {
               size={size}
               color={color}
               style={{
-                marginBottom: -3,
+                // marginBottom: -3,
                 justifyConent: "center",
                 alignItems: "center",
                 alignSelf: "center",
@@ -84,7 +87,7 @@ export default function TabLayout() {
               size={size}
               color={color}
               style={{
-                marginBottom: -3,
+                // marginBottom: -3,
                 justifyConent: "center",
                 alignItems: "center",
                 alignSelf: "center",
@@ -156,7 +159,7 @@ export default function TabLayout() {
               name="comment"
               size={size}
               color={color}
-              style={{ marginBottom: -3 }}
+              // style={{ marginBottom: -3 }}
             />
           ),
           tabBarButton: (props) => (

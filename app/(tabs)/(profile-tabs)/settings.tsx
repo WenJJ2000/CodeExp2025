@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Switch } from "react-native";
+import { useState, useEffect } from "react";
+import { View, ScrollView, Switch, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import ScamTestModal from "./components/ScamTestModal";
@@ -9,6 +9,10 @@ import BlockingSetupModal from "./components/BlockingSetupModal";
 import BlockingInfoModal from "./components/BlockingInfoModal";
 import BlockedScreen from "./components/BlockedScreen";
 import { useNavigation } from "expo-router";
+import { useColorScheme } from "~/lib/useColorScheme";
+import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { Text } from "~/components/ui/text";
+import { useAuth } from "~/lib/useContext/useAuthContext";
 const router = useRouter();
 
 function SettingsItem({
@@ -20,16 +24,27 @@ function SettingsItem({
   label: string;
   onPress?: () => void;
 }) {
+  const { isDarkColorScheme, setColorScheme } = useColorScheme();
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-white rounded-xl px-4 py-4 flex-row justify-between items-center mb-2"
+      className={`${
+        !isDarkColorScheme ? "bg-gray-200" : "bg-gray-700"
+      } rounded-xl px-4 py-4 flex-row justify-between items-center mb-2`}
     >
       <View className="flex-row items-center space-x-4">
-        <FontAwesome name={icon as any} size={20} />
-        <Text className="text-base"> {label}</Text>
+        <FontAwesome
+          name={icon as any}
+          size={20}
+          color={isDarkColorScheme ? "white" : "black"}
+        />
+        <Text className="text-base dark:text-white "> {label}</Text>
       </View>
-      <FontAwesome name="angle-right" size={20} />
+      <FontAwesome
+        name="angle-right"
+        size={20}
+        color={isDarkColorScheme ? "white" : "black"}
+      />
     </TouchableOpacity>
   );
 }
@@ -47,14 +62,21 @@ function SetupButton({
   isSetup?: boolean;
   onInfoPress?: () => void;
 }) {
+  const { isDarkColorScheme } = useColorScheme();
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-white rounded-xl px-4 py-4 flex-row justify-between items-center mb-2"
+      className={`${
+        !isDarkColorScheme ? "bg-gray-200" : "bg-gray-700"
+      } rounded-xl px-4 py-4 flex-row justify-between items-center mb-2`}
     >
       <View className="flex-row items-center space-x-4">
-        <FontAwesome name={icon as any} size={20} />
-        <Text className="text-base">{label}</Text>
+        <FontAwesome
+          name={icon as any}
+          size={20}
+          color={isDarkColorScheme ? "white" : "black"}
+        />
+        <Text className="text-base dark:text-white"> {label}</Text>
       </View>
       <View className="flex-row items-center space-x-2">
         {isSetup && (
@@ -224,36 +246,85 @@ export default function SettingsScreen() {
   if (showBlockedScreen) {
     return <BlockedScreen onBack={() => setShowBlockedScreen(false)} />;
   }
+  const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { setUser, setUid } = useAuth();
+  const backgroundColor = isDarkColorScheme ? "#2f2f2f" : "#FFFFFF"; // dark vs light grey
+
+  function toggleColorScheme() {
+    const newTheme = isDarkColorScheme ? "light" : "dark";
+    setColorScheme(newTheme);
+    setAndroidNavigationBar(newTheme);
+  }
 
   return (
-    <ScrollView className="flex-1 bg-gray-100 px-4 pt-4">
+    <ScrollView className="flex-1  px-4 pt-4">
       {/* <TouchableOpacity onPress={() => navigation.goBack()} className="mb-4">
 
         <FontAwesome name="arrow-left" size={24} />
       </TouchableOpacity> */}
 
-      <Text className="text-2xl font-bold mb-4">Settings</Text>
+      <Text className="text-2xl font-bold mb-4  dark:text-white">Settings</Text>
 
-      <Text className="text-sm text-gray-500 mb-2">Account Settings</Text>
-      <SettingsItem icon="envelope" label="Update email address" />
+      <Text className="text-sm text-gray-500 mb-2  dark:text-white">
+        Account Settings
+      </Text>
+      <SettingsItem
+        icon="user"
+        label="Update Account"
+        onPress={() => router.push("/(tabs)/(profile-tabs)/updateUserPage")}
+      />
       <SettingsItem icon="lock" label="Change password" />
 
-      <Text className="text-sm text-gray-500 mt-4 mb-2">Accessibility</Text>
+      <Text className="text-sm text-gray-500 mt-4 mb-2  dark:text-white">
+        Accessibility
+      </Text>
       <SettingsItem icon="font" label="Text size" />
       <SettingsItem icon="eye" label="Colour correction" />
-      <SettingsItem icon="sun-o" label="Light theme" />
-      <SettingsItem icon="moon-o" label="Dark theme" />
-
-      <Text className="text-sm text-gray-500 mt-4 mb-2">About</Text>
+      {/* <SettingsItem icon="sun-o" label="Light theme" />
+      <SettingsItem icon="moon-o" label="Dark theme" /> */}
+      <View
+        className={`${
+          !isDarkColorScheme ? "bg-gray-200" : "bg-gray-700"
+        } rounded-xl px-4 py-4 mb-2`}
+      >
+        <View className="flex-row justify-between items-center">
+          <View className="flex-row items-center space-x-4">
+            <FontAwesome
+              name={isDarkColorScheme ? "moon-o" : "sun-o"}
+              size={20}
+              color={isDarkColorScheme ? "white" : "black"}
+            />
+            <Text className="text-base  dark:text-white ">
+              {" "}
+              {isDarkColorScheme ? "Dark" : "Light"} Theme
+            </Text>
+          </View>
+          <Switch
+            value={isDarkColorScheme}
+            onValueChange={toggleColorScheme}
+            trackColor={{ false: "#ccc", true: "#4CAF50" }}
+            thumbColor={isDarkColorScheme ? "#fff" : "#f4f3f4"}
+          />
+        </View>
+      </View>
+      <Text className="text-sm text-gray-500 mt-4 mb-2  dark:text-white">
+        About
+      </Text>
       <SettingsItem icon="file-text" label="ScamBusters rules" />
       <SettingsItem icon="shield" label="Privacy policy" />
       <SettingsItem icon="balance-scale" label="User agreement" />
       <SettingsItem icon="info-circle" label="Acknowledgements" />
 
       <Text className="text-sm text-gray-500 mt-4 mb-2">Security</Text>
-      <View className="bg-white rounded-xl px-4 py-4 mb-2">
+      <View
+        className={`${
+          !isDarkColorScheme ? "bg-gray-200" : "bg-gray-700"
+        } rounded-xl px-4 py-4 mb-2`}
+      >
         <View className="flex-row justify-between items-center">
-          <Text className="text-base font-semibold">Scam test</Text>
+          <Text className="text-base font-semibold  dark:text-white">
+            Scam test
+          </Text>
           <Switch
             value={scamTestEnabled}
             onValueChange={toggleScamTest}
@@ -261,15 +332,21 @@ export default function SettingsScreen() {
             thumbColor={scamTestEnabled ? "#fff" : "#f4f3f4"}
           />
         </View>
-        <Text className="text-xs text-gray-500 mt-1">
+        <Text className="text-xs text-gray-500 mt-1  dark:text-white">
           Enabling this will allow us to send you non-malicious scams to test
           your awareness.
         </Text>
       </View>
 
-      <View className="bg-white rounded-xl px-4 py-4 mb-2">
+      <View
+        className={`${
+          !isDarkColorScheme ? "bg-gray-200" : "bg-gray-700"
+        } rounded-xl px-4 py-4 mb-2`}
+      >
         <View className="flex-row justify-between items-center">
-          <Text className="text-base font-semibold">Location services</Text>
+          <Text className="text-base font-semibold  dark:text-white">
+            Location services
+          </Text>
           <Switch
             value={locationServicesEnabled}
             onValueChange={toggleLocationServices}
@@ -277,7 +354,7 @@ export default function SettingsScreen() {
             thumbColor={locationServicesEnabled ? "#fff" : "#f4f3f4"}
           />
         </View>
-        <Text className="text-xs text-gray-500 mt-1">
+        <Text className="text-xs text-gray-500  dark:text-white mt-1">
           App will show you regional scams depending on your city
         </Text>
       </View>
@@ -287,7 +364,7 @@ export default function SettingsScreen() {
         label="Blocked"
         onPress={() => setShowBlockedScreen(true)}
       />
-      <Text className="text-xs text-gray-500 mb-4 px-1">
+      <Text className="text-xs text-gray-500 dark:text-white mb-4 px-1">
         View all the numbers, email, and websites you've blocked
       </Text>
 
@@ -331,6 +408,19 @@ export default function SettingsScreen() {
             : toggleScamSMSActive
         }
       />
+      {/* Logout Button */}
+      <Pressable
+        onPress={() => {
+          setUser("");
+          setUid("");
+        }}
+        className="mt-8"
+      >
+        <View className="flex-row items-center space-x-2 mb-8">
+          <MaterialIcons name="logout" size={24} color="red" />
+          <Text className="text-red-500 font-bold text-sm">Logout</Text>
+        </View>
+      </Pressable>
     </ScrollView>
   );
 }

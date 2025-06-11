@@ -1,11 +1,11 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, ScrollView, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { ReportCard } from "./components/Report"; // Adjust path as needed
 import { liveUpdateUserReports } from "~/firebase/UserApi";
 import { ScamReport } from "~/lib/types";
 import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/useContext/useAuthContext";
-
+import { Text } from "~/components/ui/text";
 export default function AllReportsScreen() {
   const router = useRouter();
   const [verifiedReports, setVerifiedReports] = useState<ScamReport[]>([]);
@@ -19,7 +19,7 @@ export default function AllReportsScreen() {
   }, []);
 
   return (
-    <ScrollView className="flex-1 bg-white p-4">
+    <ScrollView className="flex-1 p-4">
       {/* Back */}
       {/* <Pressable onPress={() => router.back()} className="mb-4">
         <Text className="text-blue-600 text-lg">←</Text>

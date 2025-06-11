@@ -2,20 +2,30 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  GestureResponderEvent,
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
   Text,
   TextInput,
+  TextInputChangeEventData,
   TouchableWithoutFeedback,
   View,
   useColorScheme,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Textarea } from '~/components/ui/textarea';
@@ -27,12 +37,21 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
+  Option,
 } from '~/components/ui/select';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function CheckScamForm() {
+interface CheckScamForm {
+  selectedImageUri: string | null;
+  setSelectedImageUri: Dispatch<SetStateAction<string | null>>;
+  description: string;
+  setDescription: Dispatch<SetStateAction<string>>;
+  type: string;
+  setType: Dispatch<SetStateAction<string>>;
+}
+
+export default function CheckScamForm(props: CheckScamForm) {
   const colorScheme = useColorScheme();
-  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
   const pickImageForImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -41,9 +60,10 @@ export default function CheckScamForm() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setSelectedImageUri(result.assets[0].uri); // Just set the uri
+      props.setSelectedImageUri(result.assets[0].uri); // Just set the uri
     }
   };
+
   const insets = useSafeAreaInsets();
   const contentInsets = {
     top: insets.top,
@@ -52,7 +72,18 @@ export default function CheckScamForm() {
     right: 20,
   };
 
-  async function handleCheckPress() {}
+  function handleUpdateDescription(
+    e: NativeSyntheticEvent<TextInputChangeEventData>
+  ) {
+    props.setDescription(e.nativeEvent.text);
+    console.log(props.description);
+  }
+  function handleSelectChange(option: Option) {
+    if (option) {
+      props.setType(option.value);
+      console.log(props.type);
+    }
+  }
 
   return (
     <View
@@ -65,7 +96,10 @@ export default function CheckScamForm() {
         <Label className="pb-1">
           <Text>Scam Type</Text>
         </Label>
-        <Select defaultValue={{ value: 'null', label: 'Select a Type' }}>
+        <Select
+          defaultValue={{ value: 'null', label: 'Select a Type' }}
+          onValueChange={handleSelectChange}
+        >
           <SelectTrigger className="w-300">
             <SelectValue
               className="text-foreground text-sm native:text-lg"
@@ -89,7 +123,9 @@ export default function CheckScamForm() {
               <SelectItem label="Website" value="website">
                 <Text>Website</Text>
               </SelectItem>
-              <SelectItem label="In Person" value="inPerson"></SelectItem>
+              <SelectItem label="In Person" value="inPerson">
+                <Text>In Person</Text>
+              </SelectItem>
               <SelectItem label="App" value="app">
                 <Text>App</Text>
               </SelectItem>
@@ -105,7 +141,7 @@ export default function CheckScamForm() {
         <Label className="pb-1">
           <Text>Description</Text>
         </Label>
-        <Textarea />
+        <Textarea onChange={handleUpdateDescription} />
         {/* </Input> */}
       </View>
       <Pressable onPress={pickImageForImage}>
@@ -126,7 +162,7 @@ export default function CheckScamForm() {
       </Pressable>
 
       {/* Image preview shown below the buttons */}
-      {selectedImageUri && (
+      {props.selectedImageUri && (
         <View style={{ marginTop: 24, alignItems: 'center' }}>
           <Text
             className={`mb-2 text-center ${
@@ -136,7 +172,7 @@ export default function CheckScamForm() {
             Preview
           </Text>
           <Image
-            source={{ uri: selectedImageUri }}
+            source={{ uri: props.selectedImageUri }}
             style={{
               width: 330,
               height: 220,
@@ -147,21 +183,13 @@ export default function CheckScamForm() {
             resizeMode="contain"
           />
           <Pressable
-            onPress={() => setSelectedImageUri(null)}
+            onPress={() => props.setSelectedImageUri(null)}
             style={{ marginTop: 8 }}
           >
             <Text style={{ color: 'red' }}>Remove image</Text>
           </Pressable>
         </View>
       )}
-      <Pressable
-        onPress={handleCheckPress}
-        className="bg-blue-600 p-4 rounded-xl mt-6"
-      >
-        <Text className="text-center text-white text-lg font-semibold">
-          Check
-        </Text>
-      </Pressable>
     </View>
   );
 }
