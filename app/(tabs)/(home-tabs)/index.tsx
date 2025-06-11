@@ -4,17 +4,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  FlatList,
-  Image,
   Pressable,
   ScrollView,
   Text,
   View,
-  useColorScheme,
+  useColorScheme
 } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
-import NotificationUI from "~/components/custom-ui/home/notification";
-import { getLiveNotifications } from "~/firebase/ForumApi";
+import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
 import { getNotifications } from "~/firebase/NotiApi";
 import { liveUpdateUserReports } from "~/firebase/UserApi";
 import { Notification, ScamReport } from "~/lib/types";
@@ -45,6 +42,7 @@ export default function Home() {
   const { user, uid } = useAuth();
   const [userName, setUserName] = useState("Lisa");
   const [postCount, setPostCount] = useState(2);
+  const [scamCount, setScamCount] = useState(1);
   const [verifiedCount, setVerifiedCount] = useState(1);
   const [notificationCount, setNotificationCount] = useState(5);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -76,9 +74,9 @@ export default function Home() {
   }, []);
 
   return (
-    <View className={`flex-1 pt-14 px-6 bg-white dark:bg-black`}>
+    <View className={`flex-1 pt-5 px-6 bg-white dark:bg-black`}>
       {/* Header */}
-      <View className="flex-row items-center mb-6">
+      {/* <View className="flex-row items-center mb-6">
         <Image
           source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
           className="w-12 h-12 rounded-full mr-3 border-2 border-gray-300"
@@ -86,24 +84,15 @@ export default function Home() {
         <Text className="text-2xl font-bold flex-1 text-black dark:text-white">
           Welcome {userName}!
         </Text>
-      </View>
+      </View> */}
 
-      {/* Counters */}
-      <View className="flex-row justify-between mb-6">
-        <CounterCircleButton
-          count={postCount}
-          label="Post"
-          onPress={() => router.push("/(tabs)/(forum-tabs)")}
-        />
-        <CounterCircleButton
-          count={verifiedCount}
-          label="Verified"
-          onPress={() => router.push("/(tabs)/(forum-tabs)")}
-        />
-        <CounterCircleButton
-          count={notificationCount}
-          label="Notification"
-          onPress={() => router.push("/(tabs)/(forum-tabs)")}
+      <View >
+        <Text className="text-xl font-bold text-black dark:text-white pb-2">
+          Scams Stats
+        </Text>
+        <HomeStatsPanel
+          scamsChecked={9}
+          dollarsSaved={9 * 40}        // example: $40 saved per scam checked
         />
       </View>
 
@@ -134,7 +123,7 @@ export default function Home() {
           );
         })}
       </View> */}
-      <HomeMap />
+
       <View className="mb-6">
         <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
           Check Scams
@@ -187,43 +176,9 @@ export default function Home() {
         </ScrollView>
       </View>
 
-      {/* Notifications */}
-      <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
-        Notifications
-      </Text>
-      <FlatList
-        data={notifications}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 80 }}
-        renderItem={({ item }) => <NotificationUI item={item} />}
-      />
+      <HomeMap />
+
     </View>
   );
 }
 
-export function CounterCircleButton({
-  count,
-  label,
-  onPress,
-}: {
-  count: number;
-  label: string;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable onPress={onPress} className="flex-1 items-center">
-      {/* Outer Circle */}
-      <View className="w-24 h-24 rounded-full bg-border justify-center items-center shadow-lg">
-        {/* Inner Circle with Text */}
-        <View className="w-16 h-16 rounded-full bg-primary justify-center items-center">
-          <Text className="text-lg font-medium text-white dark:text-black">
-            {count}
-          </Text>
-        </View>
-      </View>
-      <Text className="mt-2 text-sm font-semibold text-black dark:text-gray-300">
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
