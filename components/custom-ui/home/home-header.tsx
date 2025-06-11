@@ -20,7 +20,10 @@ export default function HomeHeader() {
               className="w-12 h-12 rounded-full mr-1 border-2 border-gray-300 ml-1"
             />
           </Pressable>
-          <Text className="text-2xl font-bold ">Welcome {user?.username}!</Text>
+          <Text className="text-xl font-bold overflow-hidden">
+            Welcome{"\n"}
+            {user?.username}!
+          </Text>
         </>
       }
       rightChildren={
