@@ -27,7 +27,7 @@ function SettingsItem({
     >
       <View className="flex-row items-center space-x-4">
         <FontAwesome name={icon as any} size={20} />
-        <Text className="text-base">{label}</Text>
+        <Text className="text-base"> {label}</Text>
       </View>
       <FontAwesome name="angle-right" size={20} />
     </TouchableOpacity>
