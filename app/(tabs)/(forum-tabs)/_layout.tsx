@@ -67,7 +67,7 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader />
+                  <ForumPageHeader href={"/(tabs)/(forum-tabs)"} />
                 </SafeAreaViewForAndroid>
               );
             },
@@ -80,7 +80,7 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader />
+                  <ForumPageHeader href={"/(tabs)/(forum-tabs)"} />
                 </SafeAreaViewForAndroid>
               );
             },

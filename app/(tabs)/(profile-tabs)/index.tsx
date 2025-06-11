@@ -11,6 +11,7 @@ import { Badge } from "~/components/ui/badge";
 import { badges } from "../../../components/ui/badges"; // adjust path as needed
 import { ReportCard } from "./components/Report";
 import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const router = useRouter();
 
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
       unsub();
     };
   }, []);
+  const { isDarkColorScheme } = useColorScheme();
   return (
     <ScrollView className="flex-1 bg-secondary/30 p-4 space-y-6">
       {/* Header */}
@@ -50,7 +52,11 @@ export default function ProfileScreen() {
 
         {/* Settings Icon */}
         <Pressable onPress={() => router.push("/settings")}>
-          <FontAwesome6 name="gear" size={24} />
+          <FontAwesome6
+            name="gear"
+            size={24}
+            color={isDarkColorScheme ? "white" : "black"}
+          />
         </Pressable>
       </View>
 
