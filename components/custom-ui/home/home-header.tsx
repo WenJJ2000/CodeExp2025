@@ -18,7 +18,7 @@ export default function HomeHeader() {
           <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)")}>
             <Image
               source={{ uri: `data:image/jpeg;base64,${user?.profilePicture}` }}
-              className="w-12 h-12 rounded-full mr-3 border-2 border-gray-300 ml-4"
+              className="w-12 h-12 rounded-full mr-1 border-2 border-gray-300 ml-1"
             />
           </Pressable>
           <Text className="text-2xl font-bold ">Welcome {user?.username}!</Text>
@@ -26,13 +26,13 @@ export default function HomeHeader() {
       }
       rightChildren={
         <>
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <BellNotification />
           <SettingsButton
             onPress={() => {
               router.push("/(tabs)/(profile-tabs)/settings");
             }}
-            style={{ marginLeft: 10 }}
+            style={{ marginRight: 10, marginLeft: 10 }}
           />
         </>
       }
