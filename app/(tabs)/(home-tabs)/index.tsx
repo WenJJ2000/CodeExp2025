@@ -20,7 +20,7 @@ import { useAuth } from "~/lib/useContext/useAuthContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
-  { key: "text", iconType: MaterialIcons, iconName: "email", label: "Text" },
+  { key: "text", iconType: MaterialIcons, iconName: "email", label: "Phishing" },
   { key: "image", iconType: FontAwesome5, iconName: "camera", label: "Image" },
   { key: "number", iconType: FontAwesome5, iconName: "phone", label: "Number" },
   {
@@ -125,7 +125,7 @@ export default function Home() {
       </View> */}
 
       <View className="mb-6">
-        <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
+        <Text className="text-xl font-bold text-black dark:text-white pb-2">
           Check Scams
         </Text>
         <ScrollView
@@ -176,6 +176,9 @@ export default function Home() {
         </ScrollView>
       </View>
 
+      <Text className="text-xl font-bold text-black dark:text-white pb-2">
+        Map View
+      </Text>
       <HomeMap />
 
     </View>
