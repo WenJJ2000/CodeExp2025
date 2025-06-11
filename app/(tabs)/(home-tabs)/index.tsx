@@ -8,7 +8,7 @@ import {
   ScrollView,
   Text,
   View,
-  useColorScheme
+  useColorScheme,
 } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
 import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
@@ -20,7 +20,12 @@ import { useAuth } from "~/lib/useContext/useAuthContext";
 dayjs.extend(relativeTime);
 
 const shortcuts = [
-  { key: "text", iconType: MaterialIcons, iconName: "email", label: "Phishing" },
+  {
+    key: "text",
+    iconType: MaterialIcons,
+    iconName: "email",
+    label: "Phishing",
+  },
   { key: "image", iconType: FontAwesome5, iconName: "camera", label: "Image" },
   { key: "number", iconType: FontAwesome5, iconName: "phone", label: "Number" },
   {
@@ -86,13 +91,13 @@ export default function Home() {
         </Text>
       </View> */}
 
-      <View >
+      <View>
         <Text className="text-xl font-bold text-black dark:text-white pb-2">
           Scams Stats
         </Text>
         <HomeStatsPanel
           scamsChecked={9}
-          dollarsSaved={9 * 40}        // example: $40 saved per scam checked
+          dollarsSaved={9 * 40} // example: $40 saved per scam checked
         />
       </View>
 
@@ -167,7 +172,7 @@ export default function Home() {
                     size={30} // Icon size
                     color={colorScheme === "dark" ? "#ccc" : "#000"}
                   />
-                  <Text className="shortcut-label text-sm">{sc.label}</Text>{" "}
+                  <Text className="shortcut-label text-sm">{sc.label} </Text>
                   {/* Button label */}
                 </Pressable>
               );
@@ -180,8 +185,6 @@ export default function Home() {
         Map View
       </Text>
       <HomeMap />
-
     </View>
   );
 }
-
