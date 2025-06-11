@@ -29,22 +29,16 @@ import { checkImageForScam } from '~/backend/app/ai/llama';
 import CheckScamForm from './checkScamForm';
 import ForumPageHeader from '~/components/custom-ui/forum/forumpage-header';
 
-const tabs = ['Text', 'Image', 'Number', 'App', 'Crypto'];
-
 export default function CheckTypePage() {
   //   const { type } = useLocalSearchParams();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<
-    'text' | 'image' | 'number' | 'app' | 'crypto'
-  >('text');
+
   const [type, setType] = useState('');
-  const [input, setInput] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const [textInput, setTextInput] = useState('');
   const [numberInput, setNumberInput] = useState('');
   const [description, setDescription] = useState<string>('');
-  const [appInput, setAppInput] = useState('');
   const navigation = useNavigation();
   const [image, setImage] = useState<string | null>(null);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
@@ -105,12 +99,12 @@ export default function CheckTypePage() {
     }
   };
 
-  useEffect(() => {
-    const tabType = (type as string)?.toLowerCase();
-    if (['text', 'image', 'number', 'app', 'crypto'].includes(tabType)) {
-      setActiveTab(tabType as any);
-    }
-  }, [type]);
+  //   useEffect(() => {
+  //     const tabType = (type as string)?.toLowerCase();
+  //     if (['text', 'image', 'number', 'app', 'crypto'].includes(tabType)) {
+  //       setActiveTab(tabType as any);
+  //     }
+  //   }, [type]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -125,8 +119,10 @@ export default function CheckTypePage() {
     if (isChecking) return; // prevent duplicate checks
     setIsChecking(true); // start spinner
     try {
-      switch (activeTab) {
-        case 'text':
+      if (selectedImageUri != '') {
+      }
+      switch (type) {
+        case 'sms':
           if (!description.trim()) {
             Alert.alert('Empty Input', 'Please enter a suspicious message.');
             return;
@@ -150,19 +146,7 @@ export default function CheckTypePage() {
           }
           break;
 
-        case 'number':
-          //   if (isScam) {
-          //     addNumberScam(numberInput, description);
-          //     router.push({
-          //       pathname: '/resultScreen', // adjust the path as needed
-          //       params: {
-          //         verdict: 'Other Scam',
-          //         explanation: 'Thanks for reporting the number',
-          //         confidence: 1,
-          //       },
-          //     });
-          //     break;
-          //   }
+        case 'phone':
           console.log('Checking number input:', numberInput);
           const result = await checkNumberScam(numberInput);
 
@@ -183,14 +167,20 @@ export default function CheckTypePage() {
           });
           break;
 
-        case 'app':
-          // console.log('Checking app input:', appInput);
-          break;
-
-        case 'image':
+        case 'social':
           // console.log('Image input triggered – open file picker or camera logic here.');
           const data = await checkImageForScam(selectedImageUri);
           console.log(data);
+
+          break;
+        case 'website':
+          break;
+
+        case 'inPerson':
+          break;
+
+        case 'app':
+          // console.log('Checking app input:', appInput);
           break;
 
         case 'crypto':

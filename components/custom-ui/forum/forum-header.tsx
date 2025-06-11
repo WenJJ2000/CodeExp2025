@@ -1,10 +1,10 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Input } from "~/components/ui/input";
-import { Text } from "~/components/ui/text";
-import { Pressable, View } from "react-native";
-import { useState } from "react";
-import { useColorScheme } from "~/lib/useColorScheme";
-import AppHeader from "../app-header";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Input } from '~/components/ui/input';
+import { Text } from '~/components/ui/text';
+import { Pressable, View } from 'react-native';
+import { useState } from 'react';
+import { useColorScheme } from '~/lib/useColorScheme';
+import AppHeader from '../app-header';
 import {
   Option,
   Select,
@@ -13,8 +13,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select";
-import { Filters, ScamReportFilterTypes } from "~/lib/types";
+} from '~/components/ui/select';
+import { Filters, ScamReportFilterTypes } from '~/lib/types';
 
 export default function ForumHeader({
   searchQuery,
@@ -88,7 +88,7 @@ export function Filter({ filter, setFilter }: FilterProps) {
         <FontAwesome6
           name="filter"
           className="dark:color-white color-black"
-          color={isDarkColorScheme ? "white" : "black"}
+          color={isDarkColorScheme ? 'white' : 'black'}
         />
       </SelectTrigger>
       <SelectContent insets={contentInsets} className="px-4">

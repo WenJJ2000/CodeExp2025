@@ -53,8 +53,8 @@ export async function checkImageForScam(image) {
             text: `I am a scam detective. I am trying to find out whether this image is a scam,
                     Generate a report on the image given and give me all the details and parts on the image which may
                     have been modified or AI generated. This should include any anomaly no matter how small
-                    Include a confidence level on how likely it is a scam. Give me the results in a json only
-                    {isScam: boolean,reasons: string[],confidence: number}`,
+                    Include a confidence level on how likely it is a scam. Give me the reply in a json string only in the format
+                    {isScam: boolean, reasons: string[], confidence: number} and nothing else`,
           },
           {
             type: 'image_url',

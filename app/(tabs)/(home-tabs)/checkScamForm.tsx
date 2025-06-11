@@ -123,7 +123,9 @@ export default function CheckScamForm(props: CheckScamForm) {
               <SelectItem label="Website" value="website">
                 <Text>Website</Text>
               </SelectItem>
-              <SelectItem label="In Person" value="inPerson"></SelectItem>
+              <SelectItem label="In Person" value="inPerson">
+                <Text>In Person</Text>
+              </SelectItem>
               <SelectItem label="App" value="app">
                 <Text>App</Text>
               </SelectItem>
