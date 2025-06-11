@@ -34,7 +34,7 @@ export default function ForumHeader({
             placeholder="Search"
             value={searchQuery}
             onChangeText={(text) => setSearchQuery(text)}
-            className="w-full h-10 bg-background border border-input rounded-md p-2 text-base"
+            className="w-[200px] h-10 bg-background border border-input rounded-md p-2 text-base"
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="default"

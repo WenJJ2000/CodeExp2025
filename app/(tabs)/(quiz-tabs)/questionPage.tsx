@@ -129,6 +129,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import SafeAreaViewForAndroid from '~/components/custom-ui/SafeAreaViewForAndriod';
 import QuizOption from '~/components/QuizPage/QuizOption'; // Importing your QuizOption component
 import { questions } from '~/testData/quiz/questions'; // Assuming questions data is available
 
@@ -166,7 +167,7 @@ export default function QuestionsPage() {
     setAnswerRevealed(true); // Reveal answer once the user selects an option
 
     // If the selected option is correct, increment the correct answer count
-    if (selectedOption.isCorrect) {
+    if (selectedOption.isCorrect && !answerRevealed) {
       setCorrectAnswersCount((prev) => prev + 1);
     }
   }
@@ -206,7 +207,8 @@ export default function QuestionsPage() {
                 justifyContent: 'space-between',
                 alignItems: 'center', // Align items vertically in the center
                 width: '100%',
-              }}>
+              }}
+            >
               <View
                 style={{
                   flex: 1, // Allow the progress bar to take up available space
@@ -214,7 +216,8 @@ export default function QuestionsPage() {
                   backgroundColor: '#e0e0e0',
                   borderRadius: 10,
                   marginRight: 10, // Space between the progress bar and the text
-                }}>
+                }}
+              >
                 <View
                   style={{
                     height: '100%',
@@ -270,7 +273,14 @@ export default function QuestionsPage() {
 
             {/* Show Next Button after the answer is revealed */}
             {answerRevealed && (
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 24, width: '100%' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingBottom: 24,
+                  width: '100%',
+                }}
+              >
                 <TouchableOpacity
                   style={{
                     backgroundColor: '#3B82F6', // Blue color
@@ -281,13 +291,20 @@ export default function QuestionsPage() {
                   }}
                   onPress={moveToNextQuestion}
                 >
-                  <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-                    {questionIndex === levelQuestions.length - 1 ? 'Finish' : 'Next'}
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {questionIndex === levelQuestions.length - 1
+                      ? 'Finish'
+                      : 'Next'}
                   </Text>
                 </TouchableOpacity>
               </View>
             )}
-
           </View>
         </>
       )}

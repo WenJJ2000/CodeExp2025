@@ -119,14 +119,18 @@ export async function updateUserData(
   uid: string = "",
   data: Partial<User>
 ): Promise<User> {
-  if (!uid || uid.trim() === "") {
-    throw new Error("User ID is required to update user data.");
+  try {
+    if (!uid || uid.trim() === "") {
+      throw new Error("User ID is required to update user data.");
+    }
+    const userRef = doc(db, "users", uid);
+    if (!userRef) {
+      throw new Error(`User with ID ${uid} does not exist.`);
+    }
+    await updateDoc(userRef, data);
+    return (await getDoc(userRef)).data() as User;
+  } catch (error) {
+    console.error("Error in updateUserData:", error);
+    throw new Error("Failed to update user data.");
   }
-  const userRef = doc(db, "users", uid);
-  if (!userRef) {
-    throw new Error(`User with ID ${uid} does not exist.`);
-  }
-  console.log("Updating user data:", uid, data);
-  await updateDoc(userRef, data);
-  return (await getDoc(userRef)).data() as User;
 }

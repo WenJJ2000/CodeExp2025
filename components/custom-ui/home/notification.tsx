@@ -31,7 +31,9 @@ export default function NotificationUI({ item }: { item: NotificationType }) {
     >
       <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3 flex flex-row items-center">
         <Image
-          source={{ uri: 'https://i.pravatar.cc/100' }}
+          source={{
+            uri: `data:image/png;base64,${item.profilePicture || ""}`,
+          }}
           className="w-14 h-14 rounded-full mr-4"
         />
         <View className="flex-1">

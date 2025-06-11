@@ -2,7 +2,7 @@ import "~/global.css";
 
 import { Stack } from "expo-router";
 import * as React from "react";
-import { Appearance, Platform } from "react-native";
+import { Appearance, Platform, useColorScheme } from "react-native";
 import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
 import QuizHeader from "~/components/custom-ui/quiz-header";
 import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
@@ -50,7 +50,33 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader />
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="lecture"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="questionPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
                 </SafeAreaViewForAndroid>
               );
             },

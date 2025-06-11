@@ -1,15 +1,12 @@
-import { Pressable, View, Image } from "react-native";
-import { Text } from "~/components/ui/text";
-import { ForumTag } from "./forum-tag";
-import { ForumTagVariant, ScamReport } from "~/lib/types";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useRouter } from "expo-router";
-import { ForumVoteButton } from "./forum-vote-button";
-import { useColorScheme } from "~/lib/useColorScheme";
-import { ForumReplyButton } from "./forum-reply-button";
-import { PressableImage } from "../pressable-image";
-import { ForumPostMap } from "./forum-post-map";
+import { Image, Pressable, useColorScheme, View } from "react-native";
+import { Text } from "~/components/ui/text";
+import { ForumTagVariant, ScamReport } from "~/lib/types";
 import ImageTray from "../image-tray";
+import { ForumReplyButton } from "./forum-reply-button";
+import { ForumTag } from "./forum-tag";
+import { ForumVoteButton } from "./forum-vote-button";
+
 export function ForumPost({
   scamReport,
   fulltext = false,
@@ -28,6 +25,9 @@ export function ForumPost({
   if (!scamReport) {
     return null; // Handle the case where scamReport is undefined
   }
+
+  const colorScheme = useColorScheme();
+
   const lastUpdated =
     scamReport.updatedAt.getTime() > scamReport.createdAt.getTime()
       ? new Date(new Date().getTime() - scamReport.updatedAt.getTime())
@@ -50,29 +50,36 @@ export function ForumPost({
       : scamReport.title;
 
   const formmatedContent =
-    !fulltext && scamReport.content.split("\n").length > 2
-      ? scamReport.content.split("\n").slice(0, 2).join(" ").concat("...")
+    !fulltext &&
+    scamReport.content.split("\n").length > 2 &&
+    scamReport.content.length > 100
+      ? scamReport.content
+          .substring(0, 97)
+          .split("\n")
+          .slice(0, 2)
+          .join(" ")
+          .concat("...")
       : scamReport.content.length > 100
       ? scamReport.content.substring(0, 97) + "..."
       : scamReport.content.trimEnd();
-
   return (
     <Pressable
-      className="w-full bg-secondary justify-center items-center mb-2 "
+      className="w-full bg-secondary rounded-xl shadow-lg mb-4 p-4"
       onPress={onClick}
     >
-      <View className="flex-row justify-between items-between w-full px-4 py-2">
-        <View className="flex-row items-center gap-2 ">
+      <View className="flex-row justify-between items-center mb-2">
+        <View className="flex-row items-center gap-2">
           <Image
             source={{
               uri: `data:image/jpeg;base64,${scamReport?.createdBy?.profilePicture}`,
             }}
-            className="w-10 h-10 rounded-full border-2 border-gray-300"
+            className="w-12 h-12 rounded-full border-2 border-gray-300"
             resizeMode="contain"
-            resizeMethod="scale"
           />
-          <Text className="text-xl ">{scamReport?.createdBy.username}</Text>
-          <Text className="text-xl text-muted-foreground">
+          <Text className="text-lg font-semibold">
+            {scamReport?.createdBy.username}
+          </Text>
+          <Text className="text-sm text-muted-foreground">
             {formattedTimeAgo}
           </Text>
         </View>
@@ -82,7 +89,7 @@ export function ForumPost({
               scamReport?.scamReportType.toUpperCase() as ForumTagVariant
             }
           />
-          {scamReport?.scamReportStatus == "VALID" && (
+          {scamReport?.scamReportStatus === "VALID" && (
             <ForumTag variant={"VERIFIED" as ForumTagVariant} />
           )}
           {scamReport?.isEducation && (
@@ -90,10 +97,10 @@ export function ForumPost({
           )}
         </View>
       </View>
-      <View className="px-4 pb-2 w-full">
+      <View className="w-full mb-2">
         <Text className="text-xl font-bold text-start">{formmatedTitle}</Text>
         <Text className="text-start text-muted-foreground">
-          {formmatedContent}
+          {fulltext ? scamReport.content : formmatedContent}
         </Text>
       </View>
       {scamReport?.images && fulltext && (
@@ -101,19 +108,17 @@ export function ForumPost({
           <ImageTray images={scamReport.images} />
         </View>
       )}
-      <View className="w-full px-4 pb-2">
-        <View className="flex-row  bg-secondary justify-between items-center gap-2">
-          <View className="flex-row items-center ">
-            <ForumVoteButton scamReport={scamReport} />
-            <View className="ml-2 px-2 py-1 justify-center items-center border-2 border-gray-300 rounded-lg">
-              <Text className="text-muted-foreground text-lg">
-                <FontAwesome6 name="comment" size={16} />{" "}
-                {scamReport?.numOfReplies || 0}
-              </Text>
-            </View>
+      <View className="flex-row justify-between items-center mt-3">
+        <View className="flex-row items-center gap-3">
+          <ForumVoteButton scamReport={scamReport} />
+          <View className="flex-row items-center border-2 border-gray-300 rounded-lg p-1">
+            <FontAwesome6 name="comment" size={16} color={colorScheme === "dark" ? "white" : "black"} />
+            <Text className="text-lg ml-1">
+              {scamReport?.numOfReplies || 0}
+            </Text>
           </View>
-          {showReplyButton && <ForumReplyButton onPress={onClickReply} />}
         </View>
+        {showReplyButton && <ForumReplyButton onPress={onClickReply} />}
       </View>
     </Pressable>
   );

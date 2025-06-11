@@ -1,19 +1,12 @@
-import { useState } from "react";
 import {
-  View,
-  Image,
-  Pressable,
-  Platform,
-  Dimensions,
   FlatList,
+  Image,
+  View
 } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Reply } from "~/lib/types";
-import { PressableImage } from "../pressable-image";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { ForumReplyButton } from "./forum-reply-button";
-import { ForumReplyPopup } from "./forum-reply-popup";
 import ImageTray from "../image-tray";
+import { ForumReplyButton } from "./forum-reply-button";
 
 export function ForumReply({
   reply,
@@ -39,7 +32,7 @@ export function ForumReply({
   const formattedTimeAgo = hoursAgo > 0 ? `${hoursAgo}h` : `${minutesAgo}m`;
   return (
     <>
-      <View className="">
+      <View className="rounded-xl">
         <View className="flex-row items-center gap-2 ">
           <Image
             source={{
@@ -55,6 +48,7 @@ export function ForumReply({
           </Text>
         </View>
 
+        {/* reply content */}
         <View className="px-2 py-2  ml-2 border-l-2 border-l-primary gap-2">
           <Text className="text-base text-muted-foreground">
             {reply.content}
