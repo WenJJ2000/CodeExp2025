@@ -3,11 +3,15 @@ import "~/global.css";
 import { Stack } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
+import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
+import QuizHeader from "~/components/custom-ui/quiz-header";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({
@@ -20,13 +24,40 @@ export default function RootLayout() {
   usePlatformSpecificSetup();
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="index" />
-    </Stack>
+    <NotificationProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: true,
+                header: (props) => {
+                  return (
+                    <SafeAreaViewForAndroid>
+                      <QuizHeader />
+                    </SafeAreaViewForAndroid>
+                  );
+                },
+              }}
+            />
+            <Stack.Screen
+              name="notificationPage"
+              options={{
+                headerShown: true,
+                header: (props) => {
+                  return (
+                    <SafeAreaViewForAndroid>
+                      <ForumPageHeader />
+                    </SafeAreaViewForAndroid>
+                  );
+                },
+              }}
+            />{" "}
+          </Stack>
+        </NotificationProvider>
   );
 }
 

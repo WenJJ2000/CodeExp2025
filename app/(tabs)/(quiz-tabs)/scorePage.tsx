@@ -17,6 +17,8 @@ const ScorePage = () => {
         scoreColor = '#FF9800'; // Orange/Yellow for 2, 3, 4
     }
 
+    const isPerfect = Number(correctAnswers) === Number(totalQuestions);
+
     return (
         <View style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#121212' : '#f9f9f9' }]}>
             {/* Header */}
@@ -33,15 +35,31 @@ const ScorePage = () => {
 
             {/* Performance Feedback */}
             <View style={styles.feedback}>
-                {Number(correctAnswers) === 0 || Number(correctAnswers) === 1 ? (
+                {isPerfect ? (
+                    <>
+                        <Text style={{ fontSize: 50, textAlign: 'center' }}>🏅</Text>
+                        <Text
+                            style={[
+                                styles.feedbackText,
+                                { color: colorScheme === 'dark' ? '#fff' : '#000', fontWeight: 'bold' },
+                            ]}
+                        >
+                            Congratulations! You have earned this badge!
+                        </Text>
+                    </>
+                ) : Number(correctAnswers) <= 1 ? (
                     <>
                         <Ionicons name="refresh" size={40} color="#F44336" />
-                        <Text style={[styles.feedbackText, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>Don't worry, keep practicing! You’ll get there!</Text>
+                        <Text style={[styles.feedbackText, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>
+                            Don't worry, keep practicing! You’ll get there!
+                        </Text>
                     </>
                 ) : (
                     <>
                         <Ionicons name="thumbs-up" size={40} color={scoreColor} />
-                        <Text style={[styles.feedbackText, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>Great job! You scored {accuracy}%!</Text>
+                        <Text style={[styles.feedbackText, { color: colorScheme === 'dark' ? '#fff' : '#000' }]}>
+                            Great job! You scored {accuracy}%!
+                        </Text>
                     </>
                 )}
             </View>

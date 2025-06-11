@@ -15,7 +15,7 @@ export async function register(email, password, username) {
 
   // Store extra user info in Firestore
   await setDoc(doc(db, "users", uid), {
-    profilePic: "",
+    profilePicture: "",
     email,
     username,
     level: 1,

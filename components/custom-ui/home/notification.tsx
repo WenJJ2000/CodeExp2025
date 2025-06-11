@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { viewNotification } from "~/firebase/NotiApi";
 import { Notification as NotificationType } from "~/lib/types";
@@ -29,16 +29,22 @@ export default function NotificationUI({ item }: { item: NotificationType }) {
           : {};
       }}
     >
-      <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3">
-        <Text className="font-bold text-base mb-1 text-black dark:text-white">
-          {item.title}
-        </Text>
-        <Text className="text-gray-600 dark:text-gray-300 font-semibold mb-1">
-          {item.subtitle}
-        </Text>
-        <Text className="font-semibold text-blue-700 dark:text-blue-400">
-          {formattedTimeAgo} ago
-        </Text>
+      <View className="bg-blue-100 dark:bg-blue-900 rounded-xl p-4 mb-3 flex flex-row items-center">
+        <Image
+          source={{ uri: 'https://i.pravatar.cc/100' }}
+          className="w-14 h-14 rounded-full mr-4"
+        />
+        <View className="flex-1">
+          <Text className="font-bold text-base mb-1 text-black dark:text-white">
+            {item.title}
+          </Text>
+          <Text className="text-gray-600 dark:text-gray-300 font-semibold mb-1">
+            {item.subtitle}
+          </Text>
+          <Text className="font-semibold text-blue-700 dark:text-blue-400">
+            {formattedTimeAgo} ago
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
