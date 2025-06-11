@@ -76,10 +76,10 @@
 // //   throw new Error('Function not implemented.');
 // // }
 
-
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
+import { LectureContent } from '~/components/QuizPage/Lecture';
 import RecentQuiz from '~/components/QuizPage/RecentQuiz';
 import ShieldBadge from '~/components/QuizPage/ShieldBadge';
 import { Text } from '~/components/ui/text';
@@ -92,7 +92,7 @@ export default function Screen() {
   const router = useRouter();
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const { user, uid } = useAuth();
-  
+
   //   async function getCurrentLevel(id: string) {
   //     let userData = await getCurrentUserData(id);
   //     console.log('User Data:', userData);
@@ -123,34 +123,36 @@ export default function Screen() {
       {/* Recent quiz */}
       <View className="flex-1 justify-center items-center gap-6 mt-5">
         {/* Recent Quiz Progress */}
-        <View>
-          <RecentQuiz />
+        <View className="w-[100%]">
+          <Pressable onPress={() => router.push('/(tabs)/(quiz-tabs)/lecture')}>
+            <LectureContent />
+          </Pressable>
+          {/* <RecentQuiz /> */}
         </View>
 
         {/* Badge Section */}
         <View className="flex-1 justify-center items-center gap-6 mt-5">
           <ShieldBadge />
         </View>
-
       </View>
 
       {/* Bottom Play Button */}
       <View className="items-center pb-10">
         <TouchableOpacity
-        style={{
-          backgroundColor: '#004CFF',
-          minWidth: 300,
-          paddingVertical: 12,
-          borderRadius: 8, // Optional: Add border radius for rounded corners
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          router.push('/(tabs)/(quiz-tabs)/questionPage' as any); 
-        }}
-      >
-        <Text style={{ fontSize: 20, color: 'white' }}>Play</Text>
-      </TouchableOpacity>
+          style={{
+            backgroundColor: '#004CFF',
+            minWidth: 300,
+            paddingVertical: 12,
+            borderRadius: 8, // Optional: Add border radius for rounded corners
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={() => {
+            router.push('/(tabs)/(quiz-tabs)/questionPage' as any);
+          }}
+        >
+          <Text style={{ fontSize: 20, color: 'white' }}>Play</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
