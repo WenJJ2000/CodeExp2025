@@ -115,10 +115,8 @@ import { useAuth } from '~/lib/useContext/useAuthContext';
 import { Badge } from '~/components/ui/badge';
 import { badges } from '../../../components/ui/badges'; // adjust path as needed
 import { ReportCard } from './components/Report';
+import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
 
-// const badgeAws = require("../../../assets/images/aws_certified_security_specialty_badge.png");
-// const badgeOwasp = require("../../../assets/images/OWASP_Badge_1.png");
-// const badgeReddit = require("../../../assets/images/twitter_thumb_201604_EHA-Shield.png");
 
 const router = useRouter();
 
@@ -155,6 +153,7 @@ export default function ProfileScreen() {
           source={{ uri: 'https://i.pravatar.cc/100' }}
           className="w-14 h-14 rounded-full"
         />
+        <ProfileWaveHighlight />
 
         {/* My Activity Button
         <Pressable className="bg-blue-500 px-4 py-2 rounded-full">
@@ -162,7 +161,7 @@ export default function ProfileScreen() {
         </Pressable> */}
 
         {/* Settings Icon */}
-        <Pressable onPress={() => router.push("/(tabs)/(profile-tabs)/settings")}>
+        <Pressable onPress={() => router.push("/settings")}>
           <FontAwesome6 name="gear" size={24} />
         </Pressable>
       </View>
