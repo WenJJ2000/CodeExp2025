@@ -57,7 +57,7 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="Lecture page"
+          name="lecture"
           options={{
             headerShown: true,
             header: (props) => {
