@@ -1,13 +1,14 @@
-import { FontAwesome5, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome5,
+  FontAwesome6,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Pressable, Text,
-  View,
-  useColorScheme
-} from "react-native";
+import { Pressable, Text, View, useColorScheme } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
 import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
 import UserHeader from "~/components/QuizPage/UserHeader";
@@ -91,13 +92,13 @@ export default function Home() {
       </View> */}
       <UserHeader />
 
-        <Text className="text-xl font-semibold text-black dark:text-white pb-2 mt-2">
-          Your Scam Stats
-        </Text>
-        <HomeStatsPanel
-          scamsChecked={9}
-          dollarsSaved={9 * 40} // example: $40 saved per scam checked
-        />
+      <Text className="text-xl font-semibold text-black dark:text-white pb-2 mt-2">
+        Your Scam Stats
+      </Text>
+      <HomeStatsPanel
+        scamsChecked={9}
+        dollarsSaved={9 * 40} // example: $40 saved per scam checked
+      />
 
       {/* Shortcuts */}
       {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
@@ -181,8 +182,10 @@ export default function Home() {
 
       <View className="pb-2">
         <Pressable
-          className={`${colorScheme === "dark" ? "bg-gray-800" : "bg-blue-50"} rounded-xl p-4 mb-3 flex flex-row items-center`}
-          onPress={() => router.push('/(home-tabs)/checkScam')}
+          className={`${
+            colorScheme === "dark" ? "bg-gray-800" : "bg-blue-100"
+          } rounded-xl p-4 mb-3 flex flex-row items-center`}
+          onPress={() => router.push("/(home-tabs)/checkScam")}
         >
           <View className="flex-1 p-2">
             <View className="flex flex-row justify-between items-center">
@@ -208,7 +211,6 @@ export default function Home() {
         In-person scams near me
       </Text>
       <HomeMap />
-
     </View>
   );
 }
