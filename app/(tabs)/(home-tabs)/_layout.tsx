@@ -5,6 +5,8 @@ import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
+import HomeHeader from "~/components/custom-ui/home/home-header";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,7 +29,19 @@ export default function RootLayout() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="index" />
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <HomeHeader />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
       </Stack>
     </NotificationProvider>
   );

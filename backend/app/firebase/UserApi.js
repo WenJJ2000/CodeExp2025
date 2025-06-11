@@ -11,7 +11,12 @@ async function getAllUser() {
     snapshot.forEach((doc) => {
       const userData = doc.data();
       userData.id = doc.id; // Add the document ID to the user data
-      users.push(userData);
+      users.push({
+        id: userData.id,
+        email: userData.email,
+        username: userData.username,
+        notificationSettings: userData.notificationSettings,
+      });
     });
     return users;
   } catch (error) {

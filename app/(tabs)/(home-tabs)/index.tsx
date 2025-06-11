@@ -12,6 +12,7 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import HomeMap from "~/components/custom-ui/home/home-map";
 import NotificationUI from "~/components/custom-ui/home/notification";
 import { getLiveNotifications } from "~/firebase/ForumApi";
 import { getNotifications } from "~/firebase/NotiApi";
@@ -133,7 +134,7 @@ export default function Home() {
           );
         })}
       </View> */}
-
+      <HomeMap />
       <View className="mb-6">
         <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
           Check Scams
