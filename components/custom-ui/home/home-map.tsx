@@ -3,9 +3,11 @@ import MapView, { Marker } from "react-native-maps";
 import { liveUpdate } from "~/firebase/ForumApi";
 import { ScamReport } from "~/lib/types";
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function HomeMap() {
   const [scamReports, setScamReports] = useState<ScamReport[]>([]);
+  const router = useRouter();
   useEffect(() => {
     liveUpdate((data) => {
       setScamReports(
@@ -36,6 +38,12 @@ export default function HomeMap() {
               style={{
                 width: 50,
                 height: 50,
+              }}
+              onPress={() => {
+                router.push({
+                  pathname: "/forumPage",
+                  params: { scamReportId: report.id },
+                });
               }}
             />
           );
