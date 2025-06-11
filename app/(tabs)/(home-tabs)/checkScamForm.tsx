@@ -48,6 +48,8 @@ interface CheckScamForm {
   setDescription: Dispatch<SetStateAction<string>>;
   type: string;
   setType: Dispatch<SetStateAction<string>>;
+  pickImageForImage: (event: GestureResponderEvent) => void;
+  pickImageForText: (event: GestureResponderEvent) => void;
 }
 
 export default function CheckScamForm(props: CheckScamForm) {
@@ -144,7 +146,16 @@ export default function CheckScamForm(props: CheckScamForm) {
         <Textarea onChange={handleUpdateDescription} />
         {/* </Input> */}
       </View>
-      <Pressable onPress={pickImageForImage}>
+      <Pressable
+        onPress={
+          props.type == 'email' ||
+          props.type == 'sms' ||
+          props.type == 'social' ||
+          props.type == 'website'
+            ? props.pickImageForText
+            : props.pickImageForImage
+        }
+      >
         <View
           className={`justify-center items-center h-36 rounded-xl mb-2 ${
             colorScheme === 'dark' ? 'border-gray-600' : 'border-gray-300'

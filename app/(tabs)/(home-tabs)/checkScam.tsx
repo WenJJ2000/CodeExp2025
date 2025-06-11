@@ -36,7 +36,6 @@ export default function CheckTypePage() {
   const [type, setType] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
-  const [textInput, setTextInput] = useState('');
   const [numberInput, setNumberInput] = useState('');
   const [description, setDescription] = useState<string>('');
   const navigation = useNavigation();
@@ -51,9 +50,12 @@ export default function CheckTypePage() {
       quality: 1,
       base64: true,
     });
+
     if (!result.canceled && result.assets.length > 0) {
+      console.log(result.assets);
       const base64Img = result.assets[0].base64;
       setImage(result.assets[0].uri);
+      setSelectedImageUri(result.assets[0].uri);
       if (base64Img) {
         extractTextFromImage(base64Img);
       }
@@ -92,19 +94,11 @@ export default function CheckTypePage() {
       const text =
         result.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
       setExtractedText(text);
-      setTextInput(text);
     } catch (err) {
       console.error('Failed to extract text:', err);
       Alert.alert('Error', 'Failed to extract text from image.');
     }
   };
-
-  //   useEffect(() => {
-  //     const tabType = (type as string)?.toLowerCase();
-  //     if (['text', 'image', 'number', 'app', 'crypto'].includes(tabType)) {
-  //       setActiveTab(tabType as any);
-  //     }
-  //   }, [type]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -119,9 +113,19 @@ export default function CheckTypePage() {
     if (isChecking) return; // prevent duplicate checks
     setIsChecking(true); // start spinner
     try {
-      if (selectedImageUri != '') {
-        const data = await checkImageForScam(selectedImageUri, description);
-        console.log(data);
+      if (selectedImageUri) {
+        switch (type) {
+          case 'email':
+          case 'sms':
+          case 'social':
+          case 'website':
+            const textData = await extractTextFromImage(selectedImageUri);
+            setDescription((prev) => {
+              return prev + '\n' + extractedText;
+            });
+            console.log(textData);
+            break;
+        }
       }
       switch (type) {
         case 'sms':
@@ -225,6 +229,8 @@ export default function CheckTypePage() {
                 setDescription={setDescription}
                 type={type}
                 setType={setType}
+                pickImageForImage={pickImageForImage}
+                pickImageForText={pickImageForText}
               />
             </Animated.View>
             {/* Check Button */}
