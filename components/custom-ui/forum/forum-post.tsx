@@ -64,10 +64,9 @@ export function ForumPost({
       <View className="flex-row justify-between items-between w-full px-4 py-2">
         <View className="flex-row items-center gap-2 ">
           <Image
-            src={
-              scamReport?.createdBy?.profilePicture ||
-              "~/assets/images/icon2.png"
-            }
+            source={{
+              uri: `data:image/jpeg;base64,${scamReport?.createdBy?.profilePicture}`,
+            }}
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"

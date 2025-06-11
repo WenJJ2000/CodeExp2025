@@ -42,7 +42,9 @@ export function ForumReply({
       <View className="">
         <View className="flex-row items-center gap-2 ">
           <Image
-            src={reply.createdBy.profilePicture || "~/assets/images/icon2.png"}
+            source={{
+              uri: `data:image/jpeg;base64,${reply?.createdBy?.profilePicture}`,
+            }}
             className="w-10 h-10 rounded-full border-2 border-gray-300"
             resizeMode="contain"
             resizeMethod="scale"
