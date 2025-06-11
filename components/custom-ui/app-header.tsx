@@ -8,7 +8,7 @@ export default function AppHeader({
   rightChildren?: React.ReactNode;
 }) {
   return (
-    <View className="w-full flex-row justify-between items-center gap-2 p-2 border-b-2 border-b-secondary">
+    <View className="w-full flex-row justify-between items-center  border-b-secondary px-4 py-4">
       <View className="flex-row justify-between items-center gap-2">
         {leftChildren}
       </View>

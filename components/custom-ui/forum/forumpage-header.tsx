@@ -7,7 +7,7 @@ export default function ForumPageHeader() {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
   return (
-    <View className="w-full flex-row justify-end items-center px-4  border-b-2 border-b-secondary">
+    <View className="w-full flex-row justify-start items-center px-4  border-b-2 border-b-secondary">
       <Pressable
         className="p-2 "
         onPress={() =>
@@ -17,7 +17,7 @@ export default function ForumPageHeader() {
         }
       >
         <FontAwesome6
-          name="x"
+          name="arrow-left"
           size={24}
           color={colorScheme === "light" ? "black" : "white"}
         />

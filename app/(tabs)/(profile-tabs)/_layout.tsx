@@ -4,7 +4,8 @@ import { Stack } from "expo-router";
 import * as React from "react";
 import { Appearance, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-
+import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -25,7 +26,41 @@ export default function RootLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaViewForAndroid>
+                <ForumPageHeader />
+              </SafeAreaViewForAndroid>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{
+          headerShown: true,
+          header: (props) => {
+            return (
+              <SafeAreaViewForAndroid>
+                <ForumPageHeader />
+              </SafeAreaViewForAndroid>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="allReportsPage"
+        options={{
+          title: "All Reports",
+          headerBackTitle: "Back",
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
     </Stack>
   );
 }
