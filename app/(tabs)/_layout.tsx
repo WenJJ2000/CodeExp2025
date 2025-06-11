@@ -12,7 +12,7 @@ export default function TabLayout() {
   function onSettingsPress() {
     // Handle settings press: navigate or open modal
     console.log("Settings pressed");
-    router.push("/settings")
+    router.push("/settings");
     setUid("");
     setUser("");
   }
@@ -187,6 +187,7 @@ export default function TabLayout() {
               </TouchableOpacity>
             </>
           ),
+          headerShown: false,
         }}
       />
     </Tabs>

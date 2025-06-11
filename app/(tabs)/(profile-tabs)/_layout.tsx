@@ -25,7 +25,18 @@ export default function RootLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="index"
+        options={{ headerShown: true, title: "Profile" }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          headerBackTitle: "Back",
+          headerTitleAlign: "center",
+        }}
+      />
     </Stack>
   );
 }
