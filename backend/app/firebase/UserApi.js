@@ -1,4 +1,4 @@
-const { collection, getDocs } = require("firebase/firestore");
+const { collection, getDocs, setDoc } = require("firebase/firestore");
 const { db } = require("./firebase");
 
 async function getAllUser() {
@@ -24,4 +24,13 @@ async function getAllUser() {
     throw new Error("Failed to initialize Firebase");
   }
 }
-module.exports = { getAllUser };
+async function hasBeenScammed(id) {
+  try {
+    const userRef = db.collection("users").doc(id);
+    const res = await userRef.set({ hasBeenScammed: true }, { merge: true });
+  } catch (error) {
+    console.error("Error checking scam status:", error);
+    throw error;
+  }
+}
+module.exports = { getAllUser, hasBeenScammed };
