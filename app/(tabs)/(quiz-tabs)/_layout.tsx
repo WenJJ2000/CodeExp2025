@@ -1,18 +1,18 @@
-import '~/global.css';
+import "~/global.css";
 
-import { Stack } from 'expo-router';
-import * as React from 'react';
-import { Appearance, Platform, useColorScheme } from 'react-native';
-import ForumPageHeader from '~/components/custom-ui/forum/forumpage-header';
-import QuizHeader from '~/components/custom-ui/quiz-header';
-import SafeAreaViewForAndroid from '~/components/custom-ui/SafeAreaViewForAndriod';
-import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
-import { NotificationProvider } from '~/lib/useContext/useNotificationContext';
+import { Stack } from "expo-router";
+import * as React from "react";
+import { Appearance, Platform, useColorScheme } from "react-native";
+import ForumPageHeader from "~/components/custom-ui/forum/forumpage-header";
+import QuizHeader from "~/components/custom-ui/quiz-header";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from 'expo-router';
+} from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({
   web: useSetWebBackgroundClassName,
@@ -50,7 +50,7 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader href={'/(tabs)/(quiz-tabs)'} />
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
                 </SafeAreaViewForAndroid>
               );
             },
@@ -63,7 +63,20 @@ export default function RootLayout() {
             header: (props) => {
               return (
                 <SafeAreaViewForAndroid>
-                  <ForumPageHeader href={'/(tabs)/(quiz-tabs)'} />
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="questionPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumPageHeader href={"/(tabs)/(quiz-tabs)"} />
                 </SafeAreaViewForAndroid>
               );
             },
@@ -75,20 +88,20 @@ export default function RootLayout() {
 }
 
 const useIsomorphicLayoutEffect =
-  Platform.OS === 'web' && typeof window === 'undefined'
+  Platform.OS === "web" && typeof window === "undefined"
     ? React.useEffect
     : React.useLayoutEffect;
 
 function useSetWebBackgroundClassName() {
   useIsomorphicLayoutEffect(() => {
     // Adds the background color to the html element to prevent white background on overscroll.
-    document.documentElement.classList.add('bg-background');
+    document.documentElement.classList.add("bg-background");
   }, []);
 }
 
 function useSetAndroidNavigationBar() {
   React.useLayoutEffect(() => {
-    setAndroidNavigationBar(Appearance.getColorScheme() ?? 'light');
+    setAndroidNavigationBar(Appearance.getColorScheme() ?? "light");
   }, []);
 }
 

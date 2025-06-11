@@ -126,11 +126,12 @@
 //   );
 // }
 
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, useColorScheme, View } from 'react-native';
-import QuizOption from '~/components/QuizPage/QuizOption'; // Importing your QuizOption component
-import { questions } from '~/testData/quiz/questions'; // Assuming questions data is available
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import SafeAreaViewForAndroid from "~/components/custom-ui/SafeAreaViewForAndriod";
+import QuizOption from "~/components/QuizPage/QuizOption"; // Importing your QuizOption component
+import { questions } from "~/testData/quiz/questions"; // Assuming questions data is available
 
 export default function QuestionsPage() {
   const [questionIndex, setQuestionIndex] = useState<number>(0);
@@ -181,7 +182,7 @@ export default function QuestionsPage() {
     } else {
       // Navigate to the ScorePage and pass the score data
       router.push({
-        pathname: '/scorePage',
+        pathname: "/scorePage",
         params: {
           totalScore: correctAnswersCount,
           totalQuestions: levelQuestions.length,
@@ -202,33 +203,35 @@ export default function QuestionsPage() {
           <View className="px-4 py-2">
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center', // Align items vertically in the center
-                width: '100%',
-              }}>
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center", // Align items vertically in the center
+                width: "100%",
+              }}
+            >
               <View
                 style={{
                   flex: 1, // Allow the progress bar to take up available space
                   height: 15,
-                  backgroundColor: '#e0e0e0',
+                  backgroundColor: "#e0e0e0",
                   borderRadius: 10,
                   marginRight: 10, // Space between the progress bar and the text
-                }}>
+                }}
+              >
                 <View
                   style={{
-                    height: '100%',
+                    height: "100%",
                     width: `${progress}%`,
-                    backgroundColor: '#3b82f6', //dark blue
+                    backgroundColor: "#3b82f6", //dark blue
                     borderRadius: 5,
                   }}
                 />
               </View>
               <Text
                 style={{
-                  color: colorScheme === 'dark' ? '#fff' : '#000',
+                  color: colorScheme === "dark" ? "#fff" : "#000",
                   fontSize: 16, // Adjusted the font size to make it look better with the bar
-                  fontWeight: 'bold',
+                  fontWeight: "bold",
                 }}
                 numberOfLines={1} // Ensures the text stays on one line
               >
@@ -241,10 +244,10 @@ export default function QuestionsPage() {
           <View className="pl-6 pr-4 pb-8 items-center">
             <Text
               style={{
-                color: colorScheme === 'dark' ? '#fff' : '#000',
+                color: colorScheme === "dark" ? "#fff" : "#000",
                 fontSize: 25,
-                fontWeight: 'bold',
-                textAlign: 'left',
+                fontWeight: "bold",
+                textAlign: "left",
                 marginTop: 16,
               }}
             >
@@ -270,24 +273,38 @@ export default function QuestionsPage() {
 
             {/* Show Next Button after the answer is revealed */}
             {answerRevealed && (
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 24, width: '100%' }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingBottom: 24,
+                  width: "100%",
+                }}
+              >
                 <TouchableOpacity
                   style={{
-                    backgroundColor: '#3B82F6', // Blue color
+                    backgroundColor: "#3B82F6", // Blue color
                     paddingVertical: 12, // Padding on top and bottom
                     paddingHorizontal: 24, // Horizontal padding for the button
                     borderRadius: 8, // Rounded corners
-                    width: '100%', // Make the button full-width
+                    width: "100%", // Make the button full-width
                   }}
                   onPress={moveToNextQuestion}
                 >
-                  <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-                    {questionIndex === levelQuestions.length - 1 ? 'Finish' : 'Next'}
+                  <Text
+                    style={{
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}
+                  >
+                    {questionIndex === levelQuestions.length - 1
+                      ? "Finish"
+                      : "Next"}
                   </Text>
                 </TouchableOpacity>
               </View>
             )}
-
           </View>
         </>
       )}
