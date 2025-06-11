@@ -11,7 +11,7 @@ import { NotificationProvider } from "~/lib/useContext/useNotificationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary
+  ErrorBoundary,
 } from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({
@@ -25,39 +25,39 @@ export default function RootLayout() {
 
   return (
     <NotificationProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen
-              name="index"
-              options={{
-                headerShown: true,
-                header: (props) => {
-                  return (
-                    <SafeAreaViewForAndroid>
-                      <QuizHeader />
-                    </SafeAreaViewForAndroid>
-                  );
-                },
-              }}
-            />
-            <Stack.Screen
-              name="notificationPage"
-              options={{
-                headerShown: true,
-                header: (props) => {
-                  return (
-                    <SafeAreaViewForAndroid>
-                      <ForumPageHeader />
-                    </SafeAreaViewForAndroid>
-                  );
-                },
-              }}
-            />{" "}
-          </Stack>
-        </NotificationProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <QuizHeader />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="notificationPage"
+          options={{
+            headerShown: true,
+            header: (props) => {
+              return (
+                <SafeAreaViewForAndroid>
+                  <ForumPageHeader />
+                </SafeAreaViewForAndroid>
+              );
+            },
+          }}
+        />
+      </Stack>
+    </NotificationProvider>
   );
 }
 
@@ -79,4 +79,4 @@ function useSetAndroidNavigationBar() {
   }, []);
 }
 
-function noop() { }
+function noop() {}
