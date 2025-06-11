@@ -123,6 +123,7 @@ export default function TabLayout() {
               </TouchableOpacity>
             </>
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen

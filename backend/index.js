@@ -36,8 +36,9 @@ app.listen(process.env.PORT, () => {
       });
   });
   job.invoke(); // Invoke the job immediately for testing purposes
-  sendEmail("tanjianfeng01@gmail.com", "test", "test");
-  console.log(`Server is running on port ${process.env.PORT}`);
+  sendEmail("tanjianfeng01@gmail.com", "test", "test").console.log(
+    `Server is running on port ${process.env.PORT}`
+  );
 });
 
 app.get("/", (req, res) => {
