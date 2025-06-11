@@ -22,7 +22,7 @@ export default function HomeStatsPanel({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 marginBottom: 24,
-                backgroundColor: isDarkMode ? "#333" : "#fff",
+                backgroundColor: isDarkMode ? "#222" : "#fff",
                 borderRadius: 16,
                 paddingVertical: 16,
                 paddingHorizontal: 10,
@@ -34,7 +34,7 @@ export default function HomeStatsPanel({
             }}
         >
             {/* Scams Checked */}
-            <View style={{ alignItems: "center", flex: 1 }}>
+            <View style={{ alignItems: "center", flex: 1}}>
                 <Text
                     style={{
                         color: "#4CAF50",

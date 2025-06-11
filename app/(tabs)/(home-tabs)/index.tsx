@@ -1,17 +1,16 @@
-import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Pressable,
-  ScrollView,
-  Text,
+  Pressable, Text,
   View,
-  useColorScheme,
+  useColorScheme
 } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
 import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
+import UserHeader from "~/components/QuizPage/UserHeader";
 import { getNotifications } from "~/firebase/NotiApi";
 import { liveUpdateUserReports } from "~/firebase/UserApi";
 import { Notification, ScamReport } from "~/lib/types";
@@ -90,16 +89,15 @@ export default function Home() {
           Welcome {userName}!
         </Text>
       </View> */}
+      <UserHeader />
 
-      <View>
-        <Text className="text-xl font-bold text-black dark:text-white pb-2">
-          Scams Stats
+        <Text className="text-xl font-semibold text-black dark:text-white pb-2 mt-2">
+          Your Scam Stats
         </Text>
         <HomeStatsPanel
           scamsChecked={9}
           dollarsSaved={9 * 40} // example: $40 saved per scam checked
         />
-      </View>
 
       {/* Shortcuts */}
       {/* <Text className="text-lg font-semibold mb-3 text-black dark:text-white">
@@ -129,7 +127,7 @@ export default function Home() {
         })}
       </View> */}
 
-      <View className="mb-6">
+      {/* <View className="mb-6">
         <Text className="text-xl font-bold text-black dark:text-white pb-2">
           Check Scams
         </Text>
@@ -137,9 +135,9 @@ export default function Home() {
           horizontal={true} // Enable horizontal scrolling
           showsHorizontalScrollIndicator={false} // Hide the horizontal scrollbar
           contentContainerStyle={{ paddingHorizontal: 8 }} // Optional: Adds padding to the left and right
-        >
-          {/* Use flex-row and justifyContent to manage spacing */}
-          <View
+        > */}
+      {/* Use flex-row and justifyContent to manage spacing */}
+      {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
@@ -172,19 +170,45 @@ export default function Home() {
                     size={30} // Icon size
                     color={colorScheme === "dark" ? "#ccc" : "#000"}
                   />
-                  <Text className="shortcut-label text-sm">{sc.label} </Text>
-                  {/* Button label */}
-                </Pressable>
+                  <Text className="shortcut-label text-sm">{sc.label} </Text> */}
+      {/* Button label */}
+      {/* </Pressable>
               );
             })}
           </View>
         </ScrollView>
+      </View> */}
+
+      <View className="pb-2">
+        <Pressable
+          className={`${colorScheme === "dark" ? "bg-gray-800" : "bg-blue-50"} rounded-xl p-4 mb-3 flex flex-row items-center`}
+          onPress={() => router.push('/(home-tabs)/checkScam')}
+        >
+          <View className="flex-1 p-2">
+            <View className="flex flex-row justify-between items-center">
+              <Text className="text-xl font-semibold text-black dark:text-white">
+                Check for scams
+              </Text>
+              <FontAwesome6
+                name="arrow-right"
+                size={15}
+                color={colorScheme === "light" ? "black" : "white"}
+              />
+            </View>
+            <View className="flex flex-row items-center mt-2">
+              <Text className="text-sm font-semibold text-blue-500">
+                Spot something suspicious? Verify if it's a scam here!
+              </Text>
+            </View>
+          </View>
+        </Pressable>
       </View>
 
-      <Text className="text-xl font-bold text-black dark:text-white pb-2">
-        Scam near me
+      <Text className="text-xl font-semibold text-black dark:text-white pb-2">
+        In-person scams near me
       </Text>
       <HomeMap />
+
     </View>
   );
 }
