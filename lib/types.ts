@@ -61,8 +61,8 @@ export type ForumTagVariant =
   | 'IN_PERSON'
   | 'APP'
   | 'VERIFIED'
-  | 'EDUCATION'
-  | 'CRYPTO';
+  | 'EDUCATION';
+//   | 'CRYPTO';
 export type VoteType = 'UPVOTE' | 'DOWNVOTE';
 export type Notification = {
   id: string;

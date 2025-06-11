@@ -1,7 +1,7 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Href, useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
-import { useColorScheme } from "~/lib/useColorScheme";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Href, useRouter } from 'expo-router';
+import { Pressable, View } from 'react-native';
+import { useColorScheme } from '~/lib/useColorScheme';
 
 export default function ForumPageHeader({ href }: { href: Href }) {
   const { colorScheme } = useColorScheme();
@@ -12,7 +12,7 @@ export default function ForumPageHeader({ href }: { href: Href }) {
         <FontAwesome6
           name="arrow-left"
           size={24}
-          color={colorScheme === "light" ? "black" : "white"}
+          color={colorScheme === 'light' ? 'black' : 'white'}
         />
       </Pressable>
     </View>

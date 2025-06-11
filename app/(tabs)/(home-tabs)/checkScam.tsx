@@ -226,7 +226,6 @@ export default function CheckTypePage() {
         >
           <View className="flex-1 p-5 bg-white dark:bg-black">
             {/* Back Button with Arrow */}
-
             {/* Animated Input Section */}
             <Animated.View style={{ opacity: fadeAnim }}>
               <CheckScamForm
