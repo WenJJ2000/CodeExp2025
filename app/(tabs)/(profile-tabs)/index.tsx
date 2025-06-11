@@ -1,17 +1,16 @@
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Image, Pressable, ScrollView, View } from "react-native";
-import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/useContext/useAuthContext";
 import { useEffect, useState } from "react";
-import { User } from "lucide-react-native";
-import { ScamReport } from "~/lib/types";
-import { liveUpdateUserReports } from "~/firebase/UserApi";
+import { Image, Pressable, ScrollView, View } from "react-native";
 import { Badge } from "~/components/ui/badge";
-import { badges } from "../../../components/ui/badges"; // adjust path as needed
-import { ReportCard } from "./components/Report";
-import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
+import { Text } from "~/components/ui/text";
+import { liveUpdateUserReports } from "~/firebase/UserApi";
+import { ScamReport } from "~/lib/types";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { useAuth } from "~/lib/useContext/useAuthContext";
+import { badges } from "../../../components/ui/badges"; // adjust path as needed
+import ProfileWaveHighlight from "./components/ProfileWaveHighlight";
+import { ReportCard } from "./components/Report";
 
 const router = useRouter();
 
