@@ -1,1 +1,0 @@
-l=console.log;for(i=2;i<101;i++){for(j=2;i%j&&j<i;)j++;j==i&&l(i)}
