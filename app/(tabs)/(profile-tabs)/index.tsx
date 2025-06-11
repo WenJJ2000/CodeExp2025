@@ -238,27 +238,37 @@ export default function ProfileScreen() {
         {/* Verified */}
         <View className="mb-4">
           <Text className="text-base font-medium mb-2">✅ Verified scams</Text>
-          {verifiedReports.map((item, index) => (
-            <ReportCard
-              key={index}
-              title={item.title}
-              date={item.createdAt.toISOString().split("T")[0]}
-              variant="verified"
-            />
-          ))}
+          {verifiedReports
+            .reduce((acc, curr, index) => {
+              if (index < 5) acc.push(curr);
+              return acc;
+            }, [] as ScamReport[])
+            .map((item, index) => (
+              <ReportCard
+                key={index}
+                title={item.title}
+                date={item.createdAt.toISOString().split("T")[0]}
+                variant="verified"
+              />
+            ))}
         </View>
 
         {/* Pending */}
         <View>
           <Text className="text-base font-medium mb-2">🕓 Pending scams</Text>
-          {pendingReports.map((item, index) => (
-            <ReportCard
-              key={index}
-              title={item.title}
-              date={item.createdAt.toISOString().split("T")[0]}
-              variant="pending"
-            />
-          ))}
+          {pendingReports
+            .reduce((acc, curr, index) => {
+              if (index < 5) acc.push(curr);
+              return acc;
+            }, [] as ScamReport[])
+            .map((item, index) => (
+              <ReportCard
+                key={index}
+                title={item.title}
+                date={item.createdAt.toISOString().split("T")[0]}
+                variant="pending"
+              />
+            ))}
         </View>
       </View>
 

@@ -37,6 +37,15 @@ export default function RootLayout() {
           headerTitleAlign: "center",
         }}
       />
+      <Stack.Screen
+        name="allReportsPage"
+        options={{
+          title: "All Reports",
+          headerBackTitle: "Back",
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
     </Stack>
   );
 }
