@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, Text, View, useColorScheme } from "react-native";
+import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
 import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
 import { getNotifications } from "~/firebase/NotiApi";
@@ -78,6 +78,7 @@ export default function Home() {
   }, []);
 
   return (
+    <ScrollView className="flex-1 bg-white dark:bg-black">
     <View className={`flex-1 pt-5 px-6 bg-white dark:bg-black`}>
       {/* Header */}
       {/* <View className="flex-row items-center mb-6">
@@ -227,10 +228,15 @@ export default function Home() {
         </Pressable>
       </View>
 
-      <Text className="text-xl font-semibold text-black dark:text-white pb-2">
-        Nearby In-person scams
-      </Text>
-      <HomeMap />
-    </View>
+        
+          <Text className="text-xl font-semibold text-black dark:text-white pb-2">
+            Nearby In-person scams
+          </Text>
+        <View style={{ flex: 1, height: 600 }}> {/* Set a height or flex */}
+          <HomeMap />
+        </View>
+
+      </View>
+    </ScrollView>
   );
 }
