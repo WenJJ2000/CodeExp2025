@@ -52,7 +52,6 @@ export default function CheckTypePage() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      console.log(result.assets);
       const base64Img = result.assets[0].base64;
       setImage(result.assets[0].uri);
       setSelectedImageUri(result.assets[0].uri);
@@ -94,6 +93,7 @@ export default function CheckTypePage() {
       const text =
         result.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
       setExtractedText(text);
+      return text;
     } catch (err) {
       console.error('Failed to extract text:', err);
       Alert.alert('Error', 'Failed to extract text from image.');
@@ -123,16 +123,32 @@ export default function CheckTypePage() {
             setDescription((prev) => {
               return prev + '\n' + extractedText;
             });
-            console.log(textData);
             break;
         }
       }
       switch (type) {
-        case 'sms':
-          if (!description.trim()) {
-            Alert.alert('Empty Input', 'Please enter a suspicious message.');
-            return;
+        case 'email':
+          const data = await checkImageForScam(image, description);
+          if (data.choices[0].message.content) {
+            const cleaned_data = data.choices[0].message.content
+              .replace(/```/g, '')
+              .trim();
+            const d = JSON.parse(cleaned_data);
+            router.push({
+              pathname: '/resultScreen', // adjust the path as needed
+              params: {
+                verdict: d.isScam ? 'Other Scam' : '',
+                explanation: d.reasons[0],
+                confidence: d.confidence,
+              },
+            });
           }
+          break;
+        case 'sms':
+          //   if (!description.trim()) {
+          //     Alert.alert('Empty Input', 'Please enter a suspicious message.');
+          //     return;
+          //   }
           try {
             // Pass the user input into the function
             const verdict = await checkScamWithGradio(description);
