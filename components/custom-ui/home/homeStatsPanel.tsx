@@ -31,8 +31,10 @@ export default function HomeStatsPanel({
         shadowOpacity: 0.08,
         shadowRadius: 8,
         elevation: 2,
+        borderColor: isDarkMode ? "#333" : "#ddd",
+        borderWidth: 2,
       }}
-      className={colorScheme === "dark" ? "bg-gray-800" : "bg-blue-100"}
+      className={colorScheme === "dark" ? "bg-gray-800" : "white"}
     >
       {/* Scams Checked */}
       <View style={{ alignItems: "center", flex: 1 }}>

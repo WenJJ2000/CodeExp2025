@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { Pressable, Text, View, useColorScheme } from "react-native";
 import HomeMap from "~/components/custom-ui/home/home-map";
 import HomeStatsPanel from "~/components/custom-ui/home/homeStatsPanel";
-import UserHeader from "~/components/QuizPage/UserHeader";
 import { getNotifications } from "~/firebase/NotiApi";
 import { liveUpdateUserReports } from "~/firebase/UserApi";
 import { Notification, ScamReport } from "~/lib/types";
@@ -90,7 +89,6 @@ export default function Home() {
           Welcome {userName}!
         </Text>
       </View> */}
-      <UserHeader />
 
       <Text className="text-xl font-semibold text-black dark:text-white pb-2 mt-2">
         Your Scam Stats
@@ -182,8 +180,10 @@ export default function Home() {
 
       <View className="pb-2">
         <Pressable
-          className={`${
-            colorScheme === "dark" ? "bg-gray-800" : "bg-blue-100"
+          className={`border-2 ${
+            colorScheme === "dark" ? "border-[#333]" : "border-[#ddd]"
+          } ${
+            colorScheme === "dark" ? "bg-gray-800" : "white"
           } rounded-xl p-4 mb-3 flex flex-row items-center`}
           onPress={() => router.push("/(tabs)/(home-tabs)/checkScam")}
         >
