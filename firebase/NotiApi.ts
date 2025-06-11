@@ -34,33 +34,51 @@ export const getNotifications = (
     collection(db, "notifications"),
     orderBy("timestamp", "desc")
   );
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const data = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.data().title,
-      subtitle: doc.data().subtitle,
-      timestamp: doc.data().timestamp.toDate(),
-      action: doc.data().action,
-      readBy: doc.data().readBy || [],
-      scamReportId: doc.data().scamReportId,
-      createdBy: doc.data().createdBy,
-      replyId: doc.data().replyId,
-      onlyFor: doc.data().onlyFor, // Optional field for user-specific notifications
-    })) as Notification[];
-    const result = data.filter((noti) => {
-      // If uid is provided, filter notifications for that user
-      if (uid) {
-        if (noti.onlyFor && noti.onlyFor !== uid) {
-          return false; // Skip notifications not meant for this user
+  const unsubscribe = onSnapshot(q, async (snapshot) => {
+    try {
+      const data = snapshot.docs.map((docData) => {
+        return {
+          id: docData.id,
+          title: docData.data().title,
+          subtitle: docData.data().subtitle,
+          timestamp: docData.data().timestamp.toDate(),
+          action: docData.data().action,
+          readBy: docData.data().readBy || [],
+          scamReportId: docData.data().scamReportId,
+          createdBy: docData.data().createdBy,
+          replyId: docData.data().replyId,
+          onlyFor: docData.data().onlyFor, // Optional field for user-specific notifications
+          profilePicture: "", // Optional field for user profile picture
+        };
+      }) as unknown as Notification[];
+      const result = data.filter((noti) => {
+        // If uid is provided, filter notifications for that user
+        if (uid) {
+          if (noti.onlyFor && noti.onlyFor !== uid) {
+            return false; // Skip notifications not meant for this user
+          }
+          if (noti.readBy.includes(uid)) {
+            return false; // Skip notifications already read by this user
+          }
         }
-        if (noti.readBy.includes(uid)) {
-          return false; // Skip notifications already read by this user
+        // Otherwise, return all notifications
+        return true;
+      });
+      for (const notification of result) {
+        // Fetch user profile picture if available
+        if (notification.createdBy) {
+          const userDoc = await getDoc(
+            doc(db, "users", notification.createdBy)
+          );
+          if (userDoc.exists()) {
+            notification.profilePicture = userDoc.data().profilePicture || "";
+          }
         }
       }
-      // Otherwise, return all notifications
-      return true;
-    });
-    onUpdate(result);
+      onUpdate(result);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
   });
   return unsubscribe;
 };
