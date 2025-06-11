@@ -185,7 +185,7 @@ export default function Home() {
           className={`${
             colorScheme === "dark" ? "bg-gray-800" : "bg-blue-100"
           } rounded-xl p-4 mb-3 flex flex-row items-center`}
-          onPress={() => router.push("/(home-tabs)/checkScam")}
+          onPress={() => router.push("/(tabs)/(home-tabs)/checkScam")}
         >
           <View className="flex-1 p-2">
             <View className="flex flex-row justify-between items-center">

@@ -211,6 +211,7 @@ export default function TabLayout() {
           // ),
           href: null,
           tabBarLabelPosition: "below-icon",
+          headerShown: false,
         }}
       />
     </Tabs>
