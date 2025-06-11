@@ -84,11 +84,7 @@ export function ForumPost({
             }
           />
           {scamReport?.scamReportStatus == "VALID" && (
-            <ForumTag
-              variant={
-                scamReport?.scamReportType.toUpperCase() as ForumTagVariant
-              }
-            />
+            <ForumTag variant={"VERIFIED" as ForumTagVariant} />
           )}
           {scamReport?.isEducation && (
             <ForumTag variant={"EDUCATION" as ForumTagVariant} />

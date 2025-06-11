@@ -126,6 +126,7 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="(forum-tabs)"
         options={{
