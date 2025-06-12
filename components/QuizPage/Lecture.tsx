@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View } from 'react-native';
-import AnimatedProgressBar from './AnimatedProgressBar';
 
 export function LectureContent() {
   return (
@@ -8,7 +7,9 @@ export function LectureContent() {
       <Text style={styles.lectureDescription}>
         Learn more about how scams work
       </Text>
-      <Text>Chapter 1</Text>
+      <View style={styles.divider} />
+      <Text style={styles.chapter}>Chapter 1</Text>
+      <Text style={styles.chapterTitle}>Email Scams (Phishing)</Text>
     </View>
   );
 }
@@ -22,13 +23,32 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Center-align content
   },
   lectureTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1f2937', // Dark gray color
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 6,
   },
   lectureDescription: {
-    fontSize: 14,
-    color: '#6b7280', // Medium gray color
-    marginVertical: 8, // Space between the title and the progress bar
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 12,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ececec',
+    alignSelf: 'stretch',
+    marginVertical: 12,
+  },
+  chapter: {
+    fontSize: 16,
+    color: '#3730a3',
+    fontWeight: '500',
+    marginBottom: 4,
+    marginTop: 4,
+  },
+  chapterTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#3730a3',
   },
 });
