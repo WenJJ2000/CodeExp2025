@@ -88,7 +88,7 @@ const sendEmail = async (to, username, id) => {
     </div>
 
     <p>🔒 <strong>To verify your account, please click the secure link below:</strong> 🔒</p>
-    <p><a href="https://www.yourcompanyname.com/verify/${id}" style="color: #1a73e8; text-decoration: none; font-weight: bold;">🔗 Verify My Account</a></p>
+    <p><a href="http://172.20.10.6:3000/verify/${id}" style="color: #1a73e8; text-decoration: none; font-weight: bold;">🔗 Verify My Account</a></p>
 
     <p>🌟 Once verified, your account will be upgraded, and you can enjoy exclusive benefits and features.</p>
 

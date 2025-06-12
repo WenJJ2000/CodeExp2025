@@ -6,18 +6,22 @@ const { getAllUser, hasBeenScammed } = require("./app/firebase/UserApi");
 const { sendEmail } = require("./app/sendEmail");
 const app = express();
 app.listen(process.env.PORT, () => {
-  // const job = schedule.scheduleJob("0 0 * * * *", function () {
-  //   getAllUser()
-  //     .then((users) => {
-  //       users.forEach((user) => {
-  //         sendEmail(user.email, user.username, user.id);
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error fetching users: " + error.message);
-  //     });
-  // });
-  // job.invoke(); // Invoke the job immediately for testing purposes
+  const job = schedule.scheduleJob("0 0 0 5 * *", function () {
+    console.log("Running scheduled job to send emails to all users.");
+    getAllUser()
+      .then((users) => {
+        users.forEach((user) => {
+          sendEmail(user.email, user.username, user.id);
+          console.log(
+            `Email sent to ${user.username} (${user.email}) with ID: ${user.id}`
+          );
+        });
+      })
+      .catch((error) => {
+        console.log("Error fetching users:  " + error.message);
+      });
+  });
+  job.invoke(); // Invoke the job immediately for testing purposes
   console.log(`Server is running on port ${process.env.PORT}`);
 });
 
