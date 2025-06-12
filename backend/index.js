@@ -31,7 +31,9 @@ app.get("/verify/:id", (req, res) => {
   hasBeenScammed(id)
     .then(() => {
       console.log(`User with ID ${id} has been marked as scammed.`);
-      res.send(`<h1>YOU HAVE BEEN SCAMMED BY SCAMBUSTERS!</h1> `);
+      res.send(
+        `<br/><br/><br/><center><h1>YOU HAVE BEEN SCAMMED BY SCAMBUSTERS!</h1></center> `
+      );
     })
     .catch((error) => {
       console.error(
