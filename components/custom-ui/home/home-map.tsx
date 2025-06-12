@@ -80,7 +80,7 @@ export default function HomeMap() {
             />
           );
         }
-        return null; // Skip markers without location
+        return <></>; // Skip markers without location
       })}
     </MapView>
   );
