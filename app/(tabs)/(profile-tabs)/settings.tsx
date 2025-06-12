@@ -2,7 +2,13 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Switch, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  Switch,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Text } from "~/components/ui/text";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -22,7 +28,7 @@ function SettingsItem({
   label: string;
   onPress?: () => void;
 }) {
-  const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { isDarkColorScheme } = useColorScheme();
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -360,7 +366,7 @@ export default function SettingsScreen() {
       <SettingsItem
         icon="ban"
         label="Blocked"
-        onPress={() => setShowBlockedScreen(true)}
+        // onPress={() => setShowBlockedScreen(true)}
       />
       <Text className="text-xs text-gray-500 dark:text-white mb-4 px-1">
         View all the numbers, email, and websites you've blocked
@@ -424,11 +430,17 @@ export default function SettingsScreen() {
           setUser("");
           setUid("");
         }}
-        className={`${!isDarkColorScheme ? "bg-red-700" : "bg-red-700"
-          } rounded-xl px-4 py-4 flex-row justify-between items-center mb-2 mt-8`}
+        className={`${
+          !isDarkColorScheme ? "bg-red-700" : "bg-red-700"
+        } rounded-xl px-4 py-4 flex-row justify-between items-center mb-2 mt-8`}
       >
         <View className="flex-row items-center space-x-4">
-          <MaterialIcons name="logout" size={24} color="white"  style={{paddingRight: 2}}/>
+          <MaterialIcons
+            name="logout"
+            size={24}
+            color="white"
+            style={{ paddingRight: 2 }}
+          />
           <Text className="text-white font-bold text-sm ">Logout</Text>
         </View>
       </Pressable>
