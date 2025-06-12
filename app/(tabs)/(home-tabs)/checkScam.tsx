@@ -389,8 +389,6 @@ export default function CheckTypePage() {
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-1 p-5 bg-white dark:bg-black">
-            {/* Back Button with Arrow */}
-            {/* Animated Input Section */}
             <Animated.View style={{ opacity: fadeAnim }}>
               <CheckScamForm
                 selectedImageUri={selectedImageUri}
@@ -405,7 +403,6 @@ export default function CheckTypePage() {
                 setLocation={setLocation}
               />
             </Animated.View>
-            {/* Check Button */}
             <Pressable
               onPress={handleCheckPress}
               className="bg-blue-600 p-4 rounded-xl mt-6"
@@ -414,7 +411,6 @@ export default function CheckTypePage() {
                 Check
               </Text>
             </Pressable>
-            {/* Loading Indicator */}
             {isChecking && (
               <View
                 style={{

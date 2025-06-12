@@ -106,7 +106,6 @@ export default function CheckScamForm(props: CheckScamForm) {
       }`}
     >
       <View className="pb-5">
-        (
         <Label className="pb-1">
           <Text>Scam Type</Text>
         </Label>
@@ -149,7 +148,6 @@ export default function CheckScamForm(props: CheckScamForm) {
             </SelectGroup>
           </SelectContent>
         </Select>
-        );
       </View>
       <View className="pb-5">
         <Label className="pb-1">
@@ -159,7 +157,6 @@ export default function CheckScamForm(props: CheckScamForm) {
           value={props.description}
           onChange={handleUpdateDescription}
         />
-        {/* </Input> */}
       </View>
       {props.type === "inPerson" && (
         <View className="pb-5">
@@ -208,7 +205,6 @@ export default function CheckScamForm(props: CheckScamForm) {
         </View>
       </Pressable>
 
-      {/* Image preview shown below the buttons */}
       {props.selectedImageUri && (
         <View style={{ marginTop: 24, alignItems: "center" }}>
           <Text
