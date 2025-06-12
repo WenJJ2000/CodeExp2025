@@ -35,8 +35,8 @@ export default function TabLayout() {
           </View>
         ),
         tabBarStyle: {
-      paddingTop: 15, // Add padding to the top of the tab bar
-    },
+          paddingTop: 15, // Add padding to the top of the tab bar
+        },
       }}
     >
       <Tabs.Screen
@@ -119,31 +119,6 @@ export default function TabLayout() {
         name="(report-tabs)"
         options={{
           title: "Report",
-          // tabBarIcon: ({ color, size }) => (
-          //   <FontAwesome6
-          //     name="triangle-exclamation"
-          //     size={size}
-          //     color={color}
-          //     style={{ marginBottom: -3 }}
-          //   />
-          // ),
-          // tabBarButton: (props) => (
-          //   <>
-          //     <TouchableOpacity
-          //       style={{
-          //         flex: 1,
-          //         backgroundColor: "transparent",
-          //         justifyContent: "center",
-          //         alignItems: "center",
-          //       }}
-          //       onPress={() => {
-          //         router.navigate("/(tabs)/(report-tabs)");
-          //       }}
-          //     >
-          //       {props.children}
-          //     </TouchableOpacity>
-          //   </>
-          // ),
           headerShown: false,
           href: null,
           tabBarLabelPosition: "below-icon",
@@ -187,31 +162,6 @@ export default function TabLayout() {
         name="(profile-tabs)"
         options={{
           title: "Profile",
-          // tabBarIcon: ({ color, size }) => (
-          //   <FontAwesome6
-          //     name="user"
-          //     size={size}
-          //     color={color}
-          //     style={{ marginBottom: -3 }}
-          //   />
-          // ),
-          // tabBarButton: (props) => (
-          //   <>
-          //     <TouchableOpacity
-          //       style={{
-          //         flex: 1,
-          //         backgroundColor: "transparent",
-          //         justifyContent: "center",
-          //         alignItems: "center",
-          //       }}
-          //       onPress={() => {
-          //         router.navigate("/(tabs)/(profile-tabs)");
-          //       }}
-          //     >
-          //       {props.children}
-          //     </TouchableOpacity>
-          //   </>
-          // ),
           href: null,
           tabBarLabelPosition: "below-icon",
           headerShown: false,
