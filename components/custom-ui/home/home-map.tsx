@@ -48,13 +48,6 @@ export default function HomeMap() {
       }}
     >
       {scamReports.map((report) => {
-        // console.log("Report");
-        // console.log(
-        //   "Report",
-        //   report.id,
-        //   report?.location?.latitude,
-        //   report?.location?.longitude
-        // );
         return (
           <Marker
             key={report.id}
