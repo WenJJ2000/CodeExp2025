@@ -2,6 +2,24 @@
 
 A starting point to help you set up your project quickly and use the common components provided by `react-native-reusables`. The idea is to make it easier for you to get started.
 
+# How To Run
+
+## Clone the repo
+
+`git clone https://github.com/WenJJ2000/CodeExp2025.git`
+
+## Install dependecies
+
+`npm install`
+
+## Include ur env variables
+
+Copy env.example and fill in the variables
+
+## Run the application
+
+`npm run dev`
+
 ## Features
 
 - NativeWind v4
